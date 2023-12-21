@@ -81,6 +81,19 @@ TextureImporter:
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
     buildTarget: Standalone
     maxTextureSize: 2048
     resizeAlgorithm: 0
@@ -115,7 +128,7 @@ TextureImporter:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 400
+        width: 200
         height: 200
       alignment: 0
       pivot: {x: 0, y: 0}
@@ -124,8 +137,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 56019ee1b758fa04388a4eef3c05e91d
-      internalID: 1817277214
+      spriteID: 6910b28f0341b444b8728beca09dfdfb
+      internalID: 1435635763
       vertices: []
       indices: 
       edges: []
@@ -134,9 +147,9 @@ TextureImporter:
       name: ButtonSS_1
       rect:
         serializedVersion: 2
-        x: 400
+        x: 200
         y: 0
-        width: 400
+        width: 200
         height: 200
       alignment: 0
       pivot: {x: 0, y: 0}
@@ -145,8 +158,50 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: b29846aaa2338834a99f78f3a1dbfd2e
-      internalID: -683823227
+      spriteID: 39d6c507fdd16104a88c634e3871c190
+      internalID: -173148391
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ButtonSS_2
+      rect:
+        serializedVersion: 2
+        x: 400
+        y: 0
+        width: 200
+        height: 200
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ddbd916a9d51ab943b8d4d2b8b628ad6
+      internalID: 1768593935
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ButtonSS_3
+      rect:
+        serializedVersion: 2
+        x: 600
+        y: 0
+        width: 200
+        height: 200
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2c5c7f63282233f4c8be69b8f7c3c389
+      internalID: 1680844315
       vertices: []
       indices: 
       edges: []
@@ -162,8 +217,10 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      ButtonSS_0: 1817277214
-      ButtonSS_1: -683823227
+      ButtonSS_0: 1435635763
+      ButtonSS_1: -173148391
+      ButtonSS_2: 1768593935
+      ButtonSS_3: 1680844315
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

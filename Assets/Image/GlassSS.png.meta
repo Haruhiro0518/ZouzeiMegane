@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 8ace8cdb998ff284099557df3e3e3581
+guid: 3e2930d6dd926104799ba4f5f61d701c
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -123,7 +123,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: ButtonSS_0
+      name: GlassSS_0
       rect:
         serializedVersion: 2
         x: 0
@@ -137,14 +137,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 9c00baeb59a66ce4a993e8aac0920ca1
-      internalID: 247544318
+      spriteID: 8df471cdc8c3cd143bedca7231aee7de
+      internalID: -1276384520
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: ButtonSS_1
+      name: GlassSS_1
       rect:
         serializedVersion: 2
         x: 200
@@ -158,92 +158,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 4d5a0936cb3027d449448d26f43c0f89
-      internalID: -166964653
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: ButtonSS_2
-      rect:
-        serializedVersion: 2
-        x: 400
-        y: 0
-        width: 200
-        height: 200
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 9d1688995ffc2a649b945053361806d2
-      internalID: -1713130858
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: ButtonSS_3
-      rect:
-        serializedVersion: 2
-        x: 600
-        y: 0
-        width: 200
-        height: 200
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 7e34bfdbd3e1d2b4aaf9fb34f60de937
-      internalID: 476341499
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: ButtonSS_4
-      rect:
-        serializedVersion: 2
-        x: 800
-        y: 0
-        width: 200
-        height: 200
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 8b48982442914f8469e3967cfc93e083
-      internalID: -1287124515
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: ButtonSS_5
-      rect:
-        serializedVersion: 2
-        x: 1000
-        y: 0
-        width: 200
-        height: 200
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: a210b708146952545bf475202d1d2921
-      internalID: 981058136
+      spriteID: 221213e178ff89043a4a6a029f5e5d11
+      internalID: -971178997
       vertices: []
       indices: 
       edges: []
@@ -259,12 +175,8 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      ButtonSS_0: 247544318
-      ButtonSS_1: -166964653
-      ButtonSS_2: -1713130858
-      ButtonSS_3: 476341499
-      ButtonSS_4: -1287124515
-      ButtonSS_5: 981058136
+      GlassSS_0: -1276384520
+      GlassSS_1: -971178997
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

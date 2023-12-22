@@ -4,15 +4,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
-public class TitleManager : MonoBehaviour
+public class SettingManager : MonoBehaviour
 {
-    
-    [SerializeField, Header("スタートボタン")]
-    private GameObject StartButton;
-
-    [SerializeField, Header("オプションボタン")]
-    private GameObject OptionButton;
-
     [SerializeField, Header("オプションUI")]
     private GameObject OptionUI;
 
@@ -27,7 +20,7 @@ public class TitleManager : MonoBehaviour
         bgm.Play();
     }
 
-    void Update()
+    private void Update()
     {
         if(bgm.time > 45.7f)
         {
@@ -37,7 +30,6 @@ public class TitleManager : MonoBehaviour
         }
     }
 
-    
     public void SelectStart()
     {
         SceneManager.LoadScene("Main");
@@ -48,7 +40,7 @@ public class TitleManager : MonoBehaviour
         OptionUI.SetActive(true);
     }
 
-    public void SelectBack()
+    public void SelectClose()
     {
         OptionUI.SetActive(false);
     }

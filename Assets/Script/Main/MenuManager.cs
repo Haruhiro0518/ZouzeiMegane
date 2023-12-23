@@ -14,30 +14,32 @@ public class MenuManager : MonoBehaviour
 
     [SerializeField, Header("スライダー")]
     private GameObject Slider;
+
+    [SerializeField, Header("ヘルプUI")]
+    private GameObject HelpUI;
     
     private AudioSource bgm;
-
-    void Start()
-    {
-        
-    }
-
-
-    void Update()
-    {
-        
-    }
 
     public void SelectPause()
     {
         Time.timeScale = 0;
         PauseUI.SetActive(true);
+        OptionUI.SetActive(false);
+        HelpUI.SetActive(false);
     }
 
     public void SelectOption()
     {
         PauseUI.SetActive(false);
         OptionUI.SetActive(true);
+        HelpUI.SetActive(false);
+    }
+
+    public void SelectHelp()
+    {
+        PauseUI.SetActive(false);
+        OptionUI.SetActive(false);
+        HelpUI.SetActive(true);
     }
 
     public void SelectRetry()
@@ -57,6 +59,7 @@ public class MenuManager : MonoBehaviour
         Time.timeScale = 1;
         PauseUI.SetActive(false);
         OptionUI.SetActive(false);
+        HelpUI.SetActive(false);
     }
 
     public void MoveSlider(float value)

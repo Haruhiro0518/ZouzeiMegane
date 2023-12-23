@@ -11,6 +11,9 @@ public class SettingManager : MonoBehaviour
 
     [SerializeField, Header("スライダー")]
     private GameObject Slider;
+
+    [SerializeField, Header("ヘルプUI")]
+    private GameObject HelpUI;
     
     private AudioSource bgm;
 
@@ -38,11 +41,19 @@ public class SettingManager : MonoBehaviour
     public void SelectOption()
     {
         OptionUI.SetActive(true);
+        HelpUI.SetActive(false);
+    }
+
+    public void SelectHelp()
+    {
+        OptionUI.SetActive(false);
+        HelpUI.SetActive(true);
     }
 
     public void SelectClose()
     {
         OptionUI.SetActive(false);
+        HelpUI.SetActive(false);
     }
 
     public void MoveSlider(float value)

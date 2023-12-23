@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+    private int layermask;
+
     // マウスドラッグ処理
     private float previousPosX;
     private float currentPosX;
@@ -24,10 +26,12 @@ public class Player : MonoBehaviour
     // スピード係数
     public float speed = 2.5f;
 
-    private int layermask;
+    // playerの攻撃力
+    public int power = 1;
 
-    // Playerが衝突しているか
-    public bool IsCol = false;
+
+
+    
 
     void Start()
     {
@@ -108,7 +112,7 @@ public class Player : MonoBehaviour
 
     void OnCollisionEnter2D(Collision2D c)
     {
-        IsCol = true;
+        
         // レイヤー名を取得
         string layerName = LayerMask.LayerToName(c.gameObject.layer);
 
@@ -116,14 +120,14 @@ public class Player : MonoBehaviour
         if(layerName != "Block") return;
 
         // blockの削除
-        Destroy(c.gameObject);
+        // Destroy(c.gameObject);
 
         // エネミーの削除
         // Destroy(gameObject);
     }
     void OnCollisionExit2D(Collision2D c) 
     {
-        IsCol = false;
+        
         Move();
     }
 }

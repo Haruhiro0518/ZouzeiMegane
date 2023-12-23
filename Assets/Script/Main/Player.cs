@@ -15,11 +15,14 @@ public class Player : MonoBehaviour
     // player size
     private float radius;
     
+    // 横から接触しないための隙間
+    private float space = 0.05f;
+
     // display size
     private float displayWidth = 2.8f;
 
     // スピード係数
-    public float speed = 2f;
+    public float speed = 2.5f;
 
     private int layermask;
 
@@ -63,24 +66,27 @@ public class Player : MonoBehaviour
             // 次のローカルx座標を設定  CLAMP
             // 左右にcast a ray
             
-            RaycastHit2D L = Physics2D.Raycast(transform.position, Vector2.left, displayWidth*2, layermask);
-            RaycastHit2D R = Physics2D.Raycast(transform.position, Vector2.right, displayWidth*2, layermask);
-            
+            RaycastHit2D LU = Physics2D.Raycast(transform.position+new Vector3(0,radius-space,0), Vector2.left, displayWidth*2, layermask);
+            RaycastHit2D RU = Physics2D.Raycast(transform.position+new Vector3(0,radius-space,0), Vector2.right, displayWidth*2, layermask);
+            RaycastHit2D LD = Physics2D.Raycast(transform.position+new Vector3(0,-radius+space,0), Vector2.left, displayWidth*2, layermask);
+            RaycastHit2D RD = Physics2D.Raycast(transform.position+new Vector3(0,-radius+space,0), Vector2.right, displayWidth*2, layermask);
+
             // 左にコライダーがあるとき
-            if(L.collider != null) {
-                // xMin = L.transform.position.x + L.transform.localScale.x / 2 + radius;
-                xMin = L.point.x + radius;
+            if(LU.collider != null || LD.collider != null) {
+                // 
+                if(LU.collider != null) xMin = LU.point.x + radius + space;
+                else xMin = LD.point.x + radius + space;
                 
             } else {
                 xMin = -displayWidth + radius;
             }
             // 右にコライダーがあるとき
-            if(R.collider != null) {
-                // xMax = R.transform.position.x - R.transform.localScale.x / 2 - radius;
-                xMax = R.point.x - radius;
+            if(RU.collider != null || RD.collider != null) {
+                if(RU.collider != null) xMax = RU.point.x - radius - space;
+                else xMax = RD.point.x - radius - space;
+                
             } else {
                 xMax = displayWidth - radius;
-                // Debug.Log(displayWidth-radius+":"+xMax);
             }
             
             Vector2 pos = transform.position;

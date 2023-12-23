@@ -92,12 +92,41 @@ public class StageScript : MonoBehaviour
     }
     
     // 生成するステージの選択
+    int nextStageTips;
     int SelectStage()
     {
-        int nextStageTip;
+        
+        // rawCount 0~9 random, 10~15 full or random, 16 full
 
-        nextStageTip = Random.Range(0, stageTips.Length);
+        // 10行生成していないとき
+        if(rawCount < 10)
+        {
+            // 0を除いたランダム
+            nextStageTips = Random.Range(1, stageTips.Length);
+        } 
+        // 10から15の間
+        else if(rawCount >= 10 && rawCount <= 15)
+        {
+            int sel;
+            sel = Random.Range(0,2);
 
-        return nextStageTip;
+            // full or not full
+            if(sel == 0){
+                nextStageTips = 0;   // full
+                rawCount = 0;
+            } 
+            else if(sel == 1) {
+                nextStageTips = Random.Range(1, stageTips.Length); // random
+            }
+        }
+        // 15超えたら
+        else {
+            nextStageTips = 0;   // full
+            rawCount = 0;
+        }
+
+
+        return nextStageTips;
     }
+
 }

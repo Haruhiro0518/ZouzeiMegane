@@ -547,7 +547,7 @@ GameObject:
   - component: {fileID: 711535983}
   - component: {fileID: 711535982}
   m_Layer: 0
-  m_Name: SettingManager
+  m_Name: TitleManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1344,7 +1344,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 711535983}
-        m_TargetAssemblyTypeName: SettingManager, Assembly-CSharp
+        m_TargetAssemblyTypeName: TitleManager, Assembly-CSharp
         m_MethodName: MoveSlider
         m_Mode: 0
         m_Arguments:

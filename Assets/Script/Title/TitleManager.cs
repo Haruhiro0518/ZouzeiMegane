@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
-public class SettingManager : MonoBehaviour
+public class TitleManager : MonoBehaviour
 {
     [SerializeField, Header("オプションUI")]
     private GameObject OptionUI;
@@ -15,27 +15,29 @@ public class SettingManager : MonoBehaviour
     [SerializeField, Header("ヘルプUI")]
     private GameObject HelpUI;
     
-    private AudioSource bgm;
+    private AudioSource titleBGM;
+
+    public static float volumeValue = 0.5f;
 
     private void Start()
     {
-        bgm = GetComponent<AudioSource>();
-        bgm.Play();
+        titleBGM = GetComponent<AudioSource>();
+        titleBGM.Play();
     }
 
     private void Update()
     {
-        if(bgm.time > 45.7f)
+        if(titleBGM.time > 45.7f)
         {
-            bgm.Stop();
-            bgm.time = 0.5f;
-            bgm.Play();
+            titleBGM.Stop();
+            titleBGM.time = 0.5f;
+            titleBGM.Play();
         }
     }
 
     public void SelectStart()
     {
-        SceneManager.LoadScene("Main");
+        SceneManager.LoadScene("Intro");
     }
     
     public void SelectOption()
@@ -58,6 +60,7 @@ public class SettingManager : MonoBehaviour
 
     public void MoveSlider(float value)
     {
-        bgm.volume = value;
+        volumeValue = value;
+        titleBGM.volume = value;
     }
 }

@@ -40,6 +40,8 @@ public class Player : MonoBehaviour
     public int power = 1;
     // playerのHP
     public int HP;
+    // 税率
+    public float taxRate = 1.0f;
 
 
     void Start()

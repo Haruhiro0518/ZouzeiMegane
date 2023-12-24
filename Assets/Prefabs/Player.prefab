@@ -183,3 +183,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1210eae0a55d3324cbcb6835ee09ccf2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  HPtext: {fileID: 0}
+  Stage: {fileID: 0}
+  speed: 2.5
+  power: 1
+  HP: 0

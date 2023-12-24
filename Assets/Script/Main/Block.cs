@@ -23,6 +23,10 @@ public class Block : MonoBehaviour
     private FollowTransform marker;
     // HPテキストのgameObject
     private GameObject HPtext;
+    // scoreUI
+    private GameObject scoreGUI;
+    // Scoreスクリプト
+    private Score scoreScript;
 
     void Awake()
     {
@@ -41,6 +45,13 @@ public class Block : MonoBehaviour
         // markerがアタッチされているgameObjectの取得
         HPtext = marker.gameObject;
         marker.ChangeText(HP);
+
+        // scoreGUIを取得
+        scoreGUI = GameObject.Find("ScoreGUI");
+        // Scoreスクリプト取得
+        scoreScript = scoreGUI.GetComponent<Score>();
+
+
     }
 
     // コルーチンとする
@@ -59,7 +70,8 @@ public class Block : MonoBehaviour
                 // HPをPlayerのpower分減らす
                 HP = HP - player.power;
                 player.DHP();
-                marker.ChangeText(HP);
+                marker.ChangeText(HP); 
+                scoreScript.AddScore(player.power, player.taxRate);
             }
             // HPがなくなったらdestroy
             else if(HP <= 0) {

@@ -16,6 +16,12 @@ public class DestroyWave : MonoBehaviour
                 Block block = child.GetComponent<Block>();
                 
                 block.destroyText();
+            } 
+            // Itemのレイヤーなら
+            else if(child.gameObject.layer == 9) {
+                Item item = child.GetComponent<Item>();
+                
+                item.destroyText();
             }
         }
         

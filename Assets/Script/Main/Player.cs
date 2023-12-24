@@ -53,8 +53,8 @@ public class Player : MonoBehaviour
         // プレイヤーの半径
         radius = GetComponent<Transform>().transform.localScale.x / 2;
         
-        // playerのlayer7だけ無視する
-        layermask = 1 << 7;
+        // playerのlayer7とlayer9を無視する
+        layermask = (1 + 4) << 7;
         layermask = ~layermask;
 
         Move();

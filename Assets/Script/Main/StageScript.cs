@@ -37,6 +37,7 @@ public class StageScript : MonoBehaviour
     
     void Update()
     {
+        
         // playerの位置から現在のステージチップインデックスを計算
         int charaPositionIndex = (int)(player.position.y / StageTipSize);
         // 次のステージチップに入ったらステージの更新処理を行う

@@ -6,7 +6,7 @@ using UnityEngine;
 public class Block : MonoBehaviour
 {
     // HP
-    public int HP = 50;
+    public int HP;
     // delay
     public float Delay = 0.5f;
     
@@ -33,13 +33,14 @@ public class Block : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+        InitializeHP();
         // hpUIの初期化
         // スクリプトをインスタンス化
         marker = Instantiate(_markerPrefab, _markerPanel);
         marker.Initialize(gameObject.transform);
         // markerがアタッチされているgameObjectの取得
         HPtext = marker.gameObject;
-
+        marker.ChangeText(HP);
     }
 
     // コルーチンとする
@@ -54,9 +55,11 @@ public class Block : MonoBehaviour
         
         while(true) {
             // 衝突中かつHPが0より大きいならダメージを受ける
-            if(IsCol == true && HP > 0) {
+            if((IsCol == true) && (HP > 0)) {
                 // HPをPlayerのpower分減らす
                 HP = HP - player.power;
+                player.DHP();
+                marker.ChangeText(HP);
             }
             // HPがなくなったらdestroy
             else if(HP <= 0) {
@@ -78,8 +81,14 @@ public class Block : MonoBehaviour
         IsCol = false;
     }
 
-    public void destroyText() {
+    public void destroyText() 
+    {
         
         Destroy(HPtext);
+    }
+
+    public void InitializeHP() 
+    {
+        HP = Random.Range(1, 20);
     }
 }

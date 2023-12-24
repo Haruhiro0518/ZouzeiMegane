@@ -28,7 +28,8 @@ public class FollowTransform : MonoBehaviour
     {
         _target = target;
         _targetCamera = targetCamera != null ? targetCamera : Camera.main;
-
+        if(TextHp == null) TextHp = gameObject.GetComponent<TMPro.TMP_Text>();
+        
         OnUpdatePosition();
     }
 
@@ -40,6 +41,8 @@ public class FollowTransform : MonoBehaviour
 
         // 親UIのRectTransformを保持
         _parentUI = _targetUI.parent.GetComponent<RectTransform>();
+        // gameObjectのTMPro取得
+        TextHp = gameObject.GetComponent<TMPro.TMP_Text>();
     }
 
     // UIの位置を毎フレーム更新
@@ -47,6 +50,7 @@ public class FollowTransform : MonoBehaviour
     {
 
         OnUpdatePosition();
+        
     }
 
     // UIの位置を更新する
@@ -86,9 +90,10 @@ public class FollowTransform : MonoBehaviour
         
     }
 
-    public void ChangeText()
+    public void ChangeText(int hp)
     {
-
+        string hpText = hp.ToString();
+        TextHp.SetText(hpText);
     }
 
 }

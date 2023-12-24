@@ -249,7 +249,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1374e8613df64e143abcdbe2d5c175d5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HP: 5
+  HP: 10
   Delay: 0.5
   IsCol: 0
   _markerPanel: {fileID: 0}

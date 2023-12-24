@@ -15,6 +15,7 @@ public class FollowPlayer : MonoBehaviour
     // Update is called once per frame
     void LateUpdate()
     {
+        
         // playerのy座標値についていく
         Vector3 pos = transform.position;
         pos.y = player.transform.position.y + offset.y;

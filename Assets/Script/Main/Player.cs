@@ -6,6 +6,11 @@ public class Player : MonoBehaviour
 {
     private int layermask;
 
+    // スクリプトのインスタンス
+    private FollowTransform marker;
+    // HPテキストのgameObject
+    [SerializeField]private GameObject HPtext;
+
     // マウスドラッグ処理
     private float previousPosX;
     private float currentPosX;
@@ -28,13 +33,16 @@ public class Player : MonoBehaviour
 
     // playerの攻撃力
     public int power = 1;
+    // playerのHP
+    public int HP;
 
-
-
-    
 
     void Start()
     {
+        HP = 100;
+        // HPtextのスクリプト取得
+        marker = HPtext.GetComponent<FollowTransform>();
+
         // プレイヤーの半径
         radius = GetComponent<Transform>().transform.localScale.x / 2;
         
@@ -49,7 +57,8 @@ public class Player : MonoBehaviour
     void Update()
     {
         MoveDrag();
-        
+        // HP 表示更新
+        marker.ChangeText(HP);
     }
 
     // プレイヤー移動
@@ -113,21 +122,43 @@ public class Player : MonoBehaviour
     void OnCollisionEnter2D(Collision2D c)
     {
         
+        
+
+        
+    }
+    void OnCollisionStay2D(Collision2D c)
+    {
+        if(HP <= 0) {
+            destroyText();
+            Destroy(gameObject);
+        }
+        /*
         // レイヤー名を取得
         string layerName = LayerMask.LayerToName(c.gameObject.layer);
 
-        // レイヤー名がBlock以外のときは何も行わない
-        if(layerName != "Block") return;
-
-        // blockの削除
-        // Destroy(c.gameObject);
-
-        // エネミーの削除
-        // Destroy(gameObject);
+        // レイヤー名がBlockのとき
+        if(layerName == "Block") 
+        {
+            
+        }
+        */
     }
     void OnCollisionExit2D(Collision2D c) 
     {
         
         Move();
     }
+
+    public void DHP()
+    {
+        // 1ダメージ受ける
+        HP -= 1;
+    }
+
+    public void destroyText() 
+    {
+        
+        Destroy(HPtext);
+    }
+    
 }

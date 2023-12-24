@@ -9,7 +9,12 @@ public class Player : MonoBehaviour
     // スクリプトのインスタンス
     private FollowTransform marker;
     // HPテキストのgameObject
-    [SerializeField]private GameObject HPtext;
+    [SerializeField] private GameObject HPtext;
+    // Stageオブジェクト
+    [SerializeField] private GameObject Stage;
+    // stagescript
+    private StageScript stageScript;
+
 
     // マウスドラッグ処理
     private float previousPosX;
@@ -42,6 +47,8 @@ public class Player : MonoBehaviour
         HP = 100;
         // HPtextのスクリプト取得
         marker = HPtext.GetComponent<FollowTransform>();
+        // StageScript取得
+        stageScript = Stage.GetComponent<StageScript>();
 
         // プレイヤーの半径
         radius = GetComponent<Transform>().transform.localScale.x / 2;
@@ -128,8 +135,10 @@ public class Player : MonoBehaviour
     }
     void OnCollisionStay2D(Collision2D c)
     {
+        // gameOver
         if(HP <= 0) {
             destroyText();
+            stageScript.IsGameover = true;
             Destroy(gameObject);
         }
         /*

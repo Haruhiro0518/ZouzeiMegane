@@ -191,6 +191,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1134299651 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3599695691233945526, guid: c0bf03deaabfdca49ace82141adb12d0, type: 3}
+  m_PrefabInstance: {fileID: 6901399495719891346}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1342150830 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 41268940414192548, guid: 5b81dc3b0f2f88e44b9c8fb7559a9322, type: 3}
@@ -217,6 +222,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 2437936833927147167, guid: 5b81dc3b0f2f88e44b9c8fb7559a9322, type: 3}
+      propertyPath: Stage
+      value: 
+      objectReference: {fileID: 1134299651}
     - target: {fileID: 2437936833927147167, guid: 5b81dc3b0f2f88e44b9c8fb7559a9322, type: 3}
       propertyPath: HPtext
       value: 
@@ -372,6 +381,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 1342150830}
+  Stage: {fileID: 1134299651}
 --- !u!1 &2018612167
 GameObject:
   m_ObjectHideFlags: 0

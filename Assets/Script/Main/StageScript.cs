@@ -88,7 +88,10 @@ public class StageScript : MonoBehaviour
     {
         GameObject oldStage = generatedStageList[0];
         generatedStageList.RemoveAt(0);
-        Destroy(oldStage);
+        DestroyWave wave = oldStage.GetComponent<DestroyWave>();
+        
+        wave.destroyObject();
+        // Destroy(oldStage);
     }
     
     // 生成するステージの選択

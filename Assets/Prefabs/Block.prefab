@@ -252,3 +252,5 @@ MonoBehaviour:
   HP: 5
   Delay: 0.5
   IsCol: 0
+  _markerPanel: {fileID: 0}
+  _markerPrefab: {fileID: 739365706040032767, guid: 59f0af5e2915d574bb225c2565018bce, type: 3}

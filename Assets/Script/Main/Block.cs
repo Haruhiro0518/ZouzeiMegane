@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class Block : MonoBehaviour
 {
     // HP
@@ -11,6 +12,35 @@ public class Block : MonoBehaviour
     
     // 衝突中か
     public bool IsCol = false;
+   
+    // canvas
+    private GameObject canvas;
+    
+    // 親の指定
+    [SerializeField] private RectTransform _markerPanel;
+    [SerializeField] private FollowTransform _markerPrefab;
+    // スクリプトのインスタンス
+    private FollowTransform marker;
+    // HPテキストのgameObject
+    private GameObject HPtext;
+
+    void Awake()
+    {
+        canvas = GameObject.Find("Canvas");
+        _markerPanel = canvas.GetComponent<RectTransform>();
+    }
+
+    // Use this for initialization
+    void Start()
+    {
+        // hpUIの初期化
+        // スクリプトをインスタンス化
+        marker = Instantiate(_markerPrefab, _markerPanel);
+        marker.Initialize(gameObject.transform);
+        // markerがアタッチされているgameObjectの取得
+        HPtext = marker.gameObject;
+
+    }
 
     // コルーチンとする
     IEnumerator OnCollisionStay2D(Collision2D c)
@@ -31,6 +61,7 @@ public class Block : MonoBehaviour
             // HPがなくなったらdestroy
             else if(HP <= 0) {
                 Destroy(gameObject);
+                destroyText();
             } 
             // IsColがfalseならbreak;
             else {
@@ -45,5 +76,10 @@ public class Block : MonoBehaviour
     void OnCollisionExit2D(Collision2D c)
     {
         IsCol = false;
+    }
+
+    public void destroyText() {
+        
+        Destroy(HPtext);
     }
 }

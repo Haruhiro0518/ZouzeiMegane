@@ -25,6 +25,8 @@ public class StageScript : MonoBehaviour
 
     // 行数を数えて、その値を参考に生成するオブジェクトを変える
     private int rawCount;
+
+    public bool IsGameover = false;
     
     void Start()
     {
@@ -37,7 +39,9 @@ public class StageScript : MonoBehaviour
     
     void Update()
     {
-        
+        // gameOverだったらUpdateしない
+        if(IsGameover == true) return;
+
         // playerの位置から現在のステージチップインデックスを計算
         int charaPositionIndex = (int)(player.position.y / StageTipSize);
         // 次のステージチップに入ったらステージの更新処理を行う

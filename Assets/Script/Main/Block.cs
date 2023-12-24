@@ -83,7 +83,6 @@ public class Block : MonoBehaviour
 
     public void destroyText() 
     {
-        
         Destroy(HPtext);
     }
 

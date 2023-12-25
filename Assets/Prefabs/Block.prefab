@@ -249,7 +249,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1374e8613df64e143abcdbe2d5c175d5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlassesPercent: 3
+  GlassesPercent: 30
   haveGlasses: 0
   _markerPanel: {fileID: 0}
   _markerPrefab: {fileID: 739365706040032767, guid: 59f0af5e2915d574bb225c2565018bce, type: 3}

@@ -34,10 +34,10 @@ public class Player : MonoBehaviour
     private float displayWidth = 2.8f;
 
     // スピード係数
-    public float speed = 2.5f;
+    public float speed;
 
     // playerの攻撃力
-    public int power = 1;
+    public int power;
     // playerのHP
     public int HP;
     // 税率
@@ -52,16 +52,12 @@ public class Player : MonoBehaviour
 
     void Start()
     {
-        HP = 100;
         // HPtextのスクリプト取得
         marker = HPtext.GetComponent<FollowTransform>();
         // StageScript取得
         stageScript = Stage.GetComponent<StageScript>();
-
-        // プレイヤーの半径
-        // radius = GetComponent<Transform>().transform.localScale.x / 2;
         
-        // playerのlayer7とlayer9を無視する
+        // playerのlayer7とitemのlayer9を無視する
         layermask = (1 + 4) << 7;
         layermask = ~layermask;
 
@@ -75,12 +71,12 @@ public class Player : MonoBehaviour
         marker.ChangeText(HP);
 
         // gameOver
-        if(HP <= 0) {
+        if(HP < 0) {
             destroyText();
             stageScript.IsGameover = true;
             Destroy(gameObject);
         }
-        Debug.Log(extendInv);
+
     }
 
     // InvicibleMode()をコルーチンにすると, blockが削除されたときにWaitFoSecondsがなくなるため、

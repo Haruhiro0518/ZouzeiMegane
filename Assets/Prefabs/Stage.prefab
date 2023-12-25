@@ -47,8 +47,8 @@ MonoBehaviour:
   player: {fileID: 0}
   stageTips:
   - {fileID: 7884052179028323726, guid: 104280ae4fab1ff4f99b25e66d6d7d40, type: 3}
-  - {fileID: 5196025962408281124, guid: 52cb869aade575f4a803c44efc7375c9, type: 3}
-  - {fileID: 7514811107882520099, guid: 1ef688fa890478c4cb68c571519fe496, type: 3}
+  - {fileID: 1287289355992458573, guid: 66b9b9277cca3644fbf1f4c3a09f3389, type: 3}
   startTipIndex: 0
   preInstantiate: 3
   generatedStageList: []
+  IsGameover: 0

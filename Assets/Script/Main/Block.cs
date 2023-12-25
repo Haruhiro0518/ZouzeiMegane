@@ -8,7 +8,7 @@ public class Block : MonoBehaviour
     // HP
     private int HP;
     // delay
-    private float Delay = 0.1f;
+    private float Delay = 0.08f;
     
     // 衝突中か
     private bool IsCol = false;
@@ -129,7 +129,7 @@ public class Block : MonoBehaviour
             // HPがなくなったらdestroy
             else if(HP <= 0) {
                 // このblockが増税めがねを持っている場合、playerを無敵にする
-                if(haveGlasses == true) player.InvincibleMode();
+                if(haveGlasses == true && !(player.HP < 0)) player.InvincibleMode();
 
                 Destroy(gameObject);
                 destroyText();
@@ -153,16 +153,25 @@ public class Block : MonoBehaviour
 
     public void InitializeParam() 
     {
-        // HP決定
-        HP = Random.Range(1, 20);
+        // HP決定 割合で決める
+        // 1~4:20%, 5~20:65%, 21~35:10%, 36~50:5%
+        int percent = Random.Range(0,100);
+        if(percent < 20) HP = Random.Range(1,5);
+        else if(percent >= 20 && percent < 85) HP = Random.Range(5, 21);
+        else if(percent >= 85 && percent < 95) HP = Random.Range(21, 36);
+        else HP = Random.Range(36, 51);
         
-        // めがねを持つか
+        // めがねを持つか 
         // 0~99
-        if(Random.Range(0,100) < GlassesPercent) {
-            haveGlasses = true;    // もつ
-        } else {
-            haveGlasses = false;   // もたない
+        // めがねを持つのはblockのHPが25以上のとき
+        if(HP >= 25) {
+            if(Random.Range(0,100) < GlassesPercent) {
+                haveGlasses = true;    // もつ
+            } else {
+                haveGlasses = false;   // もたない
+            }
         }
+        
     }
 
     // blockのHPを減らす関数

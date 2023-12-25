@@ -15,7 +15,7 @@ TagManager:
   - Player
   - Bar
   - Item
-  - 
+  - Glasses
   - 
   - 
   - 
@@ -44,6 +44,9 @@ TagManager:
   - name: Block
     uniqueID: 1562437657
     locked: 0
-  - name: Player
+  - name: Glasses
     uniqueID: 4073471623
+    locked: 0
+  - name: Player
+    uniqueID: 4023616995
     locked: 0

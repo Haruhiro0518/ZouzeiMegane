@@ -6,12 +6,18 @@ using UnityEngine;
 public class Block : MonoBehaviour
 {
     // HP
-    public int HP;
+    private int HP;
     // delay
     public float Delay = 0.5f;
     
     // 衝突中か
-    public bool IsCol = false;
+    private bool IsCol = false;
+
+    // 増税めがねをもつ確率
+    public int GlassesPercent = 50;
+    // 増税めがねをもっているか
+    public bool haveGlasses;
+
    
     // canvas
     private GameObject canvas;
@@ -19,10 +25,16 @@ public class Block : MonoBehaviour
     // 親の指定
     [SerializeField] private RectTransform _markerPanel;
     [SerializeField] private FollowTransform _markerPrefab;
+    [SerializeField] private FollowTransform _markerPrefab_glasses;
     // スクリプトのインスタンス
     private FollowTransform marker;
     // HPテキストのgameObject
     private GameObject HPtext;
+
+    // glasses UI
+    private FollowTransform marker2;
+    private GameObject GlassesImg;
+
     // scoreUI
     private GameObject scoreGUI;
     // Scoreスクリプト
@@ -37,7 +49,9 @@ public class Block : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        InitializeHP();
+        // HP や 眼鏡をもつか　などのParam 初期化
+        InitializeParam();
+
         // hpUIの初期化
         // スクリプトをインスタンス化
         marker = Instantiate(_markerPrefab, _markerPanel);
@@ -46,11 +60,21 @@ public class Block : MonoBehaviour
         HPtext = marker.gameObject;
         marker.ChangeText(HP);
 
+        // glassesImageの初期化
+        if(haveGlasses == true)
+        {
+            marker2 = Instantiate(_markerPrefab_glasses, _markerPanel);
+            marker2.Initialize(gameObject.transform);
+            GlassesImg = marker2.gameObject;
+            // 位置ずらす
+            marker2._worldOffset = new Vector3(0f, -0.25f, 0f);
+            marker._worldOffset = new Vector3(0f, 0.2f, 0f);
+        }
+
         // scoreGUIを取得
         scoreGUI = GameObject.Find("ScoreGUI");
         // Scoreスクリプト取得
         scoreScript = scoreGUI.GetComponent<Score>();
-
 
     }
 
@@ -96,10 +120,21 @@ public class Block : MonoBehaviour
     public void destroyText() 
     {
         Destroy(HPtext);
+        if(GlassesImg != null) 
+        Destroy(GlassesImg);
     }
 
-    public void InitializeHP() 
+    public void InitializeParam() 
     {
+        // HP決定
         HP = Random.Range(1, 20);
+        
+        // めがねを持つか
+        // 0~99
+        if(Random.Range(0,100) < GlassesPercent) {
+            haveGlasses = true;    // もつ
+        } else {
+            haveGlasses = false;   // もたない
+        }
     }
 }

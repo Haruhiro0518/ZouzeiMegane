@@ -354,7 +354,7 @@ PrefabInstance:
     - target: {fileID: 9159327895206333747, guid: c0bf03deaabfdca49ace82141adb12d0, type: 3}
       propertyPath: stageTips.Array.data[3]
       value: 
-      objectReference: {fileID: 8956387101579337007, guid: 776a2b57aac59b442969b1cb36f12a5d, type: 3}
+      objectReference: {fileID: 8648034312017962507, guid: 776a2b57aac59b442969b1cb36f12a5d, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

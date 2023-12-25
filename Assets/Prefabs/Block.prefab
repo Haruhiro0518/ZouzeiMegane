@@ -254,3 +254,4 @@ MonoBehaviour:
   IsCol: 0
   _markerPanel: {fileID: 0}
   _markerPrefab: {fileID: 739365706040032767, guid: 59f0af5e2915d574bb225c2565018bce, type: 3}
+  _markerPrefab_glasses: {fileID: 2982240920035541736, guid: 717f09ee32818e444b149f924e6a01c0, type: 3}

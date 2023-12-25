@@ -15,7 +15,8 @@ public class FollowTransform : MonoBehaviour
     [SerializeField] private Transform _targetUI;
 
     // オブジェクト位置のオフセット
-    [SerializeField] private Vector3 _worldOffset;
+    // [SerializeField] private Vector3 _worldOffset;
+    public Vector3 _worldOffset;
 
     private RectTransform _parentUI;
 

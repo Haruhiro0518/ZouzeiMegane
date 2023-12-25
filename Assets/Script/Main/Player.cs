@@ -24,8 +24,8 @@ public class Player : MonoBehaviour
     private float xMin;
     private float xMax;
 
-    // player size
-    private float radius;
+    // player size 2.6/2 定数
+    private float radius = 0.13f;
     
     // 横から接触しないための隙間
     private float space = 0.05f;
@@ -42,6 +42,12 @@ public class Player : MonoBehaviour
     public int HP;
     // 税率
     public float taxRate = 1.0f;
+    // 無敵状態であるか
+    public bool IsInvincible = false;
+    // 無敵秒数
+    private float InvTime = 5.0f;
+    // 無敵時間延長
+    private int extendInv;
 
 
     void Start()
@@ -53,7 +59,7 @@ public class Player : MonoBehaviour
         stageScript = Stage.GetComponent<StageScript>();
 
         // プレイヤーの半径
-        radius = GetComponent<Transform>().transform.localScale.x / 2;
+        // radius = GetComponent<Transform>().transform.localScale.x / 2;
         
         // playerのlayer7とlayer9を無視する
         layermask = (1 + 4) << 7;
@@ -62,12 +68,46 @@ public class Player : MonoBehaviour
         Move();
     }
 
-    
     void Update()
     {
         MoveDrag();
         // HP 表示更新
         marker.ChangeText(HP);
+
+        // gameOver
+        if(HP <= 0) {
+            destroyText();
+            stageScript.IsGameover = true;
+            Destroy(gameObject);
+        }
+        Debug.Log(extendInv);
+    }
+
+    // InvicibleMode()をコルーチンにすると, blockが削除されたときにWaitFoSecondsがなくなるため、
+    // 待つ処理はinv()で行う
+    public void InvincibleMode()
+    {
+        // 呼ばれたときにextendInv変数をインクリメント
+        extendInv++;
+        // 無敵
+        IsInvincible = true;
+        // speed up
+        speed = 4f;
+        StartCoroutine(inv());
+    }
+
+    IEnumerator inv()
+    {
+        // InvTime 待つ
+        yield return new WaitForSeconds(InvTime);
+        
+        // 無敵中に他の無敵を取らなかった場合、無敵終了
+        if(extendInv == 1) {
+            // 元に戻す
+            speed = 2.5f;
+            IsInvincible = false;
+        } 
+        extendInv--;
     }
 
     // プレイヤー移動
@@ -90,22 +130,22 @@ public class Player : MonoBehaviour
             
             RaycastHit2D LU = Physics2D.Raycast(transform.position+new Vector3(0,radius-space,0), Vector2.left, displayWidth*2, layermask);
             RaycastHit2D RU = Physics2D.Raycast(transform.position+new Vector3(0,radius-space,0), Vector2.right, displayWidth*2, layermask);
-            RaycastHit2D LD = Physics2D.Raycast(transform.position+new Vector3(0,-radius+space,0), Vector2.left, displayWidth*2, layermask);
-            RaycastHit2D RD = Physics2D.Raycast(transform.position+new Vector3(0,-radius+space,0), Vector2.right, displayWidth*2, layermask);
+            RaycastHit2D LD = Physics2D.Raycast(transform.position+new Vector3(0,-radius-space,0), Vector2.left, displayWidth*2, layermask);
+            RaycastHit2D RD = Physics2D.Raycast(transform.position+new Vector3(0,-radius-space,0), Vector2.right, displayWidth*2, layermask);
 
             // 左にコライダーがあるとき
             if(LU.collider != null || LD.collider != null) {
-                // 
-                if(LU.collider != null) xMin = LU.point.x + radius + space;
-                else xMin = LD.point.x + radius + space;
+                // Downが優先
+                if(LD.collider != null) xMin = LD.point.x + radius + space;
+                else xMin = LU.point.x + radius + space;
                 
             } else {
                 xMin = -displayWidth + radius;
             }
             // 右にコライダーがあるとき
             if(RU.collider != null || RD.collider != null) {
-                if(RU.collider != null) xMax = RU.point.x - radius - space;
-                else xMax = RD.point.x - radius - space;
+                if(RD.collider != null) xMax = RD.point.x - radius - space;
+                else xMax = RU.point.x - radius - space;
                 
             } else {
                 xMax = displayWidth - radius;
@@ -115,7 +155,6 @@ public class Player : MonoBehaviour
             pos.x = Mathf.Clamp(pos.x + diffDistance,  xMin,  xMax);
             
             transform.position = pos;
-            
 
             // タップ位置を更新
             previousPosX = currentPosX;
@@ -128,47 +167,21 @@ public class Player : MonoBehaviour
         GetComponent<Rigidbody2D>().velocity = transform.up * speed;
     }
 
-    void OnCollisionEnter2D(Collision2D c)
-    {
-        
-        
-
-        
-    }
-    void OnCollisionStay2D(Collision2D c)
-    {
-        // gameOver
-        if(HP <= 0) {
-            destroyText();
-            stageScript.IsGameover = true;
-            Destroy(gameObject);
-        }
-        /*
-        // レイヤー名を取得
-        string layerName = LayerMask.LayerToName(c.gameObject.layer);
-
-        // レイヤー名がBlockのとき
-        if(layerName == "Block") 
-        {
-            
-        }
-        */
-    }
+    
     void OnCollisionExit2D(Collision2D c) 
     {
-        
         Move();
     }
 
     public void DHP()
     {
-        // 1ダメージ受ける
+        // 無敵ならHPは減らない
+        if(IsInvincible == true) return;
         HP -= 1;
     }
 
     public void destroyText() 
     {
-        
         Destroy(HPtext);
     }
     

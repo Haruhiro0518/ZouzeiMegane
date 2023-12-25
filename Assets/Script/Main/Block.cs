@@ -8,17 +8,19 @@ public class Block : MonoBehaviour
     // HP
     private int HP;
     // delay
-    public float Delay = 0.5f;
+    private float Delay = 0.1f;
     
     // 衝突中か
     private bool IsCol = false;
+    
 
     // 増税めがねをもつ確率
-    public int GlassesPercent = 50;
+    public int GlassesPercent;
     // 増税めがねをもっているか
     public bool haveGlasses;
-
-   
+    // Player情報
+   private GameObject Player;
+   private Player player;
     // canvas
     private GameObject canvas;
     
@@ -44,11 +46,13 @@ public class Block : MonoBehaviour
     {
         canvas = GameObject.Find("Canvas");
         _markerPanel = canvas.GetComponent<RectTransform>();
+
     }
 
     // Use this for initialization
     void Start()
     {
+        Player = GameObject.Find("Player");
         // HP や 眼鏡をもつか　などのParam 初期化
         InitializeParam();
 
@@ -76,40 +80,26 @@ public class Block : MonoBehaviour
         // Scoreスクリプト取得
         scoreScript = scoreGUI.GetComponent<Score>();
 
+        // Playerコンポーネント取得
+        player = Player.gameObject.GetComponent<Player>();
+
     }
 
-    // コルーチンとする
-    IEnumerator OnCollisionStay2D(Collision2D c)
+    void Update()
     {
-        // Playerとのみ衝突するため、c はPlayerの情報であることを前提とする
-
-        IsCol = true;
-        // Playerコンポーネント取得
-        Player player = c.gameObject.GetComponent<Player>();
-
         
-        while(true) {
-            // 衝突中かつHPが0より大きいならダメージを受ける
-            if((IsCol == true) && (HP > 0)) {
-                // HPをPlayerのpower分減らす
-                HP = HP - player.power;
-                player.DHP();
-                marker.ChangeText(HP); 
-                scoreScript.AddScore(player.power, player.taxRate);
-            }
-            // HPがなくなったらdestroy
-            else if(HP <= 0) {
-                Destroy(gameObject);
-                destroyText();
-            } 
-            // IsColがfalseならbreak;
-            else {
-                yield break;
-            }
+    }
 
-            // Delay秒まつ
-            yield return new WaitForSeconds(Delay);
-        }
+    void OnCollisionEnter2D(Collision2D c)
+    {
+        IsCol = true;
+        // 衝突中の処理
+        StartCoroutine(collisionStay(c));
+    }
+    
+    void OnCollisionStay2D(Collision2D c)
+    {
+        
     }
 
     void OnCollisionExit2D(Collision2D c)
@@ -117,11 +107,48 @@ public class Block : MonoBehaviour
         IsCol = false;
     }
 
+    IEnumerator collisionStay(Collision2D c)
+    {
+
+        
+
+        while(true) {
+            
+            // 衝突中かつHPが0より大きいならダメージを受ける
+            if((IsCol == true) && (HP > 0)) {
+                // HPを減らす処理
+                
+                scoreScript.AddScore(DHP(player), player.taxRate);
+                player.DHP();
+                marker.ChangeText(HP); 
+                // Delay秒まつ 
+                // HP=0ならDelayなし
+                if(HP==0) yield return new WaitForSeconds(0.05f);
+                else  yield return new WaitForSeconds(Delay);
+            }
+            // HPがなくなったらdestroy
+            else if(HP <= 0) {
+                // このblockが増税めがねを持っている場合、playerを無敵にする
+                if(haveGlasses == true) player.InvincibleMode();
+
+                Destroy(gameObject);
+                destroyText();
+                yield break;
+            } 
+            // IsColがfalseならbreak;
+            else {
+                yield break;
+            }
+        }
+    }
+
     public void destroyText() 
     {
         Destroy(HPtext);
-        if(GlassesImg != null) 
-        Destroy(GlassesImg);
+        if(GlassesImg != null) {
+            Destroy(GlassesImg);
+        }
+        
     }
 
     public void InitializeParam() 
@@ -135,6 +162,21 @@ public class Block : MonoBehaviour
             haveGlasses = true;    // もつ
         } else {
             haveGlasses = false;   // もたない
+        }
+    }
+
+    // blockのHPを減らす関数
+    public int DHP(Player p)
+    {
+        // playerが無敵なら一回で壊れる
+        if(p.IsInvincible == true){
+            int temp = HP;
+            HP = 0;
+            return temp;
+        } else {
+            // HPをPlayerのpower分減らす
+            HP = HP - p.power;
+            return p.power;
         }
     }
 }

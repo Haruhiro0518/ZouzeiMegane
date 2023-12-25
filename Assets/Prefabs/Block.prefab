@@ -81,7 +81,7 @@ SpriteRenderer:
   m_Sprite: {fileID: -5177388603050735206, guid: 8884154dfe85442a3a3578be807dbcdf, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
-  m_FlipY: 0
+  m_FlipY: 1
   m_DrawMode: 2
   m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
@@ -249,9 +249,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1374e8613df64e143abcdbe2d5c175d5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HP: 10
-  Delay: 0.5
-  IsCol: 0
+  GlassesPercent: 3
+  haveGlasses: 0
   _markerPanel: {fileID: 0}
   _markerPrefab: {fileID: 739365706040032767, guid: 59f0af5e2915d574bb225c2565018bce, type: 3}
   _markerPrefab_glasses: {fileID: 2982240920035541736, guid: 717f09ee32818e444b149f924e6a01c0, type: 3}

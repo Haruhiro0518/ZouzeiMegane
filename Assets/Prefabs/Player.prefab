@@ -187,4 +187,6 @@ MonoBehaviour:
   Stage: {fileID: 0}
   speed: 2.5
   power: 1
-  HP: 0
+  HP: -34
+  taxRate: 1
+  IsInvincible: 0

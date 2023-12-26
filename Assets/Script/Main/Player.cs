@@ -49,6 +49,8 @@ public class Player : MonoBehaviour
     // 無敵時間延長
     private int extendInv;
 
+    [SerializeField, Header("総理アニメーター")]
+    Animator PlayerAnimator;
 
     void Start()
     {
@@ -87,8 +89,10 @@ public class Player : MonoBehaviour
         extendInv++;
         // 無敵
         IsInvincible = true;
+        //アニメーション切替
+        PlayerAnimator.SetBool("PowerUP", IsInvincible);
         // speed up
-        speed = 4f;
+        speed = 4.0f;
         StartCoroutine(inv());
     }
 
@@ -100,8 +104,10 @@ public class Player : MonoBehaviour
         // 無敵中に他の無敵を取らなかった場合、無敵終了
         if(extendInv == 1) {
             // 元に戻す
-            speed = 2.5f;
+            speed = 3.0f;
             IsInvincible = false;
+            //アニメーション切替
+            PlayerAnimator.SetBool("PowerUP", IsInvincible);
         } 
         extendInv--;
     }

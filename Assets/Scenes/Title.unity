@@ -516,7 +516,6 @@ GameObject:
   - component: {fileID: 503726658}
   - component: {fileID: 503726661}
   - component: {fileID: 503726660}
-  - component: {fileID: 503726659}
   m_Layer: 5
   m_Name: Item
   m_TagString: Untagged
@@ -543,27 +542,6 @@ RectTransform:
   m_AnchoredPosition: {x: 120, y: -1020}
   m_SizeDelta: {x: 200, y: 200}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!95 &503726659
-Animator:
-  serializedVersion: 5
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 503726657}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: a51516f88fe9f1c4e91b09fffc094fe7, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
 --- !u!114 &503726660
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1398,7 +1376,6 @@ GameObject:
   - component: {fileID: 1208726506}
   - component: {fileID: 1208726509}
   - component: {fileID: 1208726508}
-  - component: {fileID: 1208726507}
   m_Layer: 5
   m_Name: Player
   m_TagString: Untagged
@@ -1425,27 +1402,6 @@ RectTransform:
   m_AnchoredPosition: {x: 110, y: -480}
   m_SizeDelta: {x: 400, y: 400}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!95 &1208726507
-Animator:
-  serializedVersion: 5
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1208726505}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: c6c606f45840b1d4a81a7b36d6861f9e, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
 --- !u!114 &1208726508
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2126,7 +2082,6 @@ GameObject:
   - component: {fileID: 1732312992}
   - component: {fileID: 1732312995}
   - component: {fileID: 1732312994}
-  - component: {fileID: 1732312993}
   m_Layer: 5
   m_Name: Life
   m_TagString: Untagged
@@ -2153,27 +2108,6 @@ RectTransform:
   m_AnchoredPosition: {x: 120, y: -660}
   m_SizeDelta: {x: 200, y: 200}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!95 &1732312993
-Animator:
-  serializedVersion: 5
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1732312991}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: b9ad84624b3b5a3448b655476f10e812, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
 --- !u!114 &1732312994
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2403,7 +2337,6 @@ GameObject:
   - component: {fileID: 1833163737}
   - component: {fileID: 1833163740}
   - component: {fileID: 1833163739}
-  - component: {fileID: 1833163738}
   m_Layer: 5
   m_Name: Score
   m_TagString: Untagged
@@ -2430,27 +2363,6 @@ RectTransform:
   m_AnchoredPosition: {x: 120, y: -840}
   m_SizeDelta: {x: 200, y: 200}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!95 &1833163738
-Animator:
-  serializedVersion: 5
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1833163736}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 3f2d82bfc7e3148448c803514ee0441a, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
 --- !u!114 &1833163739
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -22,6 +22,10 @@ public class TitleManager : MonoBehaviour
     private void Start()
     {
         titleBGM = GetComponent<AudioSource>();
+        if(volumeValue != 0.5f)
+        {
+            titleBGM.volume = volumeValue;
+        }
         titleBGM.Play();
     }
 

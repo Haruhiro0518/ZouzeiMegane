@@ -6,6 +6,9 @@ using UnityEngine.SceneManagement;
 
 public class MenuManager : MonoBehaviour
 {
+    [SerializeField, Header("ポーズボタン")]
+    private GameObject PauseButton;
+    
     [SerializeField, Header("ポーズUI")]
     private GameObject PauseUI;
     
@@ -17,9 +20,42 @@ public class MenuManager : MonoBehaviour
 
     [SerializeField, Header("ヘルプUI")]
     private GameObject HelpUI;
-    
-    private AudioSource bgm;
 
+    [SerializeField, Header("リザルトUI")]
+    private GameObject ResultUI;
+
+    [SerializeField, Header("ステージオブジェクト")] 
+    private GameObject Stage;
+
+    private StageScript stageScript;
+    
+    private AudioSource MainBGM;
+
+    void Start()
+    {
+        stageScript = Stage.GetComponent<StageScript>();
+        MainBGM = GetComponent<AudioSource>();
+        MainBGM.volume = TitleManager.volumeValue;
+        MainBGM.Play();
+    }
+    
+    void Update()
+    {
+        if(MainBGM.time > 143.0f)
+        {
+            MainBGM.Stop();
+            MainBGM.time = 0.48f;
+            MainBGM.Play();
+        }
+
+        if(stageScript.IsGameover == true)
+        {
+            Time.timeScale = 0;
+            PauseButton.SetActive(false);
+            ResultUI.SetActive(true);
+        }
+    }
+    
     public void SelectPause()
     {
         Time.timeScale = 0;
@@ -45,12 +81,14 @@ public class MenuManager : MonoBehaviour
     public void SelectRetry()
     {
         Time.timeScale = 1;
+        stageScript.IsGameover = false;
         SceneManager.LoadScene("Main");
     }
 
     public void SelectRetire()
     {
         Time.timeScale = 1;
+        stageScript.IsGameover = false;
         SceneManager.LoadScene("Title");
     }
 
@@ -64,6 +102,9 @@ public class MenuManager : MonoBehaviour
 
     public void MoveSlider(float value)
     {
-        //bgm.volume = value;
+        TitleManager.volumeValue = value;
+        MainBGM.volume = value;
     }
+
+
 }

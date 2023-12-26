@@ -9,6 +9,9 @@ public class Score : MonoBehaviour
     public GameObject ScoreUI;
     private TMPro.TMP_Text TextScore;
 
+    public GameObject ResultUI;
+    private TMPro.TMP_Text TextResult;
+
     // score格納
     public float score = 0f;
 
@@ -16,6 +19,7 @@ public class Score : MonoBehaviour
     {
         // gameObjectのTMPro取得
         TextScore = ScoreUI.GetComponent<TMPro.TMP_Text>();
+        TextResult = ResultUI.GetComponent<TMPro.TMP_Text>();
     }
 
     void Update()
@@ -28,6 +32,7 @@ public class Score : MonoBehaviour
         // Debug.Log(score);
         string scoreText = score.ToString();
         TextScore.SetText(scoreText);
+        TextResult.SetText(scoreText);
     }
     
     public void AddScore(int scoreBlock, float taxRate)

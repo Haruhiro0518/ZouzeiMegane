@@ -41,6 +41,7 @@ public class Block : MonoBehaviour
     private GameObject scoreGUI;
     // Scoreスクリプト
     private Score scoreScript;
+    
 
     void Awake()
     {

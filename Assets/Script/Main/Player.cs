@@ -24,8 +24,14 @@ public class Player : MonoBehaviour
     private float xMin;
     private float xMax;
 
-    // player size 2.6/2 定数
-    private float radius = 0.13f;
+    // player scale
+    private float pScale;
+    // 上のコライダーの半径と下の半径
+    private float radiusUp = 0.1965f;
+    // private float radiusDw = 0.14625f;
+    // コライダーのx offset
+    private float colxoffset;
+    
     
     // 横から接触しないための隙間
     private float space = 0.05f;
@@ -49,11 +55,19 @@ public class Player : MonoBehaviour
     // 無敵時間延長
     private int extendInv;
 
+    // SE object
+    [SerializeField] private GameObject SEbomb;
+    
     [SerializeField, Header("総理アニメーター")]
     Animator PlayerAnimator;
+    
 
     void Start()
     {
+        // player scale
+        pScale = gameObject.GetComponent<Transform>().localScale.x;
+        // localに変換
+        colxoffset = 0.1f*pScale;
         // HPtextのスクリプト取得
         marker = HPtext.GetComponent<FollowTransform>();
         // StageScript取得
@@ -74,10 +88,13 @@ public class Player : MonoBehaviour
 
         // gameOver
         if(HP < 0) {
+            // play se
+            Instantiate(SEbomb);
             destroyText();
             stageScript.IsGameover = true;
             Destroy(gameObject);
         }
+        
 
     }
 
@@ -115,6 +132,9 @@ public class Player : MonoBehaviour
     // プレイヤー移動
     void MoveDrag() 
     {
+        // ポーズ中は移動しない
+        if(Time.timeScale == 0) return;
+
         // mouse左ボタンを押したとき
         if (Input.GetMouseButtonDown(0)) {
             previousPosX = Input.mousePosition.x;
@@ -127,30 +147,32 @@ public class Player : MonoBehaviour
             // 移動距離の計算　Screen.widthで割って1に正規化. 定数をかけて,マウスの移動とplayerが一致
             float diffDistance = (currentPosX - previousPosX) / Screen.width * displayWidth*2;
 
-            // 次のローカルx座標を設定  CLAMP
-            // 左右にcast a ray
-            
-            RaycastHit2D LU = Physics2D.Raycast(transform.position+new Vector3(0,radius-space,0), Vector2.left, displayWidth*2, layermask);
-            RaycastHit2D RU = Physics2D.Raycast(transform.position+new Vector3(0,radius-space,0), Vector2.right, displayWidth*2, layermask);
-            RaycastHit2D LD = Physics2D.Raycast(transform.position+new Vector3(0,-radius-space,0), Vector2.left, displayWidth*2, layermask);
-            RaycastHit2D RD = Physics2D.Raycast(transform.position+new Vector3(0,-radius-space,0), Vector2.right, displayWidth*2, layermask);
+            // 次のローカルx座標を設定  CLAMP 
+            // 左右にraycastを伸ばす. positionはコライダーの大きさによる微調整
+            float yoffU = 0.8f * pScale;
+            // float yoffD = 0.75f * pScale;
+
+            RaycastHit2D LU = Physics2D.Raycast(transform.position+new Vector3(colxoffset,yoffU+radiusUp-space,0), Vector2.left, displayWidth*2, layermask);
+            RaycastHit2D RU = Physics2D.Raycast(transform.position+new Vector3(colxoffset,yoffU+radiusUp-space,0), Vector2.right, displayWidth*2, layermask);
+            RaycastHit2D LD = Physics2D.Raycast(transform.position+new Vector3(colxoffset,yoffU-radiusUp-space,0), Vector2.left, displayWidth*2, layermask);
+            RaycastHit2D RD = Physics2D.Raycast(transform.position+new Vector3(colxoffset,yoffU-radiusUp-space,0), Vector2.right, displayWidth*2, layermask);
 
             // 左にコライダーがあるとき
             if(LU.collider != null || LD.collider != null) {
                 // Downが優先
-                if(LD.collider != null) xMin = LD.point.x + radius + space;
-                else xMin = LU.point.x + radius + space;
+                if(LD.collider != null) xMin = LD.point.x + radiusUp - colxoffset + space;
+                else xMin = LU.point.x + radiusUp - colxoffset + space;
                 
             } else {
-                xMin = -displayWidth + radius;
+                xMin = -displayWidth + radiusUp - colxoffset;
             }
             // 右にコライダーがあるとき
             if(RU.collider != null || RD.collider != null) {
-                if(RD.collider != null) xMax = RD.point.x - radius - space;
-                else xMax = RU.point.x - radius - space;
+                if(RD.collider != null) xMax = RD.point.x - radiusUp - colxoffset - space;
+                else xMax = RU.point.x - radiusUp - colxoffset - space;
                 
             } else {
-                xMax = displayWidth - radius;
+                xMax = displayWidth - radiusUp - colxoffset;
             }
             
             Vector2 pos = transform.position;

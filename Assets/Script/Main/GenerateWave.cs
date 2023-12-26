@@ -40,7 +40,7 @@ public class GenerateWave : MonoBehaviour
     {
         for(float i = min; i <= max; i+=spc)
         {
-            Debug.Log(i);
+            // Debug.Log(i);
             // block/itemを配置するか
             int r = Random.Range(0,100);
             if(r < percentBlock) {

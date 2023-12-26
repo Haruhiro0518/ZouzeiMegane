@@ -164,7 +164,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   HP: 0
   _markerPanel: {fileID: 0}
-  _markerPrefab: {fileID: 7696308590232876996, guid: d9c9bc80b3c8f7446bd0a287a588f214, type: 3}
+  _markerPrefab: {fileID: 6567574265864527601, guid: 3a8b7cbcc99c1d347951c6bd147369c2, type: 3}
 --- !u!95 &-1710185516270247928
 Animator:
   serializedVersion: 5

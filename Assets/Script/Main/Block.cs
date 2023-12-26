@@ -41,6 +41,8 @@ public class Block : MonoBehaviour
     private GameObject scoreGUI;
     // Scoreスクリプト
     private Score scoreScript;
+    // SE object
+    [SerializeField] private GameObject SEmoney;
     
 
     void Awake()
@@ -131,7 +133,8 @@ public class Block : MonoBehaviour
             else if(HP <= 0) {
                 // このblockが増税めがねを持っている場合、playerを無敵にする
                 if(haveGlasses == true && !(player.HP < 0)) player.InvincibleMode();
-
+                // SE再生
+                Instantiate(SEmoney);
                 Destroy(gameObject);
                 destroyText();
                 yield break;

@@ -54,6 +54,7 @@ public class StageScript : MonoBehaviour
     {
         // gameOverだったらUpdateしない
         if(IsGameover == true) return;
+        Debug.Log(IsGameover);
 
         // playerの位置から現在のステージチップインデックスを計算
         int charaPositionIndex = (int)(player.position.y / StageTipSize);

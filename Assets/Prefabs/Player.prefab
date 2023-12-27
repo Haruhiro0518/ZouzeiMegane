@@ -219,6 +219,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1210eae0a55d3324cbcb6835ee09ccf2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _markerPanel: {fileID: 0}
+  _markerPrefab: {fileID: 7696308590232876996, guid: d9c9bc80b3c8f7446bd0a287a588f214, type: 3}
   HPtext: {fileID: 414151084705174626, guid: d9c9bc80b3c8f7446bd0a287a588f214, type: 3}
   Stage: {fileID: 3599695691233945526, guid: c0bf03deaabfdca49ace82141adb12d0, type: 3}
   speed: 3

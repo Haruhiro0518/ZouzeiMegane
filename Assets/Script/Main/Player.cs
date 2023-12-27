@@ -5,13 +5,21 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     private int layermask;
+    // debug用変数
+    private bool firstTime;
+
+    // canvas
+    private GameObject canvas;
+    // 親の指定
+    [SerializeField] private RectTransform _markerPanel;
+    [SerializeField] private FollowTransform _markerPrefab;
 
     // スクリプトのインスタンス
     private FollowTransform marker;
     // HPテキストのgameObject
     [SerializeField] private GameObject HPtext;
     // Stageオブジェクト
-    [SerializeField] private GameObject Stage;
+    private GameObject Stage;
     // stagescript
     private StageScript stageScript;
 
@@ -63,17 +71,29 @@ public class Player : MonoBehaviour
     
     void Awake()
     {
-        gameObject.transform.position = new Vector3(0.0f, 0.0f, 0.0f);
+        canvas = GameObject.Find("Canvas");
+        _markerPanel = canvas.GetComponent<RectTransform>();
+        Stage = GameObject.Find("Stage");
     }
 
     void Start()
     {
+        firstTime=true;
         // player scale
         pScale = gameObject.GetComponent<Transform>().localScale.x;
         // localに変換
         colxoffset = 0.1f*pScale;
+
+        // hpUIの初期化
+        // スクリプトをインスタンス化
+        marker = Instantiate(_markerPrefab, _markerPanel);
+        marker.Initialize(gameObject.transform);
+        // markerがアタッチされているgameObjectの取得
+        HPtext = marker.gameObject;
+        marker.ChangeText(HP);
+
         // HPtextのスクリプト取得
-        marker = HPtext.GetComponent<FollowTransform>();
+        // marker = HPtext.GetComponent<FollowTransform>();
         // StageScript取得
         stageScript = Stage.GetComponent<StageScript>();
         
@@ -82,12 +102,14 @@ public class Player : MonoBehaviour
         layermask = ~layermask;
         taxRate = 1.0f;
 
+        
         Move();
     }
 
     void Update()
     {
         MoveDrag();
+        if(firstTime == true) DebugPos();
         // HP 表示更新
         marker.ChangeText(HP);
 
@@ -97,6 +119,7 @@ public class Player : MonoBehaviour
             Instantiate(SEbomb);
             destroyText();
             stageScript.IsGameover = true;
+            // Debug.Log(stageScript.IsGameover);
             Destroy(gameObject);
         }
         
@@ -218,4 +241,11 @@ public class Player : MonoBehaviour
         Destroy(HPtext);
     }
     
+    void DebugPos()
+    {
+        Vector3 pos = new Vector3(0,0,0);
+        gameObject.transform.position = pos;
+
+        firstTime = false;
+    }
 }

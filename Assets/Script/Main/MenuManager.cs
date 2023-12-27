@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using unityroom.Api;
 
 public class MenuManager : MonoBehaviour
 {
@@ -28,12 +29,18 @@ public class MenuManager : MonoBehaviour
     private GameObject Stage;
 
     private StageScript stageScript;
+
+    [SerializeField, Header("スコアオブジェクト")] 
+    private GameObject ScoreGUI;
+
+    private Score scoreScript;
     
     private AudioSource MainBGM;
 
     void Start()
     {
         stageScript = Stage.GetComponent<StageScript>();
+        scoreScript = ScoreGUI.GetComponent<Score>();
         MainBGM = GetComponent<AudioSource>();
         MainBGM.volume = TitleManager.volumeValue;
         MainBGM.Play();
@@ -53,6 +60,8 @@ public class MenuManager : MonoBehaviour
             Time.timeScale = 0;
             PauseButton.SetActive(false);
             ResultUI.SetActive(true);
+            UnityroomApiClient.Instance.SendScore(1, scoreScript.score, ScoreboardWriteMode.HighScoreDesc);
+
         }
     }
     

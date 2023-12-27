@@ -13,6 +13,12 @@ public class PlaySE : MonoBehaviour
         // clip時間（秒）
         float length = myAudioSource.clip.length;
 
+        myAudioSource.volume = TitleManager.volumeValue;
+        if(myAudioSource.volume > 0.0f)
+        {
+            myAudioSource.volume += 0.2f;
+        }
+
         // 待つ ただしTimeScaleが0の場合はここで処理が止まる
         yield return new WaitForSeconds(length);
         // 再生終了後、オブジェクト削除

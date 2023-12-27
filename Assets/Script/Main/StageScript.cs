@@ -13,8 +13,13 @@ public class StageScript : MonoBehaviour
     // 現在のTipIndex
     int currentTipIndex;
     // Playerの位置
-    public Transform player;
-    // ステージの配列. プレハブをいれておく
+    private Transform player;
+    // ステージの配列. プレハブをいれておく 
+
+    private GameObject Player;
+
+    public GameObject PlayerPrefab;
+
     public GameObject[] stageTips;
     // 初めのTipIndex
     public int startTipIndex;
@@ -28,9 +33,17 @@ public class StageScript : MonoBehaviour
 
     public bool IsGameover = false;
     
+    void Awake()
+    {
+        Player = Instantiate(PlayerPrefab, new Vector3(0, 0, 0), Quaternion.identity);
+        Player.name = ("Player");
+        player = Player.GetComponent<Transform>();
+    }
+    
     void Start()
     {
         // 初期化
+        IsGameover = false;
         currentTipIndex = startTipIndex - 1;
         UpdateStage(preInstantiate);
 

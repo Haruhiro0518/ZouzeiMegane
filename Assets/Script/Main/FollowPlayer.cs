@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class FollowPlayer : MonoBehaviour
 {
-    public GameObject player;
+    private GameObject player;
     private Vector3 offset = new Vector3(0, 2.5f, -1);
 
     // Stageオブジェクトしている
@@ -16,6 +16,7 @@ public class FollowPlayer : MonoBehaviour
     {
         // StageScript取得
         stageScript = Stage.GetComponent<StageScript>();
+        player = GameObject.Find("Player");
     }
 
     // Update is called once per frame

@@ -150,4 +150,4 @@ MonoBehaviour:
   _targetCamera: {fileID: 0}
   _target: {fileID: 0}
   _targetUI: {fileID: 8645117870707160811}
-  _worldOffset: {x: 0, y: -0.4, z: 0}
+  _worldOffset: {x: 0, y: -0.5, z: 0}

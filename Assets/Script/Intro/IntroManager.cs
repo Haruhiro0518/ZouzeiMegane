@@ -52,6 +52,9 @@ public class IntroManager : MonoBehaviour
     [SerializeField, Header("テキスト8")]
     private GameObject Text8;
 
+    [SerializeField, Header("テキスト9")]
+    private GameObject Text9;
+
     private AudioSource introBGM;
     
     void Start()
@@ -83,7 +86,7 @@ public class IntroManager : MonoBehaviour
         state += 1;
         talking = !talking;
 
-        if(state > 7)
+        if(state > 8)
         {
             SceneManager.LoadScene("Main");
         }
@@ -136,6 +139,12 @@ public class IntroManager : MonoBehaviour
                 {
                     Text7.SetActive(false);
                     Text8.SetActive(true);
+                    break;
+                }
+                case 8:
+                {
+                    Text8.SetActive(false);
+                    Text9.SetActive(true);
                     break;
                 }
             }

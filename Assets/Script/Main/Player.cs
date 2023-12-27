@@ -28,7 +28,7 @@ public class Player : MonoBehaviour
     private float pScale;
     // 上のコライダーの半径と下の半径
     private float radiusUp = 0.1965f;
-    // private float radiusDw = 0.14625f;
+    //private float radiusDw = 0.14625f;
     // コライダーのx offset
     private float colxoffset;
     
@@ -61,6 +61,10 @@ public class Player : MonoBehaviour
     [SerializeField, Header("総理アニメーター")]
     Animator PlayerAnimator;
     
+    void Awake()
+    {
+        gameObject.transform.position = new Vector3(0.0f, 0.0f, 0.0f);
+    }
 
     void Start()
     {
@@ -76,6 +80,7 @@ public class Player : MonoBehaviour
         // playerのlayer7とitemのlayer9を無視する
         layermask = (1 + 4) << 7;
         layermask = ~layermask;
+        taxRate = 1.0f;
 
         Move();
     }
@@ -110,6 +115,9 @@ public class Player : MonoBehaviour
         PlayerAnimator.SetBool("PowerUP", IsInvincible);
         // speed up
         speed = 4.0f;
+        // rate up
+        taxRate = 2.0f;
+        
         StartCoroutine(inv());
     }
 
@@ -122,6 +130,7 @@ public class Player : MonoBehaviour
         if(extendInv == 1) {
             // 元に戻す
             speed = 3.0f;
+            taxRate = 1.0f;
             IsInvincible = false;
             //アニメーション切替
             PlayerAnimator.SetBool("PowerUP", IsInvincible);
@@ -150,7 +159,7 @@ public class Player : MonoBehaviour
             // 次のローカルx座標を設定  CLAMP 
             // 左右にraycastを伸ばす. positionはコライダーの大きさによる微調整
             float yoffU = 0.8f * pScale;
-            // float yoffD = 0.75f * pScale;
+            //float yoffD = 0.6f * pScale;
 
             RaycastHit2D LU = Physics2D.Raycast(transform.position+new Vector3(colxoffset,yoffU+radiusUp-space,0), Vector2.left, displayWidth*2, layermask);
             RaycastHit2D RU = Physics2D.Raycast(transform.position+new Vector3(colxoffset,yoffU+radiusUp-space,0), Vector2.right, displayWidth*2, layermask);

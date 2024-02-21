@@ -207,7 +207,7 @@ public class Player : MonoBehaviour
             } else {
                 xMax = displayWidth - radiusUp - colxoffset;
             }
-            
+            Debug.Log(xMin +"|"+xMax);
             Vector2 pos = transform.position;
             pos.x = Mathf.Clamp(pos.x + diffDistance,  xMin,  xMax);
             

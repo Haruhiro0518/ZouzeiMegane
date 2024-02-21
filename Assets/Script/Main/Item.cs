@@ -17,6 +17,7 @@ public class Item : MonoBehaviour
     private FollowTransform marker;
     // HPテキストのgameObject
     private GameObject HPtext;
+    private Player player;
 
 
     void Awake()
@@ -28,6 +29,7 @@ public class Item : MonoBehaviour
     void Start()
     {
         InitializeHP();
+        player = GameObject.Find("Player").gameObject.GetComponent<Player>();
         // hpUIの初期化
         // スクリプトをインスタンス化
         marker = Instantiate(_markerPrefab, _markerPanel);
@@ -41,8 +43,7 @@ public class Item : MonoBehaviour
     void OnTriggerEnter2D(Collider2D c)
     {
         // playerと衝突することだけを考える
-        // Playerスクリプトを取得
-        Player player = c.gameObject.GetComponent<Player>();
+        
         // playerのHPにItemのHPを足す
         player.HP += HP;
 

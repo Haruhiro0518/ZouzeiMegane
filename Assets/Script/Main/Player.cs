@@ -5,8 +5,8 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     private int layermask;
-    // debug用変数
-    private bool firstTime;
+    
+    private bool init_player_pos = true;
 
     // canvas
     private GameObject canvas;
@@ -78,7 +78,6 @@ public class Player : MonoBehaviour
 
     void Start()
     {
-        firstTime=true;
         // player scale
         pScale = gameObject.GetComponent<Transform>().localScale.x;
         // localに変換
@@ -109,7 +108,7 @@ public class Player : MonoBehaviour
     void Update()
     {
         MoveDrag();
-        if(firstTime == true) DebugPos();
+        if(init_player_pos == true) DebugPos();
         // HP 表示更新
         marker.ChangeText(HP);
 
@@ -157,6 +156,8 @@ public class Player : MonoBehaviour
             IsInvincible = false;
             //アニメーション切替
             PlayerAnimator.SetBool("PowerUP", IsInvincible);
+            // speed変化後のspeedをplayerに適用する
+            Move();
         } 
         extendInv--;
     }
@@ -246,6 +247,6 @@ public class Player : MonoBehaviour
         Vector3 pos = new Vector3(0,0,0);
         gameObject.transform.position = pos;
 
-        firstTime = false;
+        init_player_pos = false;
     }
 }

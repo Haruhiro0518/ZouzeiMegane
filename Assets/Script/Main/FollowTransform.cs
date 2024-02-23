@@ -47,7 +47,7 @@ public class FollowTransform : MonoBehaviour
     }
 
     // UIの位置を毎フレーム更新
-    private void Update()
+    private void FixedUpdate()
     {
 
         OnUpdatePosition();

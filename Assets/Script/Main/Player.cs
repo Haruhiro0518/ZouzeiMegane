@@ -230,7 +230,7 @@ public class Player : MonoBehaviour
         Move();
     }
 
-    public void DHP()
+    public void DecreaseHP()
     {
         // 無敵ならHPは減らない
         if(IsInvincible == true) return;

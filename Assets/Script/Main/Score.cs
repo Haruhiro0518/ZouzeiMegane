@@ -35,10 +35,10 @@ public class Score : MonoBehaviour
         TextResult.SetText(scoreText);
     }
     
-    public void AddScore(int scoreBlock, float taxRate)
+    public void AddScore(int valueScored, float taxRate)
     {
         
-        score += (float)scoreBlock * taxRate;
+        score += (float)valueScored * taxRate;
     }
     
 }

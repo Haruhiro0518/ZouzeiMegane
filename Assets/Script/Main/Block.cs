@@ -7,8 +7,10 @@ public class Block : MonoBehaviour
 {
     // HP
     private int HP;
-    // delay
-    private float Delay = 0.08f;
+    private int HPorigin;
+    // nextDamageDelay
+    public float nextDamageDelay = 0.09f;
+    private float DelayAfterDestroyed = 0.06f;
     
     // 衝突中か
     private bool IsCol = false;
@@ -57,7 +59,7 @@ public class Block : MonoBehaviour
     {
         Player = GameObject.Find("Player");
         // HP や 眼鏡をもつか　などのParam 初期化
-        InitializeParam();
+        Set_HP_Glass();
 
         // hpUIの初期化
         // スクリプトをインスタンス化
@@ -113,21 +115,29 @@ public class Block : MonoBehaviour
     IEnumerator collisionStay(Collision2D c)
     {
 
-        
-
         while(true) {
             
-            // 衝突中かつHPが0より大きいならダメージを受ける
+            // プレイヤーのHPが0以上かつ、衝突している間は
+            // 両者のHPを減らす。nextDamageDelay秒ごとにHPが減る
             if((IsCol == true) && (HP > 0)) {
-                // HPを減らす処理
-                
-                scoreScript.AddScore(DHP(player), player.taxRate);
-                player.DHP();
+                int valueScored = DecreaseBlockHP();
+                scoreScript.AddScore(valueScored, player.taxRate);
+                player.DecreaseHP();
                 marker.ChangeText(HP); 
-                // Delay秒まつ 
-                // HP=0ならDelayなし
-                if(HP==0) yield return new WaitForSeconds(0.05f);
-                else  yield return new WaitForSeconds(Delay);
+
+                int diff = HPorigin - HP;
+                if(diff > 24) {
+                    nextDamageDelay = 0.05f;
+                } else if (diff > 12) {
+                    nextDamageDelay = 0.07f;
+                }
+
+                if(HP==0) {
+                    yield return new WaitForSeconds(DelayAfterDestroyed);
+                }
+                else {
+                    yield return new WaitForSeconds(nextDamageDelay);
+                }
             }
             // HPがなくなったらdestroy
             else if(HP <= 0) {
@@ -155,7 +165,7 @@ public class Block : MonoBehaviour
         
     }
 
-    public void InitializeParam() 
+    private void Set_HP_Glass() 
     {
         // HP決定 割合で決める
         // 1~4:20%, 5~20:65%, 21~35:10%, 36~50:5%
@@ -176,20 +186,25 @@ public class Block : MonoBehaviour
             }
         }
         
+        HPorigin = HP;
     }
 
-    // blockのHPを減らす関数
-    public int DHP(Player p)
+    // blockのHPを減らし、減ったHPを返す
+    public int DecreaseBlockHP()
     {
-        // playerが無敵なら一回で壊れる
-        if(p.IsInvincible == true){
-            int temp = HP;
+        int currentHP = HP;
+
+        if(player.IsInvincible == true)
+        {
             HP = 0;
-            return temp;
+            return currentHP;
         } else {
-            // HPをPlayerのpower分減らす
-            HP = HP - p.power;
-            return p.power;
+            HP = HP - player.power;
+            if(HP < 0) {
+                HP = 0;
+            }
+            int difference = currentHP - HP;
+            return difference;
         }
     }
 }

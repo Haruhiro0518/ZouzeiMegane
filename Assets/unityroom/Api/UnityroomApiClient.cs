@@ -1,6 +1,9 @@
+#define Unity_Room
+
 using System.Collections.Generic;
 using UnityEngine;
 using unityroom.Api.Internals;
+
 
 namespace unityroom.Api
 {
@@ -75,4 +78,5 @@ namespace unityroom.Api
             scoreboard.AddScore(score, mode);
         }
     }
+
 }

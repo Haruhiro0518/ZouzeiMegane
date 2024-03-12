@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 6178418082537398406}
   - component: {fileID: 9159327895206333747}
   m_Layer: 0
-  m_Name: Stage
+  m_Name: WaveGenerator
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -44,11 +44,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9206d5779b504eb4d8eabdd23ec2a152, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 0}
-  stageTips:
+  PlayerPrefab: {fileID: 41268940414192548, guid: 5b81dc3b0f2f88e44b9c8fb7559a9322, type: 3}
+  WavePrefabs:
   - {fileID: 7884052179028323726, guid: 104280ae4fab1ff4f99b25e66d6d7d40, type: 3}
   - {fileID: 1287289355992458573, guid: 66b9b9277cca3644fbf1f4c3a09f3389, type: 3}
   startTipIndex: 0
-  preInstantiate: 3
+  preInstantiateNum: 0
   generatedStageList: []
   IsGameover: 0

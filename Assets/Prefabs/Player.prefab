@@ -223,13 +223,13 @@ MonoBehaviour:
   _markerPanel: {fileID: 0}
   _markerPrefab: {fileID: 7696308590232876996, guid: d9c9bc80b3c8f7446bd0a287a588f214, type: 3}
   HPtext: {fileID: 414151084705174626, guid: d9c9bc80b3c8f7446bd0a287a588f214, type: 3}
-  speed: 3
   power: 1
   HP: 20
   taxRate: 1
   IsInvincible: 0
   SEbomb: {fileID: 8419151684535043104, guid: 4bba35bf5611a7643b714807220ff252, type: 3}
   PlayerAnimator: {fileID: 8155273615981893098}
+  IsCollisionStay: 0
 --- !u!1 &6811534406504168312
 GameObject:
   m_ObjectHideFlags: 0

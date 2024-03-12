@@ -165,6 +165,7 @@ MonoBehaviour:
   HP: 0
   _markerPanel: {fileID: 0}
   _markerPrefab: {fileID: 6567574265864527601, guid: 3a8b7cbcc99c1d347951c6bd147369c2, type: 3}
+  SEitem: {fileID: 6024472838349944954, guid: 34fdb1825f69a0e4fb8963be8a6598b1, type: 3}
 --- !u!95 &-1710185516270247928
 Animator:
   serializedVersion: 5

@@ -558,7 +558,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4de73c4ae5c16fd43aa51244be14dbe0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Stage: {fileID: 1866971685}
+  WaveGenerator: {fileID: 1866971685}
 --- !u!1 &194867225
 GameObject:
   m_ObjectHideFlags: 0
@@ -1164,7 +1164,7 @@ MonoBehaviour:
   Slider: {fileID: 1690437971}
   HelpUI: {fileID: 1794646685}
   ResultUI: {fileID: 203438024}
-  Stage: {fileID: 1866971685}
+  WaveGenerator: {fileID: 1866971685}
   ScoreGUI: {fileID: 194867225}
 --- !u!4 &493084352
 Transform:
@@ -2193,7 +2193,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3599695691233945526, guid: c0bf03deaabfdca49ace82141adb12d0, type: 3}
       propertyPath: m_Name
-      value: Stage
+      value: WaveGenerator
       objectReference: {fileID: 0}
     - target: {fileID: 6178418082537398406, guid: c0bf03deaabfdca49ace82141adb12d0, type: 3}
       propertyPath: m_LocalPosition.x
@@ -2235,14 +2235,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 9159327895206333747, guid: c0bf03deaabfdca49ace82141adb12d0, type: 3}
-      propertyPath: player
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 9159327895206333747, guid: c0bf03deaabfdca49ace82141adb12d0, type: 3}
-      propertyPath: PlayerPrefab
-      value: 
-      objectReference: {fileID: 41268940414192548, guid: 5b81dc3b0f2f88e44b9c8fb7559a9322, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -3861,7 +3853,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5323818951622561360, guid: 00ae2bf8c8a624ed38161cab9eeda7f7, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

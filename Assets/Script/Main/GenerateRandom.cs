@@ -2,8 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-// waveをランダムに生成するメソッド
-public class GenerateWave : MonoBehaviour
+// Wave-Randomプレハブで使うクラス
+// block bar itemをそれぞれランダムにインスタンス化する
+public class GenerateRandom : MonoBehaviour
 {
     // prefabs
     [SerializeField] private GameObject Block;

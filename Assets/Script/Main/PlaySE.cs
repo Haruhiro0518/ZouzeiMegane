@@ -8,9 +8,9 @@ public class PlaySE : MonoBehaviour
 
     IEnumerator Start()
     {
-        // AudioSource取得
+        
         myAudioSource = gameObject.GetComponent<AudioSource>();
-        // clip時間（秒）
+        
         float length = myAudioSource.clip.length;
 
         myAudioSource.volume = TitleManager.volumeValue;
@@ -19,7 +19,7 @@ public class PlaySE : MonoBehaviour
             myAudioSource.volume += 0.2f;
         }
 
-        // 待つ ただしTimeScaleが0の場合はここで処理が止まる
+        // SE再生終了を待つ ただしTimeScaleが0の場合はここで処理が止まる
         yield return new WaitForSeconds(length);
         // 再生終了後、オブジェクト削除
         Destroy(gameObject);

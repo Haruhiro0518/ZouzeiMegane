@@ -25,10 +25,10 @@ public class MenuManager : MonoBehaviour
     [SerializeField, Header("リザルトUI")]
     private GameObject ResultUI;
 
-    [SerializeField, Header("ステージオブジェクト")] 
-    private GameObject Stage;
+    [SerializeField, Header("ウェーブ生成オブジェクト")] 
+    private GameObject WaveGenerator;
 
-    private StageScript stageScript;
+    private WaveGenerate waveGenerate;
 
     [SerializeField, Header("スコアオブジェクト")] 
     private GameObject ScoreGUI;
@@ -39,7 +39,7 @@ public class MenuManager : MonoBehaviour
 
     void Start()
     {
-        stageScript = Stage.GetComponent<StageScript>();
+        waveGenerate = WaveGenerator.GetComponent<WaveGenerate>();
         scoreScript = ScoreGUI.GetComponent<Score>();
         MainBGM = GetComponent<AudioSource>();
         MainBGM.volume = TitleManager.volumeValue;
@@ -55,12 +55,14 @@ public class MenuManager : MonoBehaviour
             MainBGM.Play();
         }
 
-        if(stageScript.IsGameover == true)
+        if(waveGenerate.IsGameover == true)
         {
             Time.timeScale = 0;
             PauseButton.SetActive(false);
             ResultUI.SetActive(true);
+            #if Unity_Room
             UnityroomApiClient.Instance.SendScore(1, scoreScript.score, ScoreboardWriteMode.HighScoreDesc);
+            #endif
 
         }
     }
@@ -90,14 +92,14 @@ public class MenuManager : MonoBehaviour
     public void SelectRetry()
     {
         Time.timeScale = 1;
-        stageScript.IsGameover = false;
+        waveGenerate.IsGameover = false;
         SceneManager.LoadScene("Main");
     }
 
     public void SelectRetire()
     {
         Time.timeScale = 1;
-        stageScript.IsGameover = false;
+        waveGenerate.IsGameover = false;
         SceneManager.LoadScene("Title");
     }
 

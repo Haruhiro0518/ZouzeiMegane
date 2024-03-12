@@ -61,8 +61,6 @@ public class Block : MonoBehaviour
         // HP や 眼鏡をもつか　などのParam 初期化
         Set_HP_Glass();
 
-        // hpUIの初期化
-        // スクリプトをインスタンス化
         marker = Instantiate(_markerPrefab, _markerPanel);
         marker.Initialize(gameObject.transform);
         // markerがアタッチされているgameObjectの取得
@@ -75,17 +73,15 @@ public class Block : MonoBehaviour
             marker2 = Instantiate(_markerPrefab_glasses, _markerPanel);
             marker2.Initialize(gameObject.transform);
             GlassesImg = marker2.gameObject;
-            // 位置ずらす
+            // imageの位置をオフセットによりずらす
             marker2._worldOffset = new Vector3(0f, -0.25f, 0f);
             marker._worldOffset = new Vector3(0f, 0.2f, 0f);
         }
 
-        // scoreGUIを取得
+        
         scoreGUI = GameObject.Find("ScoreGUI");
-        // Scoreスクリプト取得
         scoreScript = scoreGUI.GetComponent<Score>();
 
-        // Playerコンポーネント取得
         player = Player.gameObject.GetComponent<Player>();
 
     }
@@ -98,7 +94,6 @@ public class Block : MonoBehaviour
     void OnCollisionEnter2D(Collision2D c)
     {
         IsCol = true;
-        // 衝突中の処理
         StartCoroutine(collisionStay(c));
     }
     
@@ -114,9 +109,7 @@ public class Block : MonoBehaviour
 
     IEnumerator collisionStay(Collision2D c)
     {
-
         while(true) {
-            
             // プレイヤーのHPが0以上かつ、衝突している間は
             // 両者のHPを減らす。nextDamageDelay秒ごとにHPが減る
             if((IsCol == true) && (HP > 0)) {
@@ -139,11 +132,10 @@ public class Block : MonoBehaviour
                     yield return new WaitForSeconds(nextDamageDelay);
                 }
             }
-            // HPがなくなったらdestroy
             else if(HP <= 0) {
-                // このblockが増税めがねを持っている場合、playerを無敵にする
-                if(haveGlasses == true && !(player.HP < 0)) player.InvincibleMode();
-                // SE再生
+                if(haveGlasses == true && !(player.HP < 0)) {
+                    player.InvincibleMode();
+                }
                 Instantiate(SEmoney);
                 Destroy(gameObject);
                 destroyText();

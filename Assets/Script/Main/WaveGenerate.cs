@@ -2,29 +2,27 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class StageScript : MonoBehaviour
+public class WaveGenerate : MonoBehaviour
 {
     // 自動生成したいオブジェクトの端から端までの座標の大きさ
-    const float StageTipSize = 1.1f;
+    private const float BlockHeight = 1.1f;
     // プレイ画面中に存在する行の数
-    const int maxRaw = 10;
+    private const int maxRawInScreen = 10;
     // ちょうど画面の上からオブジェクト生成するためのオフセット
-    private float offset = 7.55f;
-    // 現在のTipIndex
-    int currentTipIndex;
-    // Playerの位置
-    private Transform player;
-    // ステージの配列. プレハブをいれておく 
+    private const float offset = 7.55f;
 
     private GameObject Player;
-
+    private Transform playerTransform;
     public GameObject PlayerPrefab;
 
-    public GameObject[] stageTips;
+    // ステージの配列. プレハブをいれておく 
+    public GameObject[] WavePrefabs;
     // 初めのTipIndex
     public int startTipIndex;
+    // 現在のTipIndex
+    int currentTipIndex;
     // ステージ生成の先読み個数
-    public int preInstantiate;
+    public int preInstantiateNum;
     // 作ったステージの保持リスト
     public List<GameObject> generatedStageList = new List<GameObject>();
 
@@ -37,15 +35,14 @@ public class StageScript : MonoBehaviour
     {
         Player = Instantiate(PlayerPrefab, new Vector3(0, 0, 0), Quaternion.identity);
         Player.name = ("Player");
-        player = Player.GetComponent<Transform>();
+        playerTransform = Player.GetComponent<Transform>();
     }
     
     void Start()
     {
-        // 初期化
         IsGameover = false;
         currentTipIndex = startTipIndex - 1;
-        UpdateStage(preInstantiate);
+        UpdateStage(preInstantiateNum);
 
     }
 
@@ -57,18 +54,18 @@ public class StageScript : MonoBehaviour
         // Debug.Log(IsGameover);
 
         // playerの位置から現在のステージチップインデックスを計算
-        int charaPositionIndex = (int)(player.position.y / StageTipSize);
+        int charaPositionIndex = (int)(playerTransform.position.y / BlockHeight);
         // 次のステージチップに入ったらステージの更新処理を行う
-        if(charaPositionIndex + preInstantiate > currentTipIndex)
+        if(charaPositionIndex + preInstantiateNum > currentTipIndex)
         {
-            UpdateStage(charaPositionIndex + preInstantiate);
+            UpdateStage(charaPositionIndex + preInstantiateNum);
         }
     }
 
     // 指定のインデックスまでのステージを生成して、管理下に置く
     void UpdateStage(int toTipIndex)
     {
-        // 
+        
         if(toTipIndex <= currentTipIndex) return;
 
         // 指定のステージチップまで生成
@@ -80,7 +77,7 @@ public class StageScript : MonoBehaviour
             generatedStageList.Add(stageObject);
         }
         // 同時に存在することができるステージの個数を超えている場合, ステージ削除
-        while(generatedStageList.Count > preInstantiate + maxRaw) {
+        while(generatedStageList.Count > preInstantiateNum + maxRawInScreen) {
             DestoryOldStage();
         }
         currentTipIndex = toTipIndex;
@@ -90,13 +87,13 @@ public class StageScript : MonoBehaviour
     GameObject GenerateStage(int tipIndex)
     {
         // prefabsの中からどのプレハブを生成するかを選ぶ
-        // int nextStageTip = Random.Range(0, stageTips.Length);
+        // int nextStageTip = Random.Range(0, WavePrefabs.Length);
         int nextStageTip = SelectStage();
 
         // nextStageTip番目のオブジェクトを生成
         GameObject stageObject = (GameObject)Instantiate(
-            stageTips[nextStageTip],    
-            new Vector3(0, tipIndex * StageTipSize + offset, 0),     // y軸方向に無限に生成. 位置はPlayerより上
+            WavePrefabs[nextStageTip],    
+            new Vector3(0, tipIndex * BlockHeight + offset, 0),     // y軸方向に無限に生成. 位置はPlayerより上
             Quaternion.identity) as GameObject;
         
         return stageObject;
@@ -114,7 +111,7 @@ public class StageScript : MonoBehaviour
     }
     
     // 生成するステージの選択
-    int nextStageTips;
+    int nextWavePrefab;
     int SelectStage()
     {
         
@@ -124,7 +121,7 @@ public class StageScript : MonoBehaviour
         if(rawCount < 10)
         {
             // 0を除いたランダム
-            nextStageTips = Random.Range(1, stageTips.Length);
+            nextWavePrefab = Random.Range(1, WavePrefabs.Length);
         } 
         // 10から15の間
         else if(rawCount >= 10 && rawCount <= 15)
@@ -134,21 +131,21 @@ public class StageScript : MonoBehaviour
 
             // full or not full
             if(sel == 0){
-                nextStageTips = 0;   // full
+                nextWavePrefab = 0;   // full
                 rawCount = 0;
             } 
             else if(sel == 1) {
-                nextStageTips = Random.Range(1, stageTips.Length); // random
+                nextWavePrefab = Random.Range(1, WavePrefabs.Length); // random
             }
         }
         // 15超えたら
         else {
-            nextStageTips = 0;   // full
+            nextWavePrefab = 0;   // full
             rawCount = 0;
         }
 
 
-        return nextStageTips;
+        return nextWavePrefab;
     }
 
 }

@@ -8,21 +8,19 @@ public class Player : MonoBehaviour
     
     private bool init_player_pos = true;
 
-    // canvas
     private GameObject canvas;
+
     // 親の指定
     [SerializeField] private RectTransform _markerPanel;
     [SerializeField] private FollowTransform _markerPrefab;
-
-    // スクリプトのインスタンス
     private FollowTransform marker;
-    // HPテキストのgameObject
-    [SerializeField] private GameObject HPtext;
-    // Stageオブジェクト
-    private GameObject Stage;
-    // stagescript
-    private StageScript stageScript;
 
+    [SerializeField] private GameObject HPtext;
+
+    private GameObject WaveGenerator;
+    
+    private WaveGenerate waveGenerate;
+    private FollowPlayer followPlayer;
 
     // マウスドラッグ処理
     private float previousPosX;
@@ -32,38 +30,28 @@ public class Player : MonoBehaviour
     private float xMin;
     private float xMax;
 
-    // player scale
-    private float pScale;
-    // 上のコライダーの半径と下の半径
-    private float radiusUp = 0.1965f;
-    //private float radiusDw = 0.14625f;
-    // コライダーのx offset
-    private float colxoffset;
-    
+    private const float ColliderRadius = 0.1965f;
+    private const float PlayerScale = 0.195f;
+    private const float colYoffset = 0.8f * PlayerScale;
+    private const float colXoffset = 0.1f * PlayerScale;
     
     // 横から接触しないための隙間
     private float space = 0.05f;
 
-    // display size
     private float displayWidth = 2.8f;
 
-    // スピード係数
-    public float speed;
-
+    private float PlayerSpeed = 3.0f;
     // playerの攻撃力
     public int power;
-    // playerのHP
+
     public int HP;
     // 税率
     public float taxRate = 1.0f;
-    // 無敵状態であるか
+    // 無敵
     public bool IsInvincible = false;
-    // 無敵秒数
     private float InvTime = 5.0f;
-    // 無敵時間延長
     private int extendInv;
 
-    // SE object
     [SerializeField] private GameObject SEbomb;
     
     [SerializeField, Header("総理アニメーター")]
@@ -73,18 +61,12 @@ public class Player : MonoBehaviour
     {
         canvas = GameObject.Find("Canvas");
         _markerPanel = canvas.GetComponent<RectTransform>();
-        Stage = GameObject.Find("Stage");
+        WaveGenerator = GameObject.Find("WaveGenerator");
+        followPlayer = GameObject.Find("Main Camera").GetComponent<FollowPlayer>();
     }
 
     void Start()
     {
-        // player scale
-        pScale = gameObject.GetComponent<Transform>().localScale.x;
-        // localに変換
-        colxoffset = 0.1f*pScale;
-
-        // hpUIの初期化
-        // スクリプトをインスタンス化
         marker = Instantiate(_markerPrefab, _markerPanel);
         marker.Initialize(gameObject.transform);
         // markerがアタッチされているgameObjectの取得
@@ -93,15 +75,14 @@ public class Player : MonoBehaviour
 
         // HPtextのスクリプト取得
         // marker = HPtext.GetComponent<FollowTransform>();
-        // StageScript取得
-        stageScript = Stage.GetComponent<StageScript>();
+        
+        waveGenerate = WaveGenerator.GetComponent<WaveGenerate>();
         
         // playerのlayer7とitemのlayer9を無視する
         layermask = (1 + 4) << 7;
         layermask = ~layermask;
         taxRate = 1.0f;
 
-        
         Move();
     }
 
@@ -117,8 +98,8 @@ public class Player : MonoBehaviour
             // play se
             Instantiate(SEbomb);
             destroyText();
-            stageScript.IsGameover = true;
-            // Debug.Log(stageScript.IsGameover);
+            waveGenerate.IsGameover = true;
+            // Debug.Log(waveGenerate.IsGameover);
             Destroy(gameObject);
         }
         
@@ -135,8 +116,8 @@ public class Player : MonoBehaviour
         IsInvincible = true;
         //アニメーション切替
         PlayerAnimator.SetBool("PowerUP", IsInvincible);
-        // speed up
-        speed = 4.0f;
+        // PlayerSpeed up
+        PlayerSpeed = 4.0f;
         // rate up
         taxRate = 2.0f;
         
@@ -151,12 +132,12 @@ public class Player : MonoBehaviour
         // 無敵中に他の無敵を取らなかった場合、無敵終了
         if(extendInv == 1) {
             // 元に戻す
-            speed = 3.0f;
+            PlayerSpeed = 3.0f;
             taxRate = 1.0f;
             IsInvincible = false;
             //アニメーション切替
             PlayerAnimator.SetBool("PowerUP", IsInvincible);
-            // speed変化後のspeedをplayerに適用する
+            // PlayerSpeed変化後のPlayerSpeedをplayerに適用する
             Move();
         } 
         extendInv--;
@@ -180,37 +161,9 @@ public class Player : MonoBehaviour
             // 移動距離の計算　Screen.widthで割って1に正規化. 定数をかけて,マウスの移動とplayerが一致
             float diffDistance = (currentPosX - previousPosX) / Screen.width * displayWidth*2;
 
-            // 次のローカルx座標を設定  CLAMP 
-            // 左右にraycastを伸ばす. positionはコライダーの大きさによる微調整
-            float yoffU = 0.8f * pScale;
-            //float yoffD = 0.6f * pScale;
-
-            RaycastHit2D LU = Physics2D.Raycast(transform.position+new Vector3(colxoffset,yoffU+radiusUp-space,0), Vector2.left, displayWidth*2, layermask);
-            RaycastHit2D RU = Physics2D.Raycast(transform.position+new Vector3(colxoffset,yoffU+radiusUp-space,0), Vector2.right, displayWidth*2, layermask);
-            RaycastHit2D LD = Physics2D.Raycast(transform.position+new Vector3(colxoffset,yoffU-radiusUp-space,0), Vector2.left, displayWidth*2, layermask);
-            RaycastHit2D RD = Physics2D.Raycast(transform.position+new Vector3(colxoffset,yoffU-radiusUp-space,0), Vector2.right, displayWidth*2, layermask);
-
-            // 左にコライダーがあるとき
-            if(LU.collider != null || LD.collider != null) {
-                // Downが優先
-                if(LD.collider != null) xMin = LD.point.x + radiusUp - colxoffset + space;
-                else xMin = LU.point.x + radiusUp - colxoffset + space;
-                
-            } else {
-                xMin = -displayWidth + radiusUp - colxoffset;
-            }
-            // 右にコライダーがあるとき
-            if(RU.collider != null || RD.collider != null) {
-                if(RD.collider != null) xMax = RD.point.x - radiusUp - colxoffset - space;
-                else xMax = RU.point.x - radiusUp - colxoffset - space;
-                
-            } else {
-                xMax = displayWidth - radiusUp - colxoffset;
-            }
-            
+            UpdateXminXmax();
             Vector2 pos = transform.position;
             pos.x = Mathf.Clamp(pos.x + diffDistance,  xMin,  xMax);
-            
             transform.position = pos;
 
             // タップ位置を更新
@@ -221,13 +174,56 @@ public class Player : MonoBehaviour
     // 上向きに移動
     public void Move()
     {
-        GetComponent<Rigidbody2D>().velocity = transform.up * speed;
+        GetComponent<Rigidbody2D>().velocity = transform.up * PlayerSpeed;
     }
 
-    
+    // プレイヤーの球コライダーの上部と下部から、水平方向にレイキャストを伸ばす
+    // レイキャストがぶつかったブロックの端の座標をclampするx座標のxmin / xmaxとする
+    void UpdateXminXmax()
+    {
+
+        RaycastHit2D topL = Physics2D.Raycast(transform.position+new Vector3(colXoffset,colYoffset+ColliderRadius-space*2,0), Vector2.left, displayWidth*2, layermask);
+        RaycastHit2D topR = Physics2D.Raycast(transform.position+new Vector3(colXoffset,colYoffset+ColliderRadius-space*2,0), Vector2.right, displayWidth*2, layermask);
+        RaycastHit2D botL = Physics2D.Raycast(transform.position+new Vector3(colXoffset,colYoffset-ColliderRadius-space,0), Vector2.left, displayWidth*2, layermask);
+        RaycastHit2D botR = Physics2D.Raycast(transform.position+new Vector3(colXoffset,colYoffset-ColliderRadius-space,0), Vector2.right, displayWidth*2, layermask);
+
+        
+        if(topL.collider != null || botL.collider != null) {
+            
+            if(botL.collider != null) xMin = botL.point.x + ColliderRadius - colXoffset + space;
+            else xMin = topL.point.x + ColliderRadius - colXoffset + space;
+        } else {
+            xMin = -displayWidth + ColliderRadius - colXoffset;
+        }
+        
+
+        if(topR.collider != null || botR.collider != null) {
+            if(botR.collider != null) xMax = botR.point.x - ColliderRadius - colXoffset - space;
+            else xMax = topR.point.x - ColliderRadius - colXoffset - space; 
+        } else {
+            xMax = displayWidth - ColliderRadius - colXoffset;
+        }
+
+    }
+
+
+    public bool IsCollisionStay = false;
+    void OnCollisionEnter2D(Collision2D c)
+    {
+        if(c.gameObject.tag == "block") {
+            IsCollisionStay = true;
+            StartCoroutine(followPlayer.CameraMoveupOrDown());
+        }
+        
+    }
+
     void OnCollisionExit2D(Collision2D c) 
     {
         Move();
+        if(c.gameObject.tag == "block") {
+            IsCollisionStay = false;
+            StartCoroutine(followPlayer.CameraMoveupOrDown());
+        }
     }
 
     public void DecreaseHP()

@@ -43,15 +43,12 @@ public class WaveGenerate : MonoBehaviour
         IsGameover = false;
         currentTipIndex = startTipIndex - 1;
         UpdateStage(preInstantiateNum);
-
     }
 
     
     void Update()
     {
-        // gameOverだったらUpdateしない
         if(IsGameover == true) return;
-        // Debug.Log(IsGameover);
 
         // playerの位置から現在のステージチップインデックスを計算
         int charaPositionIndex = (int)(playerTransform.position.y / BlockHeight);
@@ -65,14 +62,13 @@ public class WaveGenerate : MonoBehaviour
     // 指定のインデックスまでのステージを生成して、管理下に置く
     void UpdateStage(int toTipIndex)
     {
-        
         if(toTipIndex <= currentTipIndex) return;
 
         // 指定のステージチップまで生成
         for(int i = currentTipIndex + 1; i <= toTipIndex; i++) {
             // 行数をカウント
             rawCount++;
-            // generate
+
             GameObject stageObject = GenerateStage(i);
             generatedStageList.Add(stageObject);
         }
@@ -107,7 +103,6 @@ public class WaveGenerate : MonoBehaviour
         DestroyWave wave = oldStage.GetComponent<DestroyWave>();
         
         wave.destroyObject();
-        // Destroy(oldStage);
     }
     
     // 生成するステージの選択

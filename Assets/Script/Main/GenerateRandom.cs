@@ -20,14 +20,14 @@ public class GenerateRandom : MonoBehaviour
     const float maxx1 = 2.24f;
     const float maxx2 = 1.68f;
 
-    // block/itemを配置する確率
-    private float percentBlock = 30;
+    // blockまたはitemを配置する確率
+    private float percentObject = 30;
     // barを配置する確率
     private float percentBar = 30;
 
     void Start()
     {
-        GenerateBlock(minx1, maxx1);
+        GenerateObject(minx1, maxx1);
         GenerateBar(minx2, maxx2);
     }
 
@@ -37,16 +37,15 @@ public class GenerateRandom : MonoBehaviour
         
     }
 
-    void GenerateBlock(float min, float max)
+    void GenerateObject(float min, float max)
     {
         for(float i = min; i <= max; i+=spc)
         {
-            // Debug.Log(i);
-            // block/itemを配置するか
+            
+            // オブジェクトを配置するかしないか
             int r = Random.Range(0,100);
-            if(r < percentBlock) {
-
-                // どちらを配置するか
+            if(r < percentObject) {
+                // 配置する場合、blockとitemのどちらを配置するか
                 int r2 = Random.Range(0,2);
                 // block instantiate
                 if(r2 == 0) 

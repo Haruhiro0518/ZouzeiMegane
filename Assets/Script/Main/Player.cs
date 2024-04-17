@@ -4,24 +4,9 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+    // 当たり判定調整に使うレイヤーマスク
     private int layermask;
     
-    private bool init_player_pos = true;
-
-    private GameObject canvas;
-
-    // 親の指定
-    [SerializeField] private RectTransform _markerPanel;
-    [SerializeField] private FollowTransform _markerPrefab;
-    private FollowTransform marker;
-
-    [SerializeField] private GameObject HPtext;
-
-    private GameObject WaveGenerator;
-    
-    private WaveGenerate waveGenerate;
-    private FollowPlayer followPlayer;
-
     // マウスドラッグ処理
     private float previousPosX;
     private float currentPosX;
@@ -30,52 +15,46 @@ public class Player : MonoBehaviour
     private float xMin;
     private float xMax;
 
+    // 当たり判定に使う定数
     private const float ColliderRadius = 0.1965f;
     private const float PlayerScale = 0.195f;
     private const float colYoffset = 0.8f * PlayerScale;
     private const float colXoffset = 0.1f * PlayerScale;
-    
+    private float displayWidth = 2.8f;
     // 横から接触しないための隙間
     private float space = 0.05f;
-
-    private float displayWidth = 2.8f;
-
-    private float PlayerSpeed = 3.0f;
-    // playerの攻撃力
+    
+    // playerのパラメータ
     public int power;
-
     public int HP;
-    // 税率
+    [System.NonSerialized] public float PlayerSpeed = OriginalPlayerSpeed;
+    const float OriginalPlayerSpeed = 3.0f;
     public float taxRate = 1.0f;
-    // 無敵
+    public float taxRateMax = 5.0f;
+    public float taxRateMaxInv = 7.0f;
+    
+    // 無敵状態の制御に使う変数
     public bool IsInvincible = false;
     private float InvTime = 5.0f;
     private int extendInv;
-
+    // コンポーネント
+    private ManageHPUI manageHPUI;
+    private GameObject WaveGenerator;
+    private WaveGenerate waveGenerate;
+    private FollowPlayer followPlayer;
     [SerializeField] private GameObject SEbomb;
-    
     [SerializeField, Header("総理アニメーター")]
     Animator PlayerAnimator;
     
     void Awake()
     {
-        canvas = GameObject.Find("Canvas");
-        _markerPanel = canvas.GetComponent<RectTransform>();
         WaveGenerator = GameObject.Find("WaveGenerator");
         followPlayer = GameObject.Find("Main Camera").GetComponent<FollowPlayer>();
     }
 
     void Start()
     {
-        marker = Instantiate(_markerPrefab, _markerPanel);
-        marker.Initialize(gameObject.transform);
-        // markerがアタッチされているgameObjectの取得
-        HPtext = marker.gameObject;
-        marker.ChangeText(HP);
-
-        // HPtextのスクリプト取得
-        // marker = HPtext.GetComponent<FollowTransform>();
-        
+        manageHPUI = gameObject.GetComponent<ManageHPUI>();
         waveGenerate = WaveGenerator.GetComponent<WaveGenerate>();
         
         // playerのlayer7とitemのlayer9を無視する
@@ -84,6 +63,7 @@ public class Player : MonoBehaviour
         taxRate = 1.0f;
 
         Move();
+        
     }
 
     void Update()
@@ -91,19 +71,19 @@ public class Player : MonoBehaviour
         MoveDrag();
         if(init_player_pos == true) DebugPos();
         // HP 表示更新
-        marker.ChangeText(HP);
+        manageHPUI.ChangeText(HP.ToString());
 
         // gameOver
         if(HP < 0) {
             // play se
             Instantiate(SEbomb);
-            destroyText();
-            waveGenerate.IsGameover = true;
+            manageHPUI.DestroyText();
             // Debug.Log(waveGenerate.IsGameover);
+            waveGenerate.IsGameover = true;
+            
             Destroy(gameObject);
         }
-        
-
+    
     }
 
     // InvicibleMode()をコルーチンにすると, blockが削除されたときにWaitFoSecondsがなくなるため、
@@ -112,15 +92,14 @@ public class Player : MonoBehaviour
     {
         // 呼ばれたときにextendInv変数をインクリメント
         extendInv++;
-        // 無敵
         IsInvincible = true;
-        //アニメーション切替
-        PlayerAnimator.SetBool("PowerUP", IsInvincible);
-        // PlayerSpeed up
         PlayerSpeed = 4.0f;
-        // rate up
-        taxRate = 2.0f;
+        if(extendInv == 1) {
+            taxRate += 2.0f;
+        }
         
+        PlayerAnimator.SetBool("PowerUP", IsInvincible);
+
         StartCoroutine(inv());
     }
 
@@ -132,8 +111,10 @@ public class Player : MonoBehaviour
         // 無敵中に他の無敵を取らなかった場合、無敵終了
         if(extendInv == 1) {
             // 元に戻す
-            PlayerSpeed = 3.0f;
-            taxRate = 1.0f;
+            taxRate -= 2.0f;
+            taxRate = (taxRate < 0) ? 0 : taxRate;
+            PlayerSpeed = ComputePlayerSpeed();
+            
             IsInvincible = false;
             //アニメーション切替
             PlayerAnimator.SetBool("PowerUP", IsInvincible);
@@ -146,7 +127,6 @@ public class Player : MonoBehaviour
     // プレイヤー移動
     void MoveDrag() 
     {
-        // ポーズ中は移動しない
         if(Time.timeScale == 0) return;
 
         // mouse左ボタンを押したとき
@@ -226,18 +206,22 @@ public class Player : MonoBehaviour
         }
     }
 
+    public float ComputePlayerSpeed() 
+    {
+        // PlayerのspeedをtaxRateに応じて変化させる 倍率 min 0.8 ~ max 約1.5 (1.8) 
+        // currentSpeed = originalSpeed * (taxRate/7 + 0.8)
+        return OriginalPlayerSpeed * (taxRate/7f + 0.8f);
+    }
+
     public void DecreaseHP()
     {
-        // 無敵ならHPは減らない
         if(IsInvincible == true) return;
         HP -= 1;
     }
 
-    public void destroyText() 
-    {
-        Destroy(HPtext);
-    }
-    
+    // unityroomで実行するときにplayerの位置が原点からずれてしまうため
+    // 最初にプレイヤーを原点に配置する
+    private bool init_player_pos = true;
     void DebugPos()
     {
         Vector3 pos = new Vector3(0,0,0);

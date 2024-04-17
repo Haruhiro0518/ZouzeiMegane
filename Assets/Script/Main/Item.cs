@@ -5,34 +5,27 @@ using UnityEngine;
 public class Item : MonoBehaviour
 {
     public int HP;
-
-    private GameObject canvas;
-    
-    // 親の指定
-    [SerializeField] private RectTransform _markerPanel;
-    [SerializeField] private FollowTransform _markerPrefab;
-    private FollowTransform marker;
-    
-    private GameObject HPtext;
+    [System.NonSerialized] public int maxHP;
+    // コンポ―ネント
+    private ManageHPUI manageHPUI;
     private Player player;
     [SerializeField] private GameObject SEitem;
+    // ScriptableObject
+    [SerializeField] private ValueData valueData;
 
 
     void Awake()
     {
-        canvas = GameObject.Find("Canvas");
-        _markerPanel = canvas.GetComponent<RectTransform>();
+        
     }
     
     void Start()
     {
-        InitializeHP();
         player = GameObject.Find("Player").gameObject.GetComponent<Player>();
-        marker = Instantiate(_markerPrefab, _markerPanel);
-        marker.Initialize(gameObject.transform);
-        // markerがアタッチされているgameObjectの取得
-        HPtext = marker.gameObject;
-        marker.ChangeText(HP);
+        manageHPUI = gameObject.GetComponent<ManageHPUI>();
+        
+        SetItemHP();
+        manageHPUI.ChangeText(HP.ToString());
     }
 
     
@@ -42,18 +35,18 @@ public class Item : MonoBehaviour
         // playerのHPにItemのHPを足す
         player.HP += HP;
 
-        destroyText();
+        manageHPUI.DestroyText();
         Instantiate(SEitem);
         Destroy(gameObject);
     }
 
-    void InitializeHP()
+    
+    void SetItemHP()
     {
-        HP = Random.Range(1, 6);
+        valueData.ChangeItemHP_Percent(player.taxRate);
+        maxHP = valueData.maxItemHP;
+        HP = Random.Range(1, maxHP);
     }
 
-    public void destroyText() 
-    {
-        Destroy(HPtext);
-    }
+    
 }

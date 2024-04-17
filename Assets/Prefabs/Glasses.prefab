@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 5144914481845918270}
   - component: {fileID: 5761191634028132952}
   - component: {fileID: 2982240920035541736}
+  - component: {fileID: 4330717378518580060}
   m_Layer: 5
   m_Name: Glasses
   m_TagString: Untagged
@@ -29,7 +30,7 @@ RectTransform:
   m_GameObject: {fileID: 9083303580678011467}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.75, y: 0.75, z: 0.75}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -110,7 +111,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 146c824d8bda9ff49a7e6322b06d4949, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _targetCamera: {fileID: 0}
-  _target: {fileID: 0}
-  _targetUI: {fileID: 1923868624729528789}
+  _objectCamera: {fileID: 0}
+  _objectTransform: {fileID: 0}
+  _objectTrnasform_UI: {fileID: 1923868624729528789}
   _worldOffset: {x: 0, y: 0, z: 0}
+--- !u!114 &4330717378518580060
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9083303580678011467}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 99be20ee4009a964293e8ce6dd65ff2b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 1473301947738302580}
   - component: {fileID: 9088874345855141742}
   - component: {fileID: 2437936833927147167}
+  - component: {fileID: 3255432795032707520}
   m_Layer: 7
   m_Name: Player
   m_TagString: Player
@@ -220,9 +221,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1210eae0a55d3324cbcb6835ee09ccf2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _markerPanel: {fileID: 0}
-  _markerPrefab: {fileID: 7696308590232876996, guid: d9c9bc80b3c8f7446bd0a287a588f214, type: 3}
-  HPtext: {fileID: 414151084705174626, guid: d9c9bc80b3c8f7446bd0a287a588f214, type: 3}
   power: 1
   HP: 20
   taxRate: 1
@@ -230,6 +228,20 @@ MonoBehaviour:
   SEbomb: {fileID: 8419151684535043104, guid: 4bba35bf5611a7643b714807220ff252, type: 3}
   PlayerAnimator: {fileID: 8155273615981893098}
   IsCollisionStay: 0
+--- !u!114 &3255432795032707520
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 41268940414192548}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f74798ed82ed6a343aa58f6cf35f1409, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _uiParentObjectTransform: {fileID: 0}
+  _uiObjectPrefab: {fileID: 414151084705174626, guid: d9c9bc80b3c8f7446bd0a287a588f214, type: 3}
 --- !u!1 &6811534406504168312
 GameObject:
   m_ObjectHideFlags: 0

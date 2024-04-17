@@ -69,7 +69,7 @@ MonoBehaviour:
   m_text: 10
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 0d8e53ea22dd5e148afcb134cf7d4ecf, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_sharedMaterial: {fileID: -3395853278735582236, guid: 0d8e53ea22dd5e148afcb134cf7d4ecf, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -147,7 +147,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 146c824d8bda9ff49a7e6322b06d4949, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _targetCamera: {fileID: 0}
-  _target: {fileID: 0}
-  _targetUI: {fileID: 8355974108975664686}
+  _objectCamera: {fileID: 0}
+  _objectTransform: {fileID: 0}
+  _objectTrnasform_UI: {fileID: 8355974108975664686}
   _worldOffset: {x: 0, y: 0.4, z: 0}

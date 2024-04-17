@@ -5,96 +5,79 @@ using TMPro;
 
 public class FollowTransform : MonoBehaviour
 {
-    // オブジェクトを映すカメラ
-    [SerializeField] private Camera _targetCamera;
+    [SerializeField] private Camera _objectCamera;
 
-    // UIを表示させる対象オブジェクト
-    [SerializeField] private Transform _target;
+    [System.NonSerialized] public Transform _objectTransform;
 
-    // 表示するUI
-    [SerializeField] private Transform _targetUI;
+    [SerializeField] private Transform _objectTrnasform_UI;
 
     // オブジェクト位置のオフセット
     // [SerializeField] private Vector3 _worldOffset;
     public Vector3 _worldOffset;
 
-    private RectTransform _parentUI;
+    private RectTransform _parentUIRectTransform;
 
-    // text
-    private TMPro.TMP_Text TextHp;
+    
     
 
-    // 初期化メソッド（Prefabから生成する時などに使う）
-    public void Initialize(Transform target, Camera targetCamera = null)
+    // 初期化メソッド（Prefabから生成する時に使う）
+    public void Initialize(Transform objectTransform, Camera objectCamera = null)
     {
-        _target = target;
-        _targetCamera = targetCamera != null ? targetCamera : Camera.main;
-        if(TextHp == null) TextHp = gameObject.GetComponent<TMPro.TMP_Text>();
+        _objectTransform = objectTransform;
+        _objectCamera = objectCamera == null ? Camera.main : objectCamera;
         
-        OnUpdatePosition();
+        OnUpdateUIPosition();
     }
 
     private void Awake()
     {
-        // カメラが指定されていなければメインカメラにする
-        if (_targetCamera == null)
-            _targetCamera = Camera.main;
+        if (_objectCamera == null) {
+            _objectCamera = Camera.main;
+        }
+        _parentUIRectTransform = _objectTrnasform_UI.parent.GetComponent<RectTransform>();
 
-        // 親UIのRectTransformを保持
-        _parentUI = _targetUI.parent.GetComponent<RectTransform>();
-        // gameObjectのTMPro取得
-        TextHp = gameObject.GetComponent<TMPro.TMP_Text>();
     }
 
-    // UIの位置を毎フレーム更新
     private void FixedUpdate()
     {
-
-        OnUpdatePosition();
-        
+        OnUpdateUIPosition();
     }
 
-    // UIの位置を更新する
-    private void OnUpdatePosition()
+    private void OnUpdateUIPosition()
     {
+        var objectWorldPos = _objectTransform.position + _worldOffset;
     
-        var cameraTransform = _targetCamera.transform;
-        
-        // カメラの向きベクトル
-        var cameraDir = cameraTransform.forward;
-        // オブジェクトの位置
-        var targetWorldPos = _target.position + _worldOffset;
-        // カメラからターゲットへのベクトル
-        var targetDir = targetWorldPos - cameraTransform.position;
+        // オブジェクトのワールド座標→スクリーン座標へ変換
+        var objectScreenPos = _objectCamera.WorldToScreenPoint(objectWorldPos);
 
-        // 内積を使ってカメラ前方かどうかを判定
-        var isFront = Vector3.Dot(cameraDir, targetDir) > 0;
-
-        // カメラ前方ならUI表示、後方なら非表示
-        _targetUI.gameObject.SetActive(isFront);
-        if (!isFront) return;
-        
-
-        // オブジェクトのワールド座標→スクリーン座標変換
-        var targetScreenPos = _targetCamera.WorldToScreenPoint(targetWorldPos);
-
-        // スクリーン座標変換→UIローカル座標変換
+        // スクリーン座標→UIローカル座標へ変換
         RectTransformUtility.ScreenPointToLocalPointInRectangle(
-            _parentUI,
-            targetScreenPos,
+            _parentUIRectTransform,
+            objectScreenPos,
             null,
-            out var uiLocalPos
+            out var UILocalPos
         );
 
-        // RectTransformのローカル座標を更新
-        _targetUI.localPosition = uiLocalPos;
+        _objectTrnasform_UI.localPosition = UILocalPos;
         
     }
 
-    public void ChangeText(int hp)
-    {
-        string hpText = hp.ToString();
-        TextHp.SetText(hpText);
-    }
+    
 
 }
+
+/* 
+        <2Dゲームのため、「オブジェクトがカメラの後ろに位置するか」の判定は行わない>
+        var cameraTransform = _objectCamera.transform;
+        
+        var cameraDir = cameraTransform.forward;
+
+        // カメラから対象オブジェクトへのベクトル
+        var objectDir = objectWorldPos - cameraTransform.position;
+        // 内積を使ってカメラ前方かどうかを判定
+        var isFront = Vector3.Dot(cameraDir, objectDir) > 0;
+        // カメラ前方ならUI表示、後方なら非表示
+        _uiObjectTransform.gameObject.SetActive(isFront);
+        if (!isFront) return;
+
+        */

@@ -3,21 +3,21 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
+// ScoreGUIオブジェクトで使用するクラス
+// ScoreTextの表示更新を行う
 public class Score : MonoBehaviour
 {
-    // text
+    
     public GameObject ScoreUI;
     private TMPro.TMP_Text TextScore;
 
     public GameObject ResultUI;
     private TMPro.TMP_Text TextResult;
 
-    // score格納
     public float score = 0f;
 
     void Start()
     {
-        // gameObjectのTMPro取得
         TextScore = ScoreUI.GetComponent<TMPro.TMP_Text>();
         TextResult = ResultUI.GetComponent<TMPro.TMP_Text>();
     }
@@ -29,9 +29,9 @@ public class Score : MonoBehaviour
 
     public void ChangeText(int score)
     {
-        // Debug.Log(score);
-        string scoreText = score.ToString();
+        string scoreText = score.ToString()+"<size=50>億</size>";
         TextScore.SetText(scoreText);
+        scoreText = score.ToString()+"<size=90>億</size>";
         TextResult.SetText(scoreText);
     }
     

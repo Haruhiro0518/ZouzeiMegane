@@ -4,14 +4,14 @@ using UnityEngine;
 
 public class DestroyWave : MonoBehaviour
 {
+    // ブロックオブジェクトのテキスト削除関数を呼んでからWaveを消す
     public void destroyObject()
     {
-        // ブロックオブジェクトのテキスト削除関数を呼んでからWaveを消す
-
-        // 子オブジェクトをループして取得
+    
         foreach ( Transform child in this.transform )
         {
             // blockのレイヤーなら
+            /*
             if(child.gameObject.layer == 6) {
                 Block block = child.GetComponent<Block>();
                 
@@ -22,7 +22,13 @@ public class DestroyWave : MonoBehaviour
                 Item item = child.GetComponent<Item>();
                 
                 item.destroyText();
+            }*/
+            
+            ManageHPUI manageHPUI;
+            if((manageHPUI = child.GetComponent<ManageHPUI>()) != null) {
+                manageHPUI.DestroyText();
             }
+            
         }
         
         Destroy(gameObject);

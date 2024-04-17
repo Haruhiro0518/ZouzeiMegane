@@ -22,12 +22,13 @@ public class WaveGenerate : MonoBehaviour
     // 現在のTipIndex
     int currentTipIndex;
     // ステージ生成の先読み個数
-    public int preInstantiateNum;
+    private int preInstantiateNum = 2;
     // 作ったステージの保持リスト
     public List<GameObject> generatedStageList = new List<GameObject>();
 
     // 行数を数えて、その値を参考に生成するオブジェクトを変える
-    private int rawCount;
+    private int rawCount_full;
+    private int rawCount_tax;
 
     public bool IsGameover = false;
     
@@ -67,7 +68,9 @@ public class WaveGenerate : MonoBehaviour
         // 指定のステージチップまで生成
         for(int i = currentTipIndex + 1; i <= toTipIndex; i++) {
             // 行数をカウント
-            rawCount++;
+            rawCount_full++;
+            rawCount_tax++;
+            // Debug.Log("full count:"+rawCount_full+"::: tax count:"+rawCount_tax);
 
             GameObject stageObject = GenerateStage(i);
             generatedStageList.Add(stageObject);
@@ -88,11 +91,95 @@ public class WaveGenerate : MonoBehaviour
 
         // nextStageTip番目のオブジェクトを生成
         GameObject stageObject = (GameObject)Instantiate(
-            WavePrefabs[nextStageTip],    
+            WavePrefabs[nextStageTip],
             new Vector3(0, tipIndex * BlockHeight + offset, 0),     // y軸方向に無限に生成. 位置はPlayerより上
             Quaternion.identity) as GameObject;
         
         return stageObject;
+    }
+
+    // 生成するステージの選択
+    // waveが生成されるたびにrawCount_full / _tax変数がインクリメントされているため、
+    // それぞれの値に応じて、nextWavePrefabを決定する
+    int nextWavePrefab;
+    Queue<int> queue = new Queue<int>();
+
+    int SelectStage()
+    {
+        // queueの中身がある場合は優先する
+        if(queue.Count != 0) {
+            return nextWavePrefab = queue.Dequeue();
+        }
+        
+        int random_sel;
+
+        // rawCount_full 0~9 random, 10~15 full or random, 16 full
+        if(rawCount_full < 10)
+        {
+            // nextWavePrefab = Random.Range(1, WavePrefabs.Length);
+            nextWavePrefab = 1;
+        }
+        else if(rawCount_full >= 10 && rawCount_full <= 15)
+        {
+            random_sel = Random.Range(0,2);
+
+            if(random_sel == 0){
+                nextWavePrefab = 0;   // full
+                rawCount_full = 0;
+            } 
+            else if(random_sel == 1) {
+                // nextWavePrefab = Random.Range(1, WavePrefabs.Length); // random
+                nextWavePrefab = 1;
+            }
+        }
+        // rawCount_full > 15
+        else {
+            nextWavePrefab = 0;   // full
+            rawCount_full = 0;
+            return nextWavePrefab;
+        }
+
+        
+        // rawCount_tax 20~59 1%, 60~99 70%, 100 taxarea
+        random_sel = Random.Range(0, 100);
+        if(rawCount_tax >= 20 && rawCount_tax < 60) {
+        
+            if(random_sel < 1) {
+                nextWavePrefab = 3;
+                rawCount_tax = 0;
+            } else {
+                return nextWavePrefab;
+            }
+        } else if(rawCount_tax >= 60 && rawCount_tax < 100) {
+
+            if(random_sel < 70) {
+                nextWavePrefab = 3;
+                rawCount_tax = 0;
+            } else {
+                return nextWavePrefab;
+            }
+        } else if(rawCount_tax >= 100) {
+            nextWavePrefab = 3;
+            rawCount_tax = 0;
+        }
+
+        if(nextWavePrefab == 3) {
+            nextWavePrefab = Enqueue_WaveTax();
+        }
+
+        return nextWavePrefab;
+    }
+
+    // Wave-Taxは5行使用して生成するため、Queueを使用する
+    int Enqueue_WaveTax()
+    {
+        queue.Enqueue(2);
+        queue.Enqueue(2);
+        queue.Enqueue(3);
+        queue.Enqueue(2);
+        queue.Enqueue(2);
+
+        return queue.Dequeue();
     }
 
     // 一番古いステージを削除
@@ -105,42 +192,7 @@ public class WaveGenerate : MonoBehaviour
         wave.destroyObject();
     }
     
-    // 生成するステージの選択
-    int nextWavePrefab;
-    int SelectStage()
-    {
-        
-        // rawCount 0~9 random, 10~15 full or random, 16 full
 
-        // 10行生成していないとき
-        if(rawCount < 10)
-        {
-            // 0を除いたランダム
-            nextWavePrefab = Random.Range(1, WavePrefabs.Length);
-        } 
-        // 10から15の間
-        else if(rawCount >= 10 && rawCount <= 15)
-        {
-            int sel;
-            sel = Random.Range(0,2);
-
-            // full or not full
-            if(sel == 0){
-                nextWavePrefab = 0;   // full
-                rawCount = 0;
-            } 
-            else if(sel == 1) {
-                nextWavePrefab = Random.Range(1, WavePrefabs.Length); // random
-            }
-        }
-        // 15超えたら
-        else {
-            nextWavePrefab = 0;   // full
-            rawCount = 0;
-        }
-
-
-        return nextWavePrefab;
-    }
+    
 
 }

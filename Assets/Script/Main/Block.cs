@@ -7,37 +7,33 @@ public class Block : MonoBehaviour
 {
     // HP
     private int HP;
-    private int HPorigin;
+    private int originalHP;
     // nextDamageDelay
     public float nextDamageDelay = 0.09f;
     private float DelayAfterDestroyed = 0.06f;
-    
-    // 衝突中か
-    private bool IsCol = false;
-    
 
     // 増税めがねをもつ確率
     public int GlassesPercent;
     // 増税めがねをもっているか
     public bool haveGlasses;
-    // Player情報
-   private GameObject Player;
-   private Player player;
-    // canvas
-    private GameObject canvas;
-    
-    // 親の指定
-    [SerializeField] private RectTransform _markerPanel;
-    [SerializeField] private FollowTransform _markerPrefab;
-    [SerializeField] private FollowTransform _markerPrefab_glasses;
-    // スクリプトのインスタンス
-    private FollowTransform marker;
-    // HPテキストのgameObject
-    private GameObject HPtext;
 
-    // glasses UI
-    private FollowTransform marker2;
-    private GameObject GlassesImg;
+    private GameObject Player;
+    private Player player;
+    /*
+    // 親の指定
+    
+    [SerializeField] private FollowTransform _uiObjectPrefab;
+    [SerializeField] private FollowTransform _uiParentObjectTransform_glass;
+    private FollowTransform uiObjectPrefab;
+    private GameObject HPtext;
+    */
+
+    private ManageHPUI manageHPUI;
+    private RectTransform _uiParentObjectTransform;
+    [SerializeField] private GameObject _GlassesPrefab;
+    private GameObject GlassesPrefab;
+    private FollowTransform GlassesScript;
+    
 
     // scoreUI
     private GameObject scoreGUI;
@@ -49,39 +45,29 @@ public class Block : MonoBehaviour
 
     void Awake()
     {
-        canvas = GameObject.Find("Canvas");
-        _markerPanel = canvas.GetComponent<RectTransform>();
-
+        _uiParentObjectTransform = GameObject.Find("Canvas").GetComponent<RectTransform>();
     }
 
     // Use this for initialization
     void Start()
     {
         Player = GameObject.Find("Player");
-        // HP や 眼鏡をもつか　などのParam 初期化
+        manageHPUI = gameObject.GetComponent<ManageHPUI>();
         Set_HP_Glass();
-
-        marker = Instantiate(_markerPrefab, _markerPanel);
-        marker.Initialize(gameObject.transform);
-        // markerがアタッチされているgameObjectの取得
-        HPtext = marker.gameObject;
-        marker.ChangeText(HP);
-
-        // glassesImageの初期化
+        
         if(haveGlasses == true)
         {
-            marker2 = Instantiate(_markerPrefab_glasses, _markerPanel);
-            marker2.Initialize(gameObject.transform);
-            GlassesImg = marker2.gameObject;
-            // imageの位置をオフセットによりずらす
-            marker2._worldOffset = new Vector3(0f, -0.25f, 0f);
-            marker._worldOffset = new Vector3(0f, 0.2f, 0f);
-        }
+            GlassesPrefab = Instantiate(_GlassesPrefab, _uiParentObjectTransform);
+            GlassesScript = GlassesPrefab.GetComponent<FollowTransform>();
+            GlassesScript.Initialize(gameObject.transform);
 
+            GlassesScript._worldOffset = new Vector3(0f, -0.25f, 0f);
+            manageHPUI.ChangeWorldOffset(new Vector3(0f, 0.2f, 0f));
+        }
         
         scoreGUI = GameObject.Find("ScoreGUI");
         scoreScript = scoreGUI.GetComponent<Score>();
-
+        manageHPUI.ChangeText(HP.ToString());
         player = Player.gameObject.GetComponent<Player>();
 
     }
@@ -91,6 +77,7 @@ public class Block : MonoBehaviour
         
     }
 
+    private bool IsCol = false;
     void OnCollisionEnter2D(Collision2D c)
     {
         IsCol = true;
@@ -115,10 +102,11 @@ public class Block : MonoBehaviour
             if((IsCol == true) && (HP > 0)) {
                 int valueScored = DecreaseBlockHP();
                 scoreScript.AddScore(valueScored, player.taxRate);
-                player.DecreaseHP();
-                marker.ChangeText(HP); 
+                player.DecreaseHP(); 
+                manageHPUI.ChangeText(HP.ToString());
 
-                int diff = HPorigin - HP;
+
+                int diff = originalHP - HP;
                 if(diff > 24) {
                     nextDamageDelay = 0.05f;
                 } else if (diff > 12) {
@@ -133,12 +121,16 @@ public class Block : MonoBehaviour
                 }
             }
             else if(HP <= 0) {
-                if(haveGlasses == true && !(player.HP < 0)) {
-                    player.InvincibleMode();
+                if(haveGlasses == true) {
+                    Destroy(GlassesPrefab);
+                    if(player.HP >= 0) {
+                        player.InvincibleMode();
+                    }
                 }
+    
                 Instantiate(SEmoney);
+                manageHPUI.DestroyText();
                 Destroy(gameObject);
-                destroyText();
                 yield break;
             } 
             // IsColがfalseならbreak;
@@ -148,14 +140,6 @@ public class Block : MonoBehaviour
         }
     }
 
-    public void destroyText() 
-    {
-        Destroy(HPtext);
-        if(GlassesImg != null) {
-            Destroy(GlassesImg);
-        }
-        
-    }
 
     private void Set_HP_Glass() 
     {
@@ -178,10 +162,9 @@ public class Block : MonoBehaviour
             }
         }
         
-        HPorigin = HP;
+        originalHP = HP;
     }
 
-    // blockのHPを減らし、減ったHPを返す
     public int DecreaseBlockHP()
     {
         int currentHP = HP;
@@ -200,3 +183,15 @@ public class Block : MonoBehaviour
         }
     }
 }
+
+
+/*
+/*
+        uiObjectPrefab = Instantiate(_uiObjectPrefab, _uiParentObjectTransform);
+        uiObjectPrefab.Initialize(gameObject.transform);
+        // uiObjectPrefabがアタッチされているgameObjectの取得
+        // HPtext = uiObjectPrefab.gameObject;
+        // uiObjectPrefab.ChangeText(HP);
+        // ChangeText(HP);
+        manageHPUI.ChangeText(HP);
+*/

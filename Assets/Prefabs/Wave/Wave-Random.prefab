@@ -60,3 +60,4 @@ MonoBehaviour:
   Block: {fileID: 1840622312598475922, guid: 17156685336c3e347a3d9d76b2c9da9e, type: 3}
   Bar: {fileID: 3422815973754892162, guid: b571750a6f40a6349b6ce0f27ed4fc7e, type: 3}
   Item: {fileID: 3657147855224962322, guid: c939549a59e36194ea9f6e44480dfa75, type: 3}
+  data: {fileID: 11400000, guid: 43cdf7a1cb2580243821ffe6f0584c9b, type: 2}

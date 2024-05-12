@@ -6,47 +6,65 @@ public class Item : MonoBehaviour
 {
     public int HP;
     [System.NonSerialized] public int maxHP;
+    [System.NonSerialized] public int minHP;
     // コンポ―ネント
     private ManageHPUI manageHPUI;
     private Player player;
+    [SerializeField] private Animator animator;
     [SerializeField] private GameObject SEitem;
+    [SerializeField] private GameObject FXsmoke;
     // ScriptableObject
-    [SerializeField] private ValueData valueData;
+    [SerializeField] private ValueData data;
 
-
-    void Awake()
-    {
-        
-    }
     
     void Start()
     {
         player = GameObject.Find("Player").gameObject.GetComponent<Player>();
         manageHPUI = gameObject.GetComponent<ManageHPUI>();
         
+        ItemDamageAnimOnOff();
         SetItemHP();
-        manageHPUI.ChangeText(HP.ToString());
     }
 
     
     void OnTriggerEnter2D(Collider2D c)
     {
-        // playerと衝突することだけを考える
-        // playerのHPにItemのHPを足す
-        player.HP += HP;
+        // playerとの衝突のみ考える
+        ComputePlayerHP();
 
         manageHPUI.DestroyText();
         Instantiate(SEitem);
         Destroy(gameObject);
     }
 
-    
-    void SetItemHP()
+    void ComputePlayerHP()
     {
-        valueData.ChangeItemHP_Percent(player.taxRate);
-        maxHP = valueData.maxItemHP;
-        HP = Random.Range(1, maxHP);
+        player.HP += HP;
+        if(player.HP <= 0) {
+            player.HP = 0;
+        }
     }
 
+    public void SetItemHP()
+    {
+        // maxItemHP+1するのは、[min, max)を[min, max]にするため
+        HP = Random.Range(data.maxItemHP, data.minItemHP+1);
+        manageHPUI.ChangeText(HP.ToString());
+    }
+
+    public void Smoke()
+    {
+        Instantiate(FXsmoke, gameObject.transform.position, Quaternion.identity);
+    }
+    
+    public void ItemDamageAnimOnOff()
+    {
+        if(player.IsInvincible == true)
+        {
+            animator.SetBool("damage", true);
+        } else {
+            animator.SetBool("damage", false);
+        }
+    }
     
 }

@@ -5,6 +5,8 @@ TagManager:
   serializedVersion: 2
   tags:
   - block
+  - item
+  - taxArea
   layers:
   - Default
   - TransparentFX
@@ -16,8 +18,8 @@ TagManager:
   - Player
   - Bar
   - Item
-  - Glasses
-  - PlayerBody
+  - TaxArea
+  - InsideScreen
   - 
   - 
   - 

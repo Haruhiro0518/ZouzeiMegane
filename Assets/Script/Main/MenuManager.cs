@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using unityroom.Api;
+using UnityEngine.Events;
 
 public class MenuManager : MonoBehaviour
 {
@@ -33,9 +34,23 @@ public class MenuManager : MonoBehaviour
     [SerializeField, Header("スコアオブジェクト")] 
     private GameObject ScoreGUI;
 
+    [SerializeField, Header("上部UI")] 
+    private GameObject TopUI;
+
+    [SerializeField, Header("下部UI")] 
+    private GameObject ButtomUI;
+
+    [SerializeField, Header("リザルトコメント")]
+    private TMPro.TMP_Text Tips;
+
+    [SerializeField, Header("最終状態テキスト")]
+    private TMPro.TMP_Text FinalState;
+
     private Score scoreScript;
     
     private AudioSource MainBGM;
+
+    UnityEvent GameOverEvent = new UnityEvent();
 
     void Start()
     {
@@ -44,6 +59,9 @@ public class MenuManager : MonoBehaviour
         MainBGM = GetComponent<AudioSource>();
         MainBGM.volume = TitleManager.volumeValue;
         MainBGM.Play();
+
+        // event追加
+        GameOverEvent.AddListener(OnGameOver);
     }
     
     void Update()
@@ -55,11 +73,10 @@ public class MenuManager : MonoBehaviour
             MainBGM.Play();
         }
 
-        if(waveGenerate.IsGameover == true)
+        if(waveGenerate.IsGameOver==true || waveGenerate.IsGameClear==true)
         {
-            Time.timeScale = 0;
-            PauseButton.SetActive(false);
-            ResultUI.SetActive(true);
+            GameOverEvent.Invoke();
+            
             #if Unity_Room
             UnityroomApiClient.Instance.SendScore(1, scoreScript.score, ScoreboardWriteMode.HighScoreDesc);
             #endif
@@ -92,14 +109,15 @@ public class MenuManager : MonoBehaviour
     public void SelectRetry()
     {
         Time.timeScale = 1;
-        waveGenerate.IsGameover = false;
+        waveGenerate.IsGameOver = false;
+        waveGenerate.IsGameClear = false;
         SceneManager.LoadScene("Main");
     }
 
     public void SelectRetire()
     {
         Time.timeScale = 1;
-        waveGenerate.IsGameover = false;
+        waveGenerate.IsGameOver = false;
         SceneManager.LoadScene("Title");
     }
 
@@ -117,5 +135,31 @@ public class MenuManager : MonoBehaviour
         MainBGM.volume = value;
     }
 
+    // GameOver時にCSVを読み込み、Tipsオブジェクトのテキストを変更する
+    // このメソッドをUpdate()内で一度だけ呼び出すために、GameOverEventにこれを登録しておき
+    // 最後にGameOverEventから削除する
+    void OnGameOver()
+    {
+        CSVreader csvreader = gameObject.GetComponent<CSVreader>();
+        csvreader.ReadCSV();
+        csvreader.SetupText(Tips);
+        
+        StartCoroutine(WaitForResult());
+        GameOverEvent.RemoveListener(OnGameOver);
+    }
+    IEnumerator WaitForResult()
+    {
+        yield return new WaitForSeconds(2.0f);
+        Time.timeScale = 0;
+        PauseButton.SetActive(false);
+        TopUI.SetActive(false);
+        ButtomUI.SetActive(false);
+        ResultUI.SetActive(true);
 
+        if(waveGenerate.IsGameOver==true) {
+            FinalState.SetText("<size=55>解散</size>");
+        } else if(waveGenerate.IsGameClear==true) {
+            FinalState.SetText("<size=55>任期満了！</size>");
+        }
+    }
 }

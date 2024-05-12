@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
+// PlayerやBlock, ItemなどのUIを持つオブジェクトにアタッチするクラス
+
 public class ManageHPUI : MonoBehaviour
 {
     
@@ -12,8 +14,9 @@ public class ManageHPUI : MonoBehaviour
     private FollowTransform followTransform;
     private TMPro.TMP_Text TextHP;
     
-    // UIをもつオブジェクトがStartメソッドでChangeTextメソッドを呼ぶため、
-    // それよりも早くAwakeメソッドでTMProコンポーネントを取得する
+    // UIをもつオブジェクトがStartメソッドでthis.ChangeTextメソッドを呼ぶ時、
+    // TMProコンポーネントの取得ができていないとエラーになってしまう。
+    // そのため、AwakeメソッドでTMProコンポーネントを取得する。
     void Awake()
     {
         _uiParentObjectTransform = GameObject.Find("Canvas").GetComponent<RectTransform>();
@@ -22,11 +25,6 @@ public class ManageHPUI : MonoBehaviour
         followTransform = uiObject.GetComponent<FollowTransform>();
         followTransform.Initialize(gameObject.transform);
 
-    }
-
-    void Start()
-    {
-        
     }
 
     public void ChangeText(string text)
@@ -44,8 +42,8 @@ public class ManageHPUI : MonoBehaviour
         followTransform._worldOffset = v;
     }
 
-    void Update()
+    public void DisableTextComponent()
     {
-        
+        TextHP.enabled = false;
     }
 }

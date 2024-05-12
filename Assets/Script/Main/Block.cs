@@ -5,56 +5,48 @@ using UnityEngine;
 
 public class Block : MonoBehaviour
 {
-    // HP
-    private int HP;
+    private int _HP;
     private int originalHP;
-    // nextDamageDelay
-    public float nextDamageDelay = 0.09f;
+    
+    private float nextDamageDelay = 0.08f;
     private float DelayAfterDestroyed = 0.06f;
 
-    // 増税めがねをもつ確率
-    public int GlassesPercent;
-    // 増税めがねをもっているか
     public bool haveGlasses;
 
     private GameObject Player;
     private Player player;
-    /*
-    // 親の指定
-    
-    [SerializeField] private FollowTransform _uiObjectPrefab;
-    [SerializeField] private FollowTransform _uiParentObjectTransform_glass;
-    private FollowTransform uiObjectPrefab;
-    private GameObject HPtext;
-    */
 
     private ManageHPUI manageHPUI;
+
     private RectTransform _uiParentObjectTransform;
     [SerializeField] private GameObject _GlassesPrefab;
     private GameObject GlassesPrefab;
     private FollowTransform GlassesScript;
     
-
-    // scoreUI
     private GameObject scoreGUI;
-    // Scoreスクリプト
     private Score scoreScript;
-    // SE object
     [SerializeField] private GameObject SEmoney;
+    [SerializeField] private AudioSource BlockAudio;
+
+    [SerializeField] private ValueData data;
     
 
     void Awake()
     {
         _uiParentObjectTransform = GameObject.Find("Canvas").GetComponent<RectTransform>();
     }
-
-    // Use this for initialization
+    
     void Start()
     {
         Player = GameObject.Find("Player");
+        player = Player.gameObject.GetComponent<Player>();
         manageHPUI = gameObject.GetComponent<ManageHPUI>();
+        scoreGUI = GameObject.Find("ScoreGUI");
+        scoreScript = scoreGUI.GetComponent<Score>();
+
         Set_HP_Glass();
-        
+        manageHPUI.ChangeText(_HP.ToString());
+
         if(haveGlasses == true)
         {
             GlassesPrefab = Instantiate(_GlassesPrefab, _uiParentObjectTransform);
@@ -64,17 +56,6 @@ public class Block : MonoBehaviour
             GlassesScript._worldOffset = new Vector3(0f, -0.25f, 0f);
             manageHPUI.ChangeWorldOffset(new Vector3(0f, 0.2f, 0f));
         }
-        
-        scoreGUI = GameObject.Find("ScoreGUI");
-        scoreScript = scoreGUI.GetComponent<Score>();
-        manageHPUI.ChangeText(HP.ToString());
-        player = Player.gameObject.GetComponent<Player>();
-
-    }
-
-    void Update()
-    {
-        
     }
 
     private bool IsCol = false;
@@ -84,10 +65,6 @@ public class Block : MonoBehaviour
         StartCoroutine(collisionStay(c));
     }
     
-    void OnCollisionStay2D(Collision2D c)
-    {
-        
-    }
 
     void OnCollisionExit2D(Collision2D c)
     {
@@ -98,29 +75,30 @@ public class Block : MonoBehaviour
     {
         while(true) {
             // プレイヤーのHPが0以上かつ、衝突している間は
-            // 両者のHPを減らす。nextDamageDelay秒ごとにHPが減る
-            if((IsCol == true) && (HP > 0)) {
-                int valueScored = DecreaseBlockHP();
+            // 両方のHPを減らす。nextDamageDelay秒ごとにHPが減る
+            if((IsCol == true) && (_HP > 0)) {
+                int valueScored = DecreaseHPReturnValueScored();
                 scoreScript.AddScore(valueScored, player.taxRate);
                 player.DecreaseHP(); 
-                manageHPUI.ChangeText(HP.ToString());
+                manageHPUI.ChangeText(_HP.ToString());
 
 
-                int diff = originalHP - HP;
+                int diff = originalHP - _HP;
                 if(diff > 24) {
                     nextDamageDelay = 0.05f;
                 } else if (diff > 12) {
                     nextDamageDelay = 0.07f;
                 }
 
-                if(HP==0) {
+                if(_HP==0) {
                     yield return new WaitForSeconds(DelayAfterDestroyed);
                 }
                 else {
+                    BlockAudio.Play();
                     yield return new WaitForSeconds(nextDamageDelay);
                 }
             }
-            else if(HP <= 0) {
+            else if(_HP <= 0) {
                 if(haveGlasses == true) {
                     Destroy(GlassesPrefab);
                     if(player.HP >= 0) {
@@ -143,55 +121,51 @@ public class Block : MonoBehaviour
 
     private void Set_HP_Glass() 
     {
-        // HP決定 割合で決める
-        // 1~4:20%, 5~20:65%, 21~35:10%, 36~50:5%
-        int percent = Random.Range(0,100);
-        if(percent < 20) HP = Random.Range(1,5);
-        else if(percent >= 20 && percent < 85) HP = Random.Range(5, 21);
-        else if(percent >= 85 && percent < 95) HP = Random.Range(21, 36);
-        else HP = Random.Range(36, 51);
-        
-        // めがねを持つか 
-        // 0~99
-        // めがねを持つのはblockのHPが25以上のとき
-        if(HP >= 25) {
-            if(Random.Range(0,100) < GlassesPercent) {
-                haveGlasses = true;    // もつ
+        int p = Random.Range(0,100);
+        if(p < data.hpRange1to4) _HP = Random.Range(1,5);
+        else if(p >= data.hpRange1to4 && p < data.hpRange5to9) _HP = Random.Range(5, 10);
+        else if(p >= data.hpRange5to9 && p < data.hpRange10to19) _HP = Random.Range(10, 20);
+        else if(p >= data.hpRange10to19 && p < data.hpRange20to29) _HP = Random.Range(20, 30);
+        else _HP = Random.Range(30, 51);
+
+        originalHP = _HP;
+
+        if(player.TotalInvModeCallCount > 13) {
+            haveGlasses = false;
+            return;
+        }
+
+        if(_HP >= 25) {
+            if(Random.Range(0,100) < data.GlassesPercent) {
+                
+                haveGlasses = true;    
             } else {
-                haveGlasses = false;   // もたない
+                haveGlasses = false;
             }
         }
-        
-        originalHP = HP;
     }
 
-    public int DecreaseBlockHP()
+    public int DecreaseHPReturnValueScored()
     {
-        int currentHP = HP;
+        int previousHP = _HP;
 
         if(player.IsInvincible == true)
         {
-            HP = 0;
-            return currentHP;
-        } else {
-            HP = HP - player.power;
-            if(HP < 0) {
-                HP = 0;
+            _HP = 0;
+            return previousHP;
+        } 
+        else 
+        {
+            _HP = _HP - 1;
+
+            int difference;
+            if(_HP==1) {    // 最後に壊すときだけスコアは5足す
+                difference = 5;
+            } else {
+                difference = 1;
             }
-            int difference = currentHP - HP;
+            
             return difference;
         }
     }
 }
-
-
-/*
-/*
-        uiObjectPrefab = Instantiate(_uiObjectPrefab, _uiParentObjectTransform);
-        uiObjectPrefab.Initialize(gameObject.transform);
-        // uiObjectPrefabがアタッチされているgameObjectの取得
-        // HPtext = uiObjectPrefab.gameObject;
-        // uiObjectPrefab.ChangeText(HP);
-        // ChangeText(HP);
-        manageHPUI.ChangeText(HP);
-*/

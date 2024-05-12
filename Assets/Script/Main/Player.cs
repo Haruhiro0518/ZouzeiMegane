@@ -25,81 +25,89 @@ public class Player : MonoBehaviour
     private float space = 0.05f;
     
     // playerのパラメータ
-    public int power;
-    public int HP;
+    [System.NonSerialized] public int HP = 50;
     [System.NonSerialized] public float PlayerSpeed = OriginalPlayerSpeed;
+    [System.NonSerialized] public float PlayerSpeedOffset = 0f; // 減税を検討すると増える(TaxArea.cs)
     const float OriginalPlayerSpeed = 3.0f;
+    [System.NonSerialized] 
     public float taxRate = 1.0f;
-    public float taxRateMax = 5.0f;
-    public float taxRateMaxInv = 7.0f;
+    [System.NonSerialized] public float taxRateMax = 1.5f;
+    [System.NonSerialized] public float taxRateMaxInv = 2.0f;
     
     // 無敵状態の制御に使う変数
+    // [System.NonSerialized] 
     public bool IsInvincible = false;
-    private float InvTime = 5.0f;
-    private int extendInv;
+    private float InvTime = 6.85f;
+    private int InvModeCallCount = 0;
+    [System.NonSerialized] public int TotalInvModeCallCount = 0;
     // コンポーネント
     private ManageHPUI manageHPUI;
-    private GameObject WaveGenerator;
     private WaveGenerate waveGenerate;
     private FollowPlayer followPlayer;
     [SerializeField] private GameObject SEbomb;
+    [SerializeField] private GameObject FXsmoke;
     [SerializeField, Header("総理アニメーター")]
     Animator PlayerAnimator;
-    
+    [SerializeField] private AudioSource PlayerAudio;
+    private AudioSource MenuManagerAudio;
+
+    [SerializeField] ValueData data;
     void Awake()
     {
-        WaveGenerator = GameObject.Find("WaveGenerator");
+        waveGenerate = GameObject.Find("WaveGenerator").GetComponent<WaveGenerate>();
         followPlayer = GameObject.Find("Main Camera").GetComponent<FollowPlayer>();
     }
 
     void Start()
     {
+        MenuManagerAudio = GameObject.Find("MenuManager").GetComponent<AudioSource>();
         manageHPUI = gameObject.GetComponent<ManageHPUI>();
-        waveGenerate = WaveGenerator.GetComponent<WaveGenerate>();
         
-        // playerのlayer7とitemのlayer9を無視する
-        layermask = (1 + 4) << 7;
+        // playerのlayer7とitemのlayer9, taxareaのlayer10, insidescreenのlayer11を無視する
+        layermask = (1 + 4 + 8 + 16) << 7;
         layermask = ~layermask;
-        taxRate = 1.0f;
 
         Move();
-        
     }
 
     void Update()
     {
         MoveDrag();
         if(init_player_pos == true) DebugPos();
-        // HP 表示更新
+
         manageHPUI.ChangeText(HP.ToString());
 
-        // gameOver
         if(HP < 0) {
-            // play se
-            Instantiate(SEbomb);
-            manageHPUI.DestroyText();
-            // Debug.Log(waveGenerate.IsGameover);
-            waveGenerate.IsGameover = true;
-            
-            Destroy(gameObject);
+            OnGameOver();
         }
-    
+        if(waveGenerate.IsGameClear == true) {
+            PlayerSpeed = 0;
+        }
+
+        if(IsInvincible == true) {
+            InvincibleBGMLoopControl(); 
+        }
+           
     }
 
     // InvicibleMode()をコルーチンにすると, blockが削除されたときにWaitFoSecondsがなくなるため、
     // 待つ処理はinv()で行う
     public void InvincibleMode()
     {
-        // 呼ばれたときにextendInv変数をインクリメント
-        extendInv++;
         IsInvincible = true;
-        PlayerSpeed = 4.0f;
-        if(extendInv == 1) {
-            taxRate += 2.0f;
+        InvModeCallCount++;
+        TotalInvModeCallCount++;
+
+        if(InvModeCallCount == 1) {
+            PlayerAnimator.SetBool("PowerUP", IsInvincible);
+            InvincibleBGM("play");
+            taxRate += 0.5f;
+            data.ChangeBlockHPDistribution(taxRate);
+            ChangeItemParameter(IsInvincible);
+            PlayerSpeed = SelectPlayerSpeed();
+            Move();
         }
         
-        PlayerAnimator.SetBool("PowerUP", IsInvincible);
-
         StartCoroutine(inv());
     }
 
@@ -109,22 +117,114 @@ public class Player : MonoBehaviour
         yield return new WaitForSeconds(InvTime);
         
         // 無敵中に他の無敵を取らなかった場合、無敵終了
-        if(extendInv == 1) {
-            // 元に戻す
-            taxRate -= 2.0f;
-            taxRate = (taxRate < 0) ? 0 : taxRate;
-            PlayerSpeed = ComputePlayerSpeed();
-            
-            IsInvincible = false;
-            //アニメーション切替
-            PlayerAnimator.SetBool("PowerUP", IsInvincible);
-            // PlayerSpeed変化後のPlayerSpeedをplayerに適用する
-            Move();
+        if(InvModeCallCount == 1) {
+            OnInvincibleExit();
         } 
-        extendInv--;
+        InvModeCallCount--;
     }
 
-    // プレイヤー移動
+    void OnInvincibleExit()
+    {
+        // 元に戻す
+        IsInvincible = false;
+        PlayerAnimator.SetBool("PowerUP", IsInvincible);
+        InvincibleBGM("stop");
+        taxRate -= 0.5f;
+        taxRate = (taxRate < 0) ? 0 : taxRate;
+        TotalInvModeCallCount = 0;
+
+        data.ChangeBlockHPDistribution(taxRate);
+        ChangeItemParameter(IsInvincible);
+        PlayerSpeed = SelectPlayerSpeed();
+        waveGenerate.AccelerateNextTaxArea(40);
+        Move();
+    }
+
+    [System.NonSerialized] public bool IsCollisionStay = false;
+    private int playerCollisionCount = 0;
+    void OnCollisionEnter2D(Collision2D c)
+    {
+        if(c.gameObject.tag == "block") {
+            playerCollisionCount++;
+            if(playerCollisionCount == 1) {
+                IsCollisionStay = true;
+                StartCoroutine(followPlayer.CameraMoveupOrDown());
+            }
+        }
+        
+    }
+
+    void OnCollisionExit2D(Collision2D c) 
+    {
+        Move();
+        if(c.gameObject.tag == "block") {
+            StartCoroutine(WaitCollisionExit());
+        }
+    }
+    // CameraMoveupOrDown()を想定通りに呼び出すための処理
+    // (詳細：Playerが素早く現在のブロックから隣のブロックに移動したとき、衝突の個数は1->0->1となってしまい
+    // CollisionEnter2Dでのコルーチンが2回呼ばれてしまう。衝突の個数を1->wait->2と変化させると1度しか呼ばれない)
+    IEnumerator WaitCollisionExit() {
+        yield return new WaitForSeconds(0.01f);
+
+        playerCollisionCount--;
+        if(playerCollisionCount == 0) {
+            IsCollisionStay = false;
+            StartCoroutine(followPlayer.CameraMoveupOrDown());
+        }
+    }
+
+    
+    private void ChangeItemParameter(bool IsInv)
+    {
+        if(IsInv == true)
+        {
+            data.ItemHPCoefficient = -1;
+            data.ChangeItemHPminmax(taxRate);
+        } 
+        else 
+        {
+            data.ItemHPCoefficient = 1;
+            data.ChangeItemHPminmax(taxRate);
+        }
+
+        waveGenerate.AllItemSmokeAndChangeParam();
+    }
+
+    private void OnGameOver()
+    {
+        Instantiate(SEbomb);
+        Instantiate(FXsmoke, gameObject.transform.position, Quaternion.identity);
+        manageHPUI.DestroyText();
+        waveGenerate.IsGameOver = true;
+        
+        Destroy(gameObject);
+    }
+
+    public float SelectPlayerSpeed() 
+    {
+        float selectedSpeed;
+        if(taxRate == 0) {
+            selectedSpeed = 2.7f;
+        } else if(taxRate == 0.5) {
+            selectedSpeed = 2.8f;
+        } else if(taxRate == 1) {
+            selectedSpeed = OriginalPlayerSpeed;
+        } else if(taxRate == 1.5) {
+            selectedSpeed = 4.4f;
+        } else {
+            selectedSpeed = 5.0f;
+        }
+        return (selectedSpeed + PlayerSpeedOffset);
+    }
+
+    // 上向きに移動
+    public void Move()
+    {
+        GetComponent<Rigidbody2D>().velocity = transform.up * PlayerSpeed;
+    }
+
+    // ドラッグ処理
     void MoveDrag() 
     {
         if(Time.timeScale == 0) return;
@@ -149,12 +249,6 @@ public class Player : MonoBehaviour
             // タップ位置を更新
             previousPosX = currentPosX;
         } 
-    }
-
-    // 上向きに移動
-    public void Move()
-    {
-        GetComponent<Rigidbody2D>().velocity = transform.up * PlayerSpeed;
     }
 
     // プレイヤーの球コライダーの上部と下部から、水平方向にレイキャストを伸ばす
@@ -186,41 +280,36 @@ public class Player : MonoBehaviour
 
     }
 
-
-    public bool IsCollisionStay = false;
-    void OnCollisionEnter2D(Collision2D c)
-    {
-        if(c.gameObject.tag == "block") {
-            IsCollisionStay = true;
-            StartCoroutine(followPlayer.CameraMoveupOrDown());
-        }
-        
-    }
-
-    void OnCollisionExit2D(Collision2D c) 
-    {
-        Move();
-        if(c.gameObject.tag == "block") {
-            IsCollisionStay = false;
-            StartCoroutine(followPlayer.CameraMoveupOrDown());
-        }
-    }
-
-    public float ComputePlayerSpeed() 
-    {
-        // PlayerのspeedをtaxRateに応じて変化させる 倍率 min 0.8 ~ max 約1.5 (1.8) 
-        // currentSpeed = originalSpeed * (taxRate/7 + 0.8)
-        return OriginalPlayerSpeed * (taxRate/7f + 0.8f);
-    }
-
     public void DecreaseHP()
     {
         if(IsInvincible == true) return;
         HP -= 1;
     }
 
+    void InvincibleBGM(string s)
+    {
+        if(s == "play") {
+            PlayerAudio.Play();
+            MenuManagerAudio.Stop();
+        } else {
+            PlayerAudio.Stop();
+            MenuManagerAudio.Play();
+        }
+    }
+
+    void InvincibleBGMLoopControl()
+    {
+        int LoopEndSamples = 302088;
+        int LoopLengthSamples = 278856;
+
+        if(PlayerAudio.timeSamples >= LoopEndSamples)
+        {
+            PlayerAudio.timeSamples -= LoopLengthSamples;
+        }
+    }
+
     // unityroomで実行するときにplayerの位置が原点からずれてしまうため
-    // 最初にプレイヤーを原点に配置する
+    // 最初にプレイヤーを原点に配置する。OnEnableとかStartで修正できないか試す
     private bool init_player_pos = true;
     void DebugPos()
     {

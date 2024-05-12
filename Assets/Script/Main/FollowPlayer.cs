@@ -28,7 +28,9 @@ public class FollowPlayer : MonoBehaviour
     // Updateでプレイヤーの位置を計算した後にLateUpdateでカメラを追従させる
     void LateUpdate()
     {
-        if(waveGenerate.IsGameover == true) return;
+        if(waveGenerate.IsGameOver==true || waveGenerate.IsGameClear==true) {
+            return;
+        }
 
         Vector3 pos = transform.position;
         pos.y = Player.transform.position.y + offset.y + extraoffset.y;
@@ -42,15 +44,14 @@ public class FollowPlayer : MonoBehaviour
     private float x = 0f;
     public IEnumerator CameraMoveupOrDown()
     {
-        
         while(true)
         {
             if(player.IsCollisionStay == true) {
                 if(extraoffset.y >= extraoffset_ymax) {
                     yield break;
                 }
-                // ease-out
-                extraoffset.y = x*(2 - x);
+                // ease-out offset = -0.25x(x-4)
+                extraoffset.y = -0.25f*x*(x - 4);
                 x += divisionNumber;
             
             }
@@ -59,7 +60,7 @@ public class FollowPlayer : MonoBehaviour
                     yield break;
                 }
                 // ease-in
-                extraoffset.y = x*(2 - x);
+                extraoffset.y = -0.25f*x*(x - 4);
                 x -= divisionNumber;
             }
 

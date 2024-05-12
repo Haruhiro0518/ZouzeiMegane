@@ -86,7 +86,7 @@ public class IntroManager : MonoBehaviour
         state += 1;
         talking = !talking;
 
-        if(state > 8)
+        if(state > 7)
         {
             SceneManager.LoadScene("Main");
         }

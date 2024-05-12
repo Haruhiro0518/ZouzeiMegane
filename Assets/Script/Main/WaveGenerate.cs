@@ -24,13 +24,22 @@ public class WaveGenerate : MonoBehaviour
     // ステージ生成の先読み個数
     private int preInstantiateNum = 2;
     // 作ったステージの保持リスト
-    public List<GameObject> generatedStageList = new List<GameObject>();
+    public List<GameObject> GeneratedWaveList = new List<GameObject>(13);
 
     // 行数を数えて、その値を参考に生成するオブジェクトを変える
     private int rawCount_full;
     private int rawCount_tax;
 
-    public bool IsGameover = false;
+    public enum kindsOfWaves {
+        full,
+        random,
+        empty,
+        tax,
+        random_noblock
+    }
+
+    public bool IsGameOver = false;
+    public bool IsGameClear = false;
     
     void Awake()
     {
@@ -38,10 +47,11 @@ public class WaveGenerate : MonoBehaviour
         Player.name = ("Player");
         playerTransform = Player.GetComponent<Transform>();
     }
+
     
     void Start()
     {
-        IsGameover = false;
+        IsGameOver = false;
         currentTipIndex = startTipIndex - 1;
         UpdateStage(preInstantiateNum);
     }
@@ -49,7 +59,7 @@ public class WaveGenerate : MonoBehaviour
     
     void Update()
     {
-        if(IsGameover == true) return;
+        if(IsGameOver == true || IsGameClear == true) return;
 
         // playerの位置から現在のステージチップインデックスを計算
         int charaPositionIndex = (int)(playerTransform.position.y / BlockHeight);
@@ -59,6 +69,7 @@ public class WaveGenerate : MonoBehaviour
             UpdateStage(charaPositionIndex + preInstantiateNum);
         }
     }
+
 
     // 指定のインデックスまでのステージを生成して、管理下に置く
     void UpdateStage(int toTipIndex)
@@ -72,127 +83,145 @@ public class WaveGenerate : MonoBehaviour
             rawCount_tax++;
             // Debug.Log("full count:"+rawCount_full+"::: tax count:"+rawCount_tax);
 
-            GameObject stageObject = GenerateStage(i);
-            generatedStageList.Add(stageObject);
+            GameObject waveObject = GenerateWave(i);
+            GeneratedWaveList.Add(waveObject);
         }
         // 同時に存在することができるステージの個数を超えている場合, ステージ削除
-        while(generatedStageList.Count > preInstantiateNum + maxRawInScreen) {
-            DestoryOldStage();
+        while(GeneratedWaveList.Count > preInstantiateNum + maxRawInScreen) {
+            DestroyOldWave();
         }
         currentTipIndex = toTipIndex;
     }
 
+
     // 指定のインデックス位置にstageオブジェクトを生成
-    GameObject GenerateStage(int tipIndex)
+    GameObject GenerateWave(int tipIndex)
     {
         // prefabsの中からどのプレハブを生成するかを選ぶ
-        // int nextStageTip = Random.Range(0, WavePrefabs.Length);
-        int nextStageTip = SelectStage();
-
-        // nextStageTip番目のオブジェクトを生成
-        GameObject stageObject = (GameObject)Instantiate(
-            WavePrefabs[nextStageTip],
-            new Vector3(0, tipIndex * BlockHeight + offset, 0),     // y軸方向に無限に生成. 位置はPlayerより上
+        int nextWaveTip = SelectWave();
+    
+        // nextWaveTip番目のオブジェクトを生成
+        GameObject waveObject = (GameObject)Instantiate(
+            WavePrefabs[nextWaveTip],
+            new Vector3(0, tipIndex * BlockHeight + offset, 0),     // y軸方向に無限に生成. 
             Quaternion.identity) as GameObject;
-        
-        return stageObject;
+
+        return waveObject;
     }
+
 
     // 生成するステージの選択
     // waveが生成されるたびにrawCount_full / _tax変数がインクリメントされているため、
-    // それぞれの値に応じて、nextWavePrefabを決定する
+    // それぞれが数える行数に応じて、nextWavePrefabを決定する。
+    // kindsOfWavesはWavePrefabs[]に格納されているプレハブの順番に等しい。
     int nextWavePrefab;
-    Queue<int> queue = new Queue<int>();
+    int random_sel;
+    Stack<int> stack = new Stack<int>();
 
-    int SelectStage()
+    int SelectWave()
     {
-        // queueの中身がある場合は優先する
-        if(queue.Count != 0) {
-            return nextWavePrefab = queue.Dequeue();
+        // stackの中身がある場合はstackを優先する
+        if(stack.Count != 0) {
+            return nextWavePrefab = stack.Pop();
         }
         
-        int random_sel;
-
-        // rawCount_full 0~9 random, 10~15 full or random, 16 full
         if(rawCount_full < 10)
         {
-            // nextWavePrefab = Random.Range(1, WavePrefabs.Length);
-            nextWavePrefab = 1;
+            nextWavePrefab = Push_WaveRandom();
         }
         else if(rawCount_full >= 10 && rawCount_full <= 15)
         {
             random_sel = Random.Range(0,2);
-
             if(random_sel == 0){
-                nextWavePrefab = 0;   // full
-                rawCount_full = 0;
+                nextWavePrefab = Push_WaveRandom();
             } 
             else if(random_sel == 1) {
-                // nextWavePrefab = Random.Range(1, WavePrefabs.Length); // random
-                nextWavePrefab = 1;
+                nextWavePrefab = Push_WaveFull();   
+                rawCount_full = 0;
             }
         }
-        // rawCount_full > 15
-        else {
-            nextWavePrefab = 0;   // full
+        else {  // rawCount_full > 15
+            nextWavePrefab = Push_WaveFull();   
             rawCount_full = 0;
             return nextWavePrefab;
         }
 
-        
-        // rawCount_tax 20~59 1%, 60~99 70%, 100 taxarea
+        // rawCount_tax 20~39 1%, 40~60 80%, 70 taxarea
         random_sel = Random.Range(0, 100);
-        if(rawCount_tax >= 20 && rawCount_tax < 60) {
+        if(rawCount_tax >= 20 && rawCount_tax < 40) {
         
             if(random_sel < 1) {
-                nextWavePrefab = 3;
+                nextWavePrefab = Push_WaveTax();
                 rawCount_tax = 0;
             } else {
                 return nextWavePrefab;
             }
-        } else if(rawCount_tax >= 60 && rawCount_tax < 100) {
+        } else if(rawCount_tax >= 40 && rawCount_tax < 60) {
 
             if(random_sel < 70) {
-                nextWavePrefab = 3;
+                nextWavePrefab = Push_WaveTax();
                 rawCount_tax = 0;
             } else {
                 return nextWavePrefab;
             }
-        } else if(rawCount_tax >= 100) {
-            nextWavePrefab = 3;
+        } else if(rawCount_tax >= 70) {
+            nextWavePrefab = Push_WaveTax();
             rawCount_tax = 0;
-        }
-
-        if(nextWavePrefab == 3) {
-            nextWavePrefab = Enqueue_WaveTax();
         }
 
         return nextWavePrefab;
     }
 
-    // Wave-Taxは5行使用して生成するため、Queueを使用する
-    int Enqueue_WaveTax()
-    {
-        queue.Enqueue(2);
-        queue.Enqueue(2);
-        queue.Enqueue(3);
-        queue.Enqueue(2);
-        queue.Enqueue(2);
 
-        return queue.Dequeue();
+    // それぞれのwaveは複数のwaveを組み合わせるため、Stackを使用する
+    int Push_WaveTax()
+    {
+        stack.Push((int)kindsOfWaves.empty);
+        stack.Push((int)kindsOfWaves.empty);
+        stack.Push((int)kindsOfWaves.tax);
+        stack.Push((int)kindsOfWaves.empty);
+        stack.Push((int)kindsOfWaves.empty);
+
+        return stack.Pop();
     }
 
-    // 一番古いステージを削除
-    void DestoryOldStage()
+    int Push_WaveRandom()
     {
-        GameObject oldStage = generatedStageList[0];
-        generatedStageList.RemoveAt(0);
-        DestroyWave wave = oldStage.GetComponent<DestroyWave>();
+        stack.Push((int)kindsOfWaves.random_noblock);
+        stack.Push((int)kindsOfWaves.random);
+
+        return stack.Pop();
+    }
+
+    int Push_WaveFull()
+    {
+        stack.Push((int)kindsOfWaves.random_noblock);
+        stack.Push((int)kindsOfWaves.full);
+
+        return stack.Pop();
+    }
+
+    // 一番古いウェーブを削除
+    void DestroyOldWave()
+    {
+        GameObject oldWave = GeneratedWaveList[0];
+        GeneratedWaveList.RemoveAt(0);
+        ManageWave wave = oldWave.GetComponent<ManageWave>();
         
         wave.destroyObject();
     }
-    
 
-    
+    public void AllItemSmokeAndChangeParam()
+    {
+        for(int i = 0; i < GeneratedWaveList.Count; i++)
+        {
+            GeneratedWaveList[i].GetComponent<ManageWave>().ItemSmokeAndChangeParam();
+        }
+    }
+
+    public void AccelerateNextTaxArea(int incrementValue)
+    {
+        rawCount_tax += incrementValue;
+    }
 
 }

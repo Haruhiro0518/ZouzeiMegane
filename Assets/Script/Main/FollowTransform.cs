@@ -12,7 +12,6 @@ public class FollowTransform : MonoBehaviour
     [SerializeField] private Transform _objectTrnasform_UI;
 
     // オブジェクト位置のオフセット
-    // [SerializeField] private Vector3 _worldOffset;
     public Vector3 _worldOffset;
 
     private RectTransform _parentUIRectTransform;
@@ -43,9 +42,12 @@ public class FollowTransform : MonoBehaviour
         OnUpdateUIPosition();
     }
 
+    private Vector3 objectWorldPos;
     private void OnUpdateUIPosition()
     {
-        var objectWorldPos = _objectTransform.position + _worldOffset;
+        if(_objectTransform != null) {
+            objectWorldPos = _objectTransform.position + _worldOffset;
+        }
     
         // オブジェクトのワールド座標→スクリーン座標へ変換
         var objectScreenPos = _objectCamera.WorldToScreenPoint(objectWorldPos);
@@ -61,23 +63,4 @@ public class FollowTransform : MonoBehaviour
         _objectTrnasform_UI.localPosition = UILocalPos;
         
     }
-
-    
-
 }
-
-/* 
-        <2Dゲームのため、「オブジェクトがカメラの後ろに位置するか」の判定は行わない>
-        var cameraTransform = _objectCamera.transform;
-        
-        var cameraDir = cameraTransform.forward;
-
-        // カメラから対象オブジェクトへのベクトル
-        var objectDir = objectWorldPos - cameraTransform.position;
-        // 内積を使ってカメラ前方かどうかを判定
-        var isFront = Vector3.Dot(cameraDir, objectDir) > 0;
-        // カメラ前方ならUI表示、後方なら非表示
-        _uiObjectTransform.gameObject.SetActive(isFront);
-        if (!isFront) return;
-
-        */

@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6178418082537398406}
   - component: {fileID: 9159327895206333747}
+  - component: {fileID: 2628062511130568101}
   m_Layer: 0
   m_Name: WaveGenerator
   m_TagString: Untagged
@@ -48,7 +49,22 @@ MonoBehaviour:
   WavePrefabs:
   - {fileID: 7884052179028323726, guid: 104280ae4fab1ff4f99b25e66d6d7d40, type: 3}
   - {fileID: 1287289355992458573, guid: 66b9b9277cca3644fbf1f4c3a09f3389, type: 3}
+  - {fileID: 655311198875863412, guid: 11fbea076554d8e469b06b8f52ce44d7, type: 3}
+  - {fileID: 3226073116678438509, guid: bf098c22313e97547b08571e9a1fcea9, type: 3}
+  - {fileID: 4803528888900137189, guid: 5b5a768ba2671e04cbc627eb49a9ec21, type: 3}
   startTipIndex: 0
-  preInstantiateNum: 0
-  generatedStageList: []
+  GeneratedWaveList: []
   IsGameover: 0
+--- !u!114 &2628062511130568101
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3599695691233945526}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f50fe266f1b7ce4f898f78763c022f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  data: {fileID: 11400000, guid: 43cdf7a1cb2580243821ffe6f0584c9b, type: 2}

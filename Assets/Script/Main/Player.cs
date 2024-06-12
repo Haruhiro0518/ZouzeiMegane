@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// プレイヤー操作処理・HPテキスト変更・無敵状態の処理
+
 public class Player : MonoBehaviour
 {
     // 当たり判定調整に使うレイヤーマスク
@@ -46,10 +48,8 @@ public class Player : MonoBehaviour
     private FollowPlayer followPlayer;
     [SerializeField] private GameObject SEbomb;
     [SerializeField] private GameObject FXsmoke;
-    [SerializeField, Header("総理アニメーター")]
-    Animator PlayerAnimator;
-    [SerializeField] private AudioSource PlayerAudio;
-    private AudioSource MenuManagerAudio;
+    [SerializeField] Animator PlayerAnimator;
+    [SerializeField] private InvincibleBGM invincibleBGM;
 
     [SerializeField] ValueData data;
     void Awake()
@@ -60,7 +60,6 @@ public class Player : MonoBehaviour
 
     void Start()
     {
-        MenuManagerAudio = GameObject.Find("MenuManager").GetComponent<AudioSource>();
         manageHPUI = gameObject.GetComponent<ManageHPUI>();
         
         // playerのlayer7とitemのlayer9, taxareaのlayer10, insidescreenのlayer11を無視する
@@ -81,13 +80,8 @@ public class Player : MonoBehaviour
             OnGameOver();
         }
         if(waveGenerate.IsGameClear == true) {
-            PlayerSpeed = 0;
-        }
-
-        if(IsInvincible == true) {
-            InvincibleBGMLoopControl(); 
-        }
-           
+            PlayerSpeed = 0f;
+        }   
     }
 
     // InvicibleMode()をコルーチンにすると, blockが削除されたときにWaitFoSecondsがなくなるため、
@@ -100,7 +94,7 @@ public class Player : MonoBehaviour
 
         if(InvModeCallCount == 1) {
             PlayerAnimator.SetBool("PowerUP", IsInvincible);
-            InvincibleBGM("play");
+            invincibleBGM.Play();
             taxRate += 0.5f;
             data.ChangeBlockHPDistribution(taxRate);
             ChangeItemParameter(IsInvincible);
@@ -128,7 +122,7 @@ public class Player : MonoBehaviour
         // 元に戻す
         IsInvincible = false;
         PlayerAnimator.SetBool("PowerUP", IsInvincible);
-        InvincibleBGM("stop");
+        invincibleBGM.Stop();
         taxRate -= 0.5f;
         taxRate = (taxRate < 0) ? 0 : taxRate;
         TotalInvModeCallCount = 0;
@@ -284,28 +278,6 @@ public class Player : MonoBehaviour
     {
         if(IsInvincible == true) return;
         HP -= 1;
-    }
-
-    void InvincibleBGM(string s)
-    {
-        if(s == "play") {
-            PlayerAudio.Play();
-            MenuManagerAudio.Stop();
-        } else {
-            PlayerAudio.Stop();
-            MenuManagerAudio.Play();
-        }
-    }
-
-    void InvincibleBGMLoopControl()
-    {
-        int LoopEndSamples = 302088;
-        int LoopLengthSamples = 278856;
-
-        if(PlayerAudio.timeSamples >= LoopEndSamples)
-        {
-            PlayerAudio.timeSamples -= LoopLengthSamples;
-        }
     }
 
     // unityroomで実行するときにplayerの位置が原点からずれてしまうため

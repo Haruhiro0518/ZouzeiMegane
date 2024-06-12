@@ -14,8 +14,7 @@ public class TaxArea : MonoBehaviour
     private Player player;
     private WaveGenerate waveGenerate;
     private TaxRateText taxRateText;
-    [SerializeField] private AudioSource TaxAreaAudio;
-    [SerializeField] private AudioClip se_IgnoreTaxArea;
+    private AudioManager audioManager;
     
     // ScriptableObject
     [SerializeField] ValueData data;
@@ -25,15 +24,16 @@ public class TaxArea : MonoBehaviour
         waveGenerate = GameObject.Find("WaveGenerator").GetComponent<WaveGenerate>();
         player = GameObject.Find("Player").GetComponent<Player>();
         taxRateText = GameObject.Find("TaxRateText").GetComponent<TaxRateText>();
+        audioManager = GameObject.Find("MainManager").GetComponent<AudioManager>();
         manageHPUI = gameObject.GetComponent<ManageHPUI>();
         sprite = gameObject.GetComponent<SpriteRenderer>();
 
         if(de_or_increase == "increase") {
-            sprite.color = new Color32(225, 70, 0, 90);
+            sprite.color = new Color32(225, 70, 0, 140);
             changeTaxRate = SelectChangeRate(player.taxRate);
             manageHPUI.ChangeText("増税\n<size=100>"+(changeTaxRate*100f).ToString()+"</size>%");
         } else if(de_or_increase == "decrease") {
-            sprite.color = new Color32(0, 202, 255, 90);
+            sprite.color = new Color32(0, 202, 255, 140);
             changeTaxRate = SelectChangeRate(player.taxRate);
             manageHPUI.ChangeText("減税\n<size=100>"+(changeTaxRate*100f).ToString()+"</size>%");
         }
@@ -76,6 +76,9 @@ public class TaxArea : MonoBehaviour
                 return;
             } else {
                 player.taxRate += changeTaxRate;
+                if(player.taxRate < 0f) {
+                    player.taxRate = 0f;
+                }
             }
             
             OnTaxRateChanged(changeTaxRate);
@@ -104,12 +107,14 @@ public class TaxArea : MonoBehaviour
     // 減税を検討する。検討すると、PlayerSpeedOffsetが増え、総理が加速する
     void IgnoreDecreaseTaxRate()
     {
-        TaxAreaAudio.PlayOneShot(se_IgnoreTaxArea);
+        
+        // TaxAreaAudio.Play();
+        audioManager.Play_ignoreTaxArea();
         manageHPUI.ChangeText("<size=120>検討</size>");
 
         player.PlayerSpeedOffset += 0.2f;
-        if(player.PlayerSpeedOffset > 1.5f) {
-            player.PlayerSpeedOffset = 1.5f;
+        if(player.PlayerSpeedOffset > 1.1f) {
+            player.PlayerSpeedOffset = 1.1f;
         }
         player.PlayerSpeed = player.SelectPlayerSpeed();
         player.Move();

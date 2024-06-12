@@ -11,7 +11,7 @@ public class Block : MonoBehaviour
     private float nextDamageDelay = 0.08f;
     private float DelayAfterDestroyed = 0.06f;
 
-    public bool haveGlasses;
+    private bool haveGlasses;
 
     private GameObject Player;
     private Player player;
@@ -25,9 +25,10 @@ public class Block : MonoBehaviour
     
     private GameObject scoreGUI;
     private Score scoreScript;
+    
     [SerializeField] private GameObject SEmoney;
-    [SerializeField] private AudioSource BlockAudio;
-
+    // [SerializeField] private AudioSource BlockAudio;
+    [SerializeField] private PlaySE playSE;
     [SerializeField] private ValueData data;
     
 
@@ -94,7 +95,7 @@ public class Block : MonoBehaviour
                     yield return new WaitForSeconds(DelayAfterDestroyed);
                 }
                 else {
-                    BlockAudio.Play();
+                    playSE.Play();
                     yield return new WaitForSeconds(nextDamageDelay);
                 }
             }

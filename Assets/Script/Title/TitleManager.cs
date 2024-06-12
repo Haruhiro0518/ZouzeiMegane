@@ -6,27 +6,15 @@ using UnityEngine.SceneManagement;
 
 public class TitleManager : MonoBehaviour
 {
-    [SerializeField, Header("オプションUI")]
-    private GameObject OptionUI;
-
-    [SerializeField, Header("スライダー")]
-    private GameObject Slider;
-
-    [SerializeField, Header("ヘルプUI")]
-    private GameObject HelpUI;
-    
     private AudioSource titleBGM;
-
-    public static float volumeValue = 0.5f;
 
     private void Start()
     {
         titleBGM = GetComponent<AudioSource>();
-        if(volumeValue != 0.5f)
-        {
-            titleBGM.volume = volumeValue;
-        }
+        titleBGM.volume = SettingManager.instance.volume_bgm;
         titleBGM.Play();
+        // SettingManager側からtitleBGMのAudioSource.volumeを変更するため、参照を渡す
+        SettingManager.instance.titleSource = titleBGM;
     }
 
     private void Update()
@@ -41,30 +29,8 @@ public class TitleManager : MonoBehaviour
 
     public void SelectStart()
     {
+        SettingManager.instance.SelectClose();
         SceneManager.LoadScene("Intro");
     }
-    
-    public void SelectOption()
-    {
-        OptionUI.SetActive(true);
-        HelpUI.SetActive(false);
-    }
 
-    public void SelectHelp()
-    {
-        OptionUI.SetActive(false);
-        HelpUI.SetActive(true);
-    }
-
-    public void SelectClose()
-    {
-        OptionUI.SetActive(false);
-        HelpUI.SetActive(false);
-    }
-
-    public void MoveSlider(float value)
-    {
-        volumeValue = value;
-        titleBGM.volume = value;
-    }
 }

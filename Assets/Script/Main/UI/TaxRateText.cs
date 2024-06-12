@@ -11,12 +11,15 @@ public class TaxRateText : MonoBehaviour
     private int display_taxRate;
     private bool IsChanging = false;
     [SerializeField] private Animator animator;
+    private AudioManager audioManager;
+
     [SerializeField] private AudioSource TaxRateTextAudio;
     [SerializeField] private AudioClip se_TaxRateUp;
     [SerializeField] private AudioClip se_TaxRateDown;
 
     void Start()
     {
+        audioManager = GameObject.Find("MainManager").GetComponent<AudioManager>();
         taxRateText = gameObject.GetComponent<TMPro.TMP_Text>();
         player = GameObject.Find("Player").GetComponent<Player>();
         display_taxRate = (int)(player.taxRate*100);
@@ -45,10 +48,10 @@ public class TaxRateText : MonoBehaviour
         
         if(display_taxRate < target) {
             animator.SetTrigger("scaleup");
-            TaxRateTextAudio.PlayOneShot(se_TaxRateUp);
+            audioManager.Play_TaxRateUp();
         } else if(display_taxRate > target) {
             animator.SetTrigger("scaledown");
-            TaxRateTextAudio.PlayOneShot(se_TaxRateDown);
+            audioManager.Play_TaxRateDown();
         }
 
         while(true)

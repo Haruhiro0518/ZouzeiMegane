@@ -63,6 +63,7 @@ public class WaveGenerate : MonoBehaviour
 
         // playerの位置から現在のステージチップインデックスを計算
         int charaPositionIndex = (int)(playerTransform.position.y / BlockHeight);
+        
         // 次のステージチップに入ったらステージの更新処理を行う
         if(charaPositionIndex + preInstantiateNum > currentTipIndex)
         {

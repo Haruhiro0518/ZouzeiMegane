@@ -13,15 +13,6 @@ public class MenuManager : MonoBehaviour
     
     [SerializeField, Header("ポーズUI")]
     private GameObject PauseUI;
-    
-    [SerializeField, Header("オプションUI")]
-    private GameObject OptionUI;
-
-    [SerializeField, Header("スライダー")]
-    private GameObject Slider;
-
-    [SerializeField, Header("ヘルプUI")]
-    private GameObject HelpUI;
 
     [SerializeField, Header("リザルトUI")]
     private GameObject ResultUI;
@@ -47,8 +38,6 @@ public class MenuManager : MonoBehaviour
     private TMPro.TMP_Text FinalState;
 
     private Score scoreScript;
-    
-    private AudioSource MainBGM;
 
     UnityEvent GameOverEvent = new UnityEvent();
 
@@ -56,9 +45,6 @@ public class MenuManager : MonoBehaviour
     {
         waveGenerate = WaveGenerator.GetComponent<WaveGenerate>();
         scoreScript = ScoreGUI.GetComponent<Score>();
-        MainBGM = GetComponent<AudioSource>();
-        MainBGM.volume = TitleManager.volumeValue;
-        MainBGM.Play();
 
         // event追加
         GameOverEvent.AddListener(OnGameOver);
@@ -66,13 +52,7 @@ public class MenuManager : MonoBehaviour
     
     void Update()
     {
-        if(MainBGM.time > 143.0f)
-        {
-            MainBGM.Stop();
-            MainBGM.time = 0.48f;
-            MainBGM.Play();
-        }
-
+        
         if(waveGenerate.IsGameOver==true || waveGenerate.IsGameClear==true)
         {
             GameOverEvent.Invoke();
@@ -88,22 +68,6 @@ public class MenuManager : MonoBehaviour
     {
         Time.timeScale = 0;
         PauseUI.SetActive(true);
-        OptionUI.SetActive(false);
-        HelpUI.SetActive(false);
-    }
-
-    public void SelectOption()
-    {
-        PauseUI.SetActive(false);
-        OptionUI.SetActive(true);
-        HelpUI.SetActive(false);
-    }
-
-    public void SelectHelp()
-    {
-        PauseUI.SetActive(false);
-        OptionUI.SetActive(false);
-        HelpUI.SetActive(true);
     }
 
     public void SelectRetry()
@@ -111,6 +75,7 @@ public class MenuManager : MonoBehaviour
         Time.timeScale = 1;
         waveGenerate.IsGameOver = false;
         waveGenerate.IsGameClear = false;
+        SettingManager.instance.mainSource.Clear(); // Addする前にClearを読んでおく
         SceneManager.LoadScene("Main");
     }
 
@@ -118,6 +83,7 @@ public class MenuManager : MonoBehaviour
     {
         Time.timeScale = 1;
         waveGenerate.IsGameOver = false;
+        SettingManager.instance.mainSource.Clear();
         SceneManager.LoadScene("Title");
     }
 
@@ -125,14 +91,7 @@ public class MenuManager : MonoBehaviour
     {
         Time.timeScale = 1;
         PauseUI.SetActive(false);
-        OptionUI.SetActive(false);
-        HelpUI.SetActive(false);
-    }
-
-    public void MoveSlider(float value)
-    {
-        TitleManager.volumeValue = value;
-        MainBGM.volume = value;
+        SettingManager.instance.SelectClose();
     }
 
     // GameOver時にCSVを読み込み、Tipsオブジェクトのテキストを変更する

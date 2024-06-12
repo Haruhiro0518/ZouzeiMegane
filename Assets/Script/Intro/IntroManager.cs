@@ -19,9 +19,6 @@ public class IntroManager : MonoBehaviour
     [SerializeField, Header("オプションUI")]
     private GameObject OptionUI;
 
-    [SerializeField, Header("スライダー")]
-    private GameObject Slider;
-
     [SerializeField, Header("総理アニメーター")]
     Animator PlayerAnimator;
 
@@ -67,8 +64,11 @@ public class IntroManager : MonoBehaviour
         NonPlayerAnimator.SetBool("talking", !talking);
         Text1.SetActive(true);
         introBGM = GetComponent<AudioSource>();
-        introBGM.volume = TitleManager.volumeValue;
+        introBGM.volume = SettingManager.instance.volume_bgm;
         introBGM.Play();
+
+        // SettingManager側からtitleBGMのAudioSource.volumeを変更するため、参照を渡す
+        SettingManager.instance.introSource = introBGM;
     }
 
     void Update()
@@ -88,6 +88,7 @@ public class IntroManager : MonoBehaviour
 
         if(state > 7)
         {
+            SettingManager.instance.SelectClose();
             SceneManager.LoadScene("Main");
         }
         else
@@ -151,24 +152,9 @@ public class IntroManager : MonoBehaviour
         }
     }
 
-    public void SelectOption()
-    {
-        OptionUI.SetActive(true);
-    }
-
     public void SelectSkip()
     {
+        SettingManager.instance.SelectClose();
         SceneManager.LoadScene("Main");
-    }
-
-    public void SelectClose()
-    {
-        OptionUI.SetActive(false);
-    }
-
-    public void MoveSlider(float value)
-    {
-        TitleManager.volumeValue = value;
-        introBGM.volume = value;
     }
 }

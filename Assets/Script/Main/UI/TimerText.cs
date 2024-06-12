@@ -23,7 +23,6 @@ public class TimerText : MonoBehaviour
         waveGenerate = GameObject.Find("WaveGenerator").GetComponent<WaveGenerate>();
     }
 
-
     void Update()
     {
         if(waveGenerate.IsGameOver == true) {
@@ -41,13 +40,13 @@ public class TimerText : MonoBehaviour
         timerText.SetText("<size=40>"+year.ToString()+"年目："+season+"</size>");
     }
 
+    int previous_y = 1, previous_s = 0, y, s;
     void DecideYearandSeason()
     {
-        int pre_y = 1, pre_s = 0, y, s;
         // (int)は小数切り捨て
         y = (int)(timecount / yearLength) + 1;
-        if(y != pre_y) {
-            pre_y = y;
+        if(y != previous_y) {
+            previous_y = y;
             switch (y) {
             case 1:
                 year = 1;
@@ -61,10 +60,10 @@ public class TimerText : MonoBehaviour
             }
         }
         
-
         s = ((int)(timecount / seasonLength)) % 4;
-        if(s != pre_s) {
-            pre_s = s;
+
+        if(s != previous_s) {
+            previous_s = s;
             OnSeasonChanged(s);
         }
     }

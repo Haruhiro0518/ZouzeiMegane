@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 8155273615981893098}
   - component: {fileID: 1473301947738302580}
   - component: {fileID: 7479456535432507505}
+  - component: {fileID: 122537469175891908}
   m_Layer: 7
   m_Name: Player
   m_TagString: Player
@@ -55,7 +56,7 @@ MonoBehaviour:
   SEbomb: {fileID: 8419151684535043104, guid: 4bba35bf5611a7643b714807220ff252, type: 3}
   FXsmoke: {fileID: 1967835574231978638, guid: 3e196c9e632c76841a71cb6e2dc6d010, type: 3}
   PlayerAnimator: {fileID: 8155273615981893098}
-  PlayerAudio: {fileID: 7479456535432507505}
+  invincibleBGM: {fileID: 122537469175891908}
   data: {fileID: 11400000, guid: 43cdf7a1cb2580243821ffe6f0584c9b, type: 2}
 --- !u!114 &3255432795032707520
 MonoBehaviour:
@@ -301,6 +302,20 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &122537469175891908
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 41268940414192548}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3f75c00ba478f8542983eaad6d1e066d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerAudio: {fileID: 7479456535432507505}
+  player: {fileID: 2437936833927147167}
 --- !u!1 &6811534406504168312
 GameObject:
   m_ObjectHideFlags: 0

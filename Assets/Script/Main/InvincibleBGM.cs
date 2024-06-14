@@ -15,6 +15,7 @@ public class InvincibleBGM : MonoBehaviour
         main_bgm = GameObject.Find("MainManager").GetComponent<AudioManager>().main_bgm;
         // SettingManager側からplayerのAudioSource.volumeを変更するため、参照を渡す
         SettingManager.instance.mainSource.Add(playerAudio);
+        playerAudio.volume = SettingManager.instance.volume_bgm;
     }
 
     void Update()

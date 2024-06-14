@@ -5,7 +5,6 @@ using UnityEngine;
 public class PlaySE : MonoBehaviour
 {
     [SerializeField] AudioSource source;
-    [SerializeField] private float volume_offset;
 
     void Start()
     {
@@ -14,7 +13,7 @@ public class PlaySE : MonoBehaviour
 
     public void Play()
     {
-        source.volume = SettingManager.instance.volume_se + volume_offset;
+        source.volume = SettingManager.instance.volume_se;
         source.Play();
     }
 

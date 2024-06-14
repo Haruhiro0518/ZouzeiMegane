@@ -12,12 +12,12 @@ public class AudioManager : MonoBehaviour
     AudioSource TaxArea;
     [SerializeField]
     AudioClip TaxRateUp, TaxRateDown, ignoreTaxArea;
-    [SerializeField]
-    float TaxArea_offset, main_bgm_offset;
 
     void Start()
     {
-        PlayBGM(main_bgm, main_bgm_offset);
+        main_bgm.volume = SettingManager.instance.volume_bgm;
+        TaxArea.volume = SettingManager.instance.volume_bgm;
+        main_bgm.Play();
         // SettingManager側からmain_bgmのAudioSource.volumeを変更するため、参照を渡す
         SettingManager.instance.mainSource.Add(main_bgm);
     }
@@ -28,43 +28,35 @@ public class AudioManager : MonoBehaviour
         {
             main_bgm.Stop();
             main_bgm.time = 0.48f;
-            PlayBGM(main_bgm, main_bgm_offset);
+            PlayBGM(main_bgm);
         }
     }
     
-    void PlayBGM(AudioSource source, float offset)
+    void PlayBGM(AudioSource source)
     {
-        if(SettingManager.instance.volume_bgm > 0f) {
-            source.volume = SettingManager.instance.volume_bgm + offset;
-        } else {
-            source.volume = 0f;
-        }
+        source.volume = SettingManager.instance.volume_bgm;
         source.Play();
     }
-    void PlaySE(AudioSource source, AudioClip clip, float offset)
+    void PlaySE(AudioSource source, AudioClip clip)
     {
-        if(SettingManager.instance.volume_se > 0f) {
-            source.volume = SettingManager.instance.volume_se + offset;
-        } else {
-            source.volume = 0f;
-        }
+        source.volume = SettingManager.instance.volume_se;
         source.PlayOneShot(clip);
     }
 
 
     public void Play_ignoreTaxArea()
     {
-        PlaySE(TaxArea, ignoreTaxArea, TaxArea_offset);
+        PlaySE(TaxArea, ignoreTaxArea);
     }
     // TaxRateUpDonwの再生はTaxRateTextオブジェクト(UIキャンバス内)から呼び出される
     public void Play_TaxRateUp()
     {
-        PlaySE(TaxArea, TaxRateUp, TaxArea_offset);
+        PlaySE(TaxArea, TaxRateUp);
     }
 
     public void Play_TaxRateDown()
     {
-        PlaySE(TaxArea, TaxRateDown, TaxArea_offset);
+        PlaySE(TaxArea, TaxRateDown);
     }
 
 

@@ -25,11 +25,11 @@ public class SettingManager : MonoBehaviour
         DontDestroyOnLoad(gameObject.transform.parent);
     }
 
-    [SerializeField] GameObject slider_bgm, slider_se, slider_sens, close_button;
+    [SerializeField] GameObject slider_bgm, slider_se, slider_sens, close_button, bg_canvas;
     [SerializeField] TextSensitivity textSensitivity;
-    public float volume_bgm = 1f;
-    public float volume_se = 1f;
-    public float dragSensitivity = 0f;
+    [System.NonSerialized] public float volume_bgm = 0.5f;
+    [System.NonSerialized] public float volume_se = 0.5f;
+    [System.NonSerialized] public float dragSensitivity = 0f;
 
     public void SelectClose()
     {
@@ -39,6 +39,7 @@ public class SettingManager : MonoBehaviour
         slider_se.SetActive(false);
         slider_sens.SetActive(false);
         close_button.SetActive(false);
+        bg_canvas.SetActive(false);
     }
 
     public void SelectOpen()
@@ -48,10 +49,11 @@ public class SettingManager : MonoBehaviour
         slider_se.SetActive(true);
         slider_sens.SetActive(true);
         close_button.SetActive(true);
+        bg_canvas.SetActive(true);
     }
 
-    public AudioSource titleSource, introSource; 
-    public List<AudioSource> mainSource = new List<AudioSource>(); 
+    [System.NonSerialized] public AudioSource titleSource, introSource; 
+    [System.NonSerialized] public List<AudioSource> mainSource = new List<AudioSource>(); 
 
     public void MoveSlider_bgm(float value)
     {

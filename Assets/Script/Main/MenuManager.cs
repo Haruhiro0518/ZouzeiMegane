@@ -11,8 +11,8 @@ public class MenuManager : MonoBehaviour
     [SerializeField, Header("ポーズボタン")]
     private GameObject PauseButton;
     
-    [SerializeField, Header("ポーズUI")]
-    private GameObject PauseUI;
+    [SerializeField, Header("メニューUI")]
+    private GameObject MenuUI;
 
     [SerializeField, Header("リザルトUI")]
     private GameObject ResultUI;
@@ -66,8 +66,12 @@ public class MenuManager : MonoBehaviour
     
     public void SelectPause()
     {
-        Time.timeScale = 0;
-        PauseUI.SetActive(true);
+        if(MenuUI.activeSelf == false) {
+            Time.timeScale = 0;
+            MenuUI.SetActive(true);
+        } else {
+            this.SelectClose();
+        }
     }
 
     public void SelectRetry()
@@ -90,7 +94,7 @@ public class MenuManager : MonoBehaviour
     public void SelectClose()
     {
         Time.timeScale = 1;
-        PauseUI.SetActive(false);
+        MenuUI.SetActive(false);
         SettingManager.instance.SelectClose();
     }
 

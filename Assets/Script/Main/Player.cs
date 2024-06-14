@@ -6,26 +6,6 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    // 当たり判定調整に使うレイヤーマスク
-    private int layermask;
-    
-    // マウスドラッグ処理
-    private float previousPosX;
-    private float currentPosX;
-
-    // x座標をclampするときの最小値、最大値
-    private float xMin;
-    private float xMax;
-
-    // 当たり判定に使う定数
-    private const float ColliderRadius = 0.1965f;
-    private const float PlayerScale = 0.195f;
-    private const float colYoffset = 0.8f * PlayerScale;
-    private const float colXoffset = 0.1f * PlayerScale;
-    private float displayWidth = 2.8f;
-    // 横から接触しないための隙間
-    private float space = 0.05f;
-    
     // playerのパラメータ
     [System.NonSerialized] public int HP = 50;
     [System.NonSerialized] public float PlayerSpeed = OriginalPlayerSpeed;
@@ -50,6 +30,7 @@ public class Player : MonoBehaviour
     [SerializeField] private GameObject FXsmoke;
     [SerializeField] Animator PlayerAnimator;
     [SerializeField] private InvincibleBGM invincibleBGM;
+    [SerializeField] private DragPlayer dragPlayer;
 
     [SerializeField] ValueData data;
     void Awake()
@@ -62,16 +43,12 @@ public class Player : MonoBehaviour
     {
         manageHPUI = gameObject.GetComponent<ManageHPUI>();
         
-        // playerのlayer7とitemのlayer9, taxareaのlayer10, insidescreenのlayer11を無視する
-        layermask = (1 + 4 + 8 + 16) << 7;
-        layermask = ~layermask;
-
         Move();
     }
 
     void Update()
     {
-        MoveDrag();
+        dragPlayer.Drag();
         if(init_player_pos == true) DebugPos();
 
         manageHPUI.ChangeText(HP.ToString());
@@ -82,6 +59,12 @@ public class Player : MonoBehaviour
         if(waveGenerate.IsGameClear == true) {
             PlayerSpeed = 0f;
         }   
+    }
+
+    // 上向きに移動
+    public void Move()
+    {
+        GetComponent<Rigidbody2D>().velocity = transform.up * PlayerSpeed;
     }
 
     // InvicibleMode()をコルーチンにすると, blockが削除されたときにWaitFoSecondsがなくなるため、
@@ -155,6 +138,7 @@ public class Player : MonoBehaviour
             StartCoroutine(WaitCollisionExit());
         }
     }
+
     // CameraMoveupOrDown()を想定通りに呼び出すための処理
     // (詳細：Playerが素早く現在のブロックから隣のブロックに移動したとき、衝突の個数は1->0->1となってしまい
     // CollisionEnter2Dでのコルーチンが2回呼ばれてしまう。衝突の個数を1->wait->2と変化させると1度しか呼ばれない)
@@ -210,68 +194,6 @@ public class Player : MonoBehaviour
             selectedSpeed = 5.0f;
         }
         return (selectedSpeed + PlayerSpeedOffset);
-    }
-
-    // 上向きに移動
-    public void Move()
-    {
-        GetComponent<Rigidbody2D>().velocity = transform.up * PlayerSpeed;
-    }
-
-    // ドラッグ処理
-    void MoveDrag() 
-    {
-        if(Time.timeScale == 0) return;
-
-        // mouse左ボタンを押したとき
-        if (Input.GetMouseButtonDown(0)) {
-            previousPosX = Input.mousePosition.x;
-            
-        }
-        // mouse左ボタンを押している間
-        if(Input.GetMouseButton(0)) {
-            
-            currentPosX = Input.mousePosition.x;
-            // 移動距離の計算　Screen.widthで割って1に正規化. 定数をかけて,マウスの移動とplayerが一致
-            float diffDistance = (currentPosX - previousPosX) / Screen.width * displayWidth*2;
-
-            UpdateXminXmax();
-            Vector2 pos = transform.position;
-            pos.x = Mathf.Clamp(pos.x + diffDistance,  xMin,  xMax);
-            transform.position = pos;
-
-            // タップ位置を更新
-            previousPosX = currentPosX;
-        } 
-    }
-
-    // プレイヤーの球コライダーの上部と下部から、水平方向にレイキャストを伸ばす
-    // レイキャストがぶつかったブロックの端の座標をclampするx座標のxmin / xmaxとする
-    void UpdateXminXmax()
-    {
-
-        RaycastHit2D topL = Physics2D.Raycast(transform.position+new Vector3(colXoffset,colYoffset+ColliderRadius-space*2,0), Vector2.left, displayWidth*2, layermask);
-        RaycastHit2D topR = Physics2D.Raycast(transform.position+new Vector3(colXoffset,colYoffset+ColliderRadius-space*2,0), Vector2.right, displayWidth*2, layermask);
-        RaycastHit2D botL = Physics2D.Raycast(transform.position+new Vector3(colXoffset,colYoffset-ColliderRadius-space,0), Vector2.left, displayWidth*2, layermask);
-        RaycastHit2D botR = Physics2D.Raycast(transform.position+new Vector3(colXoffset,colYoffset-ColliderRadius-space,0), Vector2.right, displayWidth*2, layermask);
-
-        
-        if(topL.collider != null || botL.collider != null) {
-            
-            if(botL.collider != null) xMin = botL.point.x + ColliderRadius - colXoffset + space;
-            else xMin = topL.point.x + ColliderRadius - colXoffset + space;
-        } else {
-            xMin = -displayWidth + ColliderRadius - colXoffset;
-        }
-        
-
-        if(topR.collider != null || botR.collider != null) {
-            if(botR.collider != null) xMax = botR.point.x - ColliderRadius - colXoffset - space;
-            else xMax = topR.point.x - ColliderRadius - colXoffset - space; 
-        } else {
-            xMax = displayWidth - ColliderRadius - colXoffset;
-        }
-
     }
 
     public void DecreaseHP()

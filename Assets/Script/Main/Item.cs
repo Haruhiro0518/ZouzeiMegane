@@ -32,8 +32,8 @@ public class Item : MonoBehaviour
         // playerとの衝突のみ考える
         ComputePlayerHP();
 
-        manageHPUI.DestroyText();
         Instantiate(SEitem);
+        manageHPUI.DestroyText();
         Destroy(gameObject);
     }
 

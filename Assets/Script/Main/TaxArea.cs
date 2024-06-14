@@ -113,8 +113,8 @@ public class TaxArea : MonoBehaviour
         manageHPUI.ChangeText("<size=120>検討</size>");
 
         player.PlayerSpeedOffset += 0.2f;
-        if(player.PlayerSpeedOffset > 1.1f) {
-            player.PlayerSpeedOffset = 1.1f;
+        if(player.PlayerSpeedOffset > 1.0f) {
+            player.PlayerSpeedOffset = 1.0f;
         }
         player.PlayerSpeed = player.SelectPlayerSpeed();
         player.Move();

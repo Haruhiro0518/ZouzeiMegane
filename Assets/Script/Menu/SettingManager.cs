@@ -10,10 +10,8 @@ using UnityEngine.SceneManagement;
 
 public class SettingManager : MonoBehaviour
 {
-
     public static SettingManager instance; 
-    public AudioSource titleSource, introSource; 
-    public List<AudioSource> mainSource = new List<AudioSource>(); 
+    
     // シングルトン
     private void Awake()
     {
@@ -27,9 +25,11 @@ public class SettingManager : MonoBehaviour
         DontDestroyOnLoad(gameObject.transform.parent);
     }
 
+    [SerializeField] GameObject slider_bgm, slider_se, slider_sens, close_button;
+    [SerializeField] TextSensitivity textSensitivity;
     public float volume_bgm = 1f;
     public float volume_se = 1f;
-    [SerializeField] GameObject slider_bgm, slider_se, close_button;
+    public float dragSensitivity = 0f;
 
     public void SelectClose()
     {
@@ -37,6 +37,7 @@ public class SettingManager : MonoBehaviour
         gameObject.GetComponent<Image>().enabled = false;
         slider_bgm.SetActive(false);
         slider_se.SetActive(false);
+        slider_sens.SetActive(false);
         close_button.SetActive(false);
     }
 
@@ -45,8 +46,12 @@ public class SettingManager : MonoBehaviour
         gameObject.GetComponent<Image>().enabled = true;
         slider_bgm.SetActive(true);
         slider_se.SetActive(true);
+        slider_sens.SetActive(true);
         close_button.SetActive(true);
     }
+
+    public AudioSource titleSource, introSource; 
+    public List<AudioSource> mainSource = new List<AudioSource>(); 
 
     public void MoveSlider_bgm(float value)
     {
@@ -79,6 +84,32 @@ public class SettingManager : MonoBehaviour
         volume_se = value;
         if(slider_bgm != null) {
             slider_se.GetComponent<Slider>().value = volume_se;
+        }
+    }
+
+    // 5段階の値をとるドラッグ感度のスライダー
+    public void MoveSlider_sens(float value)
+    {
+        float v;
+        if(value < 0.25f) {
+            v = 0f;
+        } else if(value >= 0.25f && value < 0.5f) {
+            v = 0.25f;
+        } else if(value >= 0.5f && value < 0.75f) {
+            v = 0.5f;
+        } else if(value >= 0.75f && value < 1.0f) {
+            v = 0.75f;
+        } else {
+            v = 1f;
+        }
+        textSensitivity.SetText(v);
+        slider_sens.GetComponent<Slider>().value = v;
+        dragSensitivity = v;
+
+        string scenename = SceneManager.GetActiveScene().name;
+        if(scenename == "Main") {
+            GameObject.Find("Player").GetComponent<DragPlayer>().sensitivity 
+                                                        = dragSensitivity;
         }
     }
 }

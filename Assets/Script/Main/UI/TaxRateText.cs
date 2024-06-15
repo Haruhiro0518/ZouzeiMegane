@@ -13,10 +13,6 @@ public class TaxRateText : MonoBehaviour
     [SerializeField] private Animator animator;
     private AudioManager audioManager;
 
-    [SerializeField] private AudioSource TaxRateTextAudio;
-    [SerializeField] private AudioClip se_TaxRateUp;
-    [SerializeField] private AudioClip se_TaxRateDown;
-
     void Start()
     {
         audioManager = GameObject.Find("MainManager").GetComponent<AudioManager>();

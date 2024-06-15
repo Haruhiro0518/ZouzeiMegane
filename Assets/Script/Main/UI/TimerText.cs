@@ -16,14 +16,14 @@ public class TimerText : MonoBehaviour
     private string season = "春";
 
     [SerializeField] ChangeBgColor changeBgColor;
-    [SerializeField] PlayParticle playParticle;
+    [SerializeField] SeasonParticle seasonParticle;
     
 
     void Start()
     {
         waveGenerate = GameObject.Find("WaveGenerator").GetComponent<WaveGenerate>();
 
-        playParticle.Play(0, seasonLength);
+        seasonParticle.Play(0, seasonLength);
     }
 
     void Update()
@@ -68,7 +68,7 @@ public class TimerText : MonoBehaviour
         if(s != previous_s) {
             previous_s = s;
             OnSeasonChanged(s);
-            playParticle.Play(s, seasonLength);
+            seasonParticle.Play(s, seasonLength);
         }
     }
 

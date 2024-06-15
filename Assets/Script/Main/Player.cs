@@ -48,9 +48,6 @@ public class Player : MonoBehaviour
 
     void Update()
     {
-        dragPlayer.Drag();
-        if(init_player_pos == true) DebugPos();
-
         manageHPUI.ChangeText(HP.ToString());
 
         if(HP < 0) {
@@ -58,7 +55,8 @@ public class Player : MonoBehaviour
         }
         if(waveGenerate.IsGameClear == true) {
             PlayerSpeed = 0f;
-        }   
+        } 
+        dragPlayer.Drag();
     }
 
     // 上向きに移動
@@ -202,14 +200,4 @@ public class Player : MonoBehaviour
         HP -= 1;
     }
 
-    // unityroomで実行するときにplayerの位置が原点からずれてしまうため
-    // 最初にプレイヤーを原点に配置する。OnEnableとかStartで修正できないか試す
-    private bool init_player_pos = true;
-    void DebugPos()
-    {
-        Vector3 pos = new Vector3(0,0,0);
-        gameObject.transform.position = pos;
-
-        init_player_pos = false;
-    }
 }

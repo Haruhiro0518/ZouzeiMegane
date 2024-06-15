@@ -6,38 +6,23 @@ using UnityEngine.SceneManagement;
 using unityroom.Api;
 using UnityEngine.Events;
 
+// Menu UIの操作、ゲームオーバー・ゲームクリア時の処理をするクラス
+
 public class MenuManager : MonoBehaviour
 {
-    [SerializeField, Header("ポーズボタン")]
-    private GameObject PauseButton;
+    [SerializeField]
+    private GameObject PauseButton, MenuUI, ResultUI, WaveGenerator, 
+                        ScoreGUI, TopUI, BottomUI;
+    [SerializeField]
+    private TMPro.TMP_Text Tips, FinalState;
+
+    [SerializeField] ClearParticle clearParticle;
+    [SerializeField] AudioManager audioManager;
     
-    [SerializeField, Header("メニューUI")]
-    private GameObject MenuUI;
-
-    [SerializeField, Header("リザルトUI")]
-    private GameObject ResultUI;
-
-    [SerializeField, Header("ウェーブ生成オブジェクト")] 
-    private GameObject WaveGenerator;
-
     private WaveGenerate waveGenerate;
-
-    [SerializeField, Header("スコアオブジェクト")] 
-    private GameObject ScoreGUI;
-
-    [SerializeField, Header("上部UI")] 
-    private GameObject TopUI;
-
-    [SerializeField, Header("下部UI")] 
-    private GameObject ButtomUI;
-
-    [SerializeField, Header("リザルトコメント")]
-    private TMPro.TMP_Text Tips;
-
-    [SerializeField, Header("最終状態テキスト")]
-    private TMPro.TMP_Text FinalState;
-
     private Score scoreScript;
+    private Player player;
+    
 
     UnityEvent GameOverEvent = new UnityEvent();
 
@@ -45,6 +30,7 @@ public class MenuManager : MonoBehaviour
     {
         waveGenerate = WaveGenerator.GetComponent<WaveGenerate>();
         scoreScript = ScoreGUI.GetComponent<Score>();
+        player = GameObject.Find("Player").GetComponent<Player>();
 
         // event追加
         GameOverEvent.AddListener(OnGameOver);
@@ -52,15 +38,9 @@ public class MenuManager : MonoBehaviour
     
     void Update()
     {
-        
         if(waveGenerate.IsGameOver==true || waveGenerate.IsGameClear==true)
         {
             GameOverEvent.Invoke();
-            
-            #if Unity_Room
-            UnityroomApiClient.Instance.SendScore(1, scoreScript.score, ScoreboardWriteMode.HighScoreDesc);
-            #endif
-
         }
     }
     
@@ -79,7 +59,8 @@ public class MenuManager : MonoBehaviour
         Time.timeScale = 1;
         waveGenerate.IsGameOver = false;
         waveGenerate.IsGameClear = false;
-        SettingManager.instance.mainSource.Clear(); // Addする前にClearを読んでおく
+        // Mainシーンを読み込む前にmainSourceリストをClearする必要がある. 読み込むたびにAddするため
+        SettingManager.instance.mainSource.Clear(); 
         SceneManager.LoadScene("Main");
     }
 
@@ -107,22 +88,51 @@ public class MenuManager : MonoBehaviour
         csvreader.ReadCSV();
         csvreader.SetupText(Tips);
         
-        StartCoroutine(WaitForResult());
         GameOverEvent.RemoveListener(OnGameOver);
+
+        if(waveGenerate.IsGameClear == true) {
+            audioManager.Play_Popper();
+            clearParticle.Play();
+        }
+        StartCoroutine(WaitForResult());
     }
+
+    
     IEnumerator WaitForResult()
     {
-        yield return new WaitForSeconds(2.0f);
+        yield return new WaitForSeconds(3.0f);
+
+        float send_score;
         Time.timeScale = 0;
+
+        if(waveGenerate.IsGameOver == true) {
+            send_score = scoreScript.score;
+            SetFinalScore(scoreScript.score, 0f, scoreScript.score);
+            FinalState.SetText("<size=55>＜解散＞</size>");
+        } 
+        else {
+            // クリア時の最終スコアは   集めた税 + 支持者の数*5[億](寄付金)  とする
+            send_score = scoreScript.score + (player.HP * 5);
+            SetFinalScore(scoreScript.score, (player.HP * 5), send_score);
+            FinalState.SetText("<size=55>＜任期満了！＞</size>");
+        }
+        
         PauseButton.SetActive(false);
         TopUI.SetActive(false);
-        ButtomUI.SetActive(false);
+        BottomUI.SetActive(false);
         ResultUI.SetActive(true);
-
-        if(waveGenerate.IsGameOver==true) {
-            FinalState.SetText("<size=55>解散</size>");
-        } else if(waveGenerate.IsGameClear==true) {
-            FinalState.SetText("<size=55>任期満了！</size>");
-        }
+        
+        // スコア送信
+        #if Unity_Room
+        UnityroomApiClient.Instance.SendScore(1, send_score, ScoreboardWriteMode.HighScoreDesc);
+        #endif
+    }
+    
+    [SerializeField] TMPro.TMP_Text Tax_score, Donation_score, FinalScore;
+    void SetFinalScore(float tax, float donation, float final)
+    {
+        Tax_score.SetText("<size=36>"+ tax.ToString() +"億</size>");
+        Donation_score.SetText("<size=36>"+ donation.ToString() +"億</size>");
+        FinalScore.SetText("<size=90>"+ final.ToString() +"億</size>");
     }
 }

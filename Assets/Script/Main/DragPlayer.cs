@@ -16,6 +16,7 @@ public class DragPlayer : MonoBehaviour
         layermask = ~layermask;
 
         sensitivity = SettingManager.instance.dragSensitivity;
+        if(init_player_pos == true) DebugPos();
     }
 
     private float previousPosX;
@@ -90,5 +91,16 @@ public class DragPlayer : MonoBehaviour
             xMax = displayWidth - ColliderRadius - colXoffset;
         }
 
+    }
+
+    // unityroomで実行するときにplayerの位置が原点からずれてしまうため
+    // 最初にプレイヤーを原点に配置する。
+    private bool init_player_pos = true;
+    void DebugPos()
+    {
+        Vector3 pos = new Vector3(0,0,0);
+        gameObject.transform.position = pos;
+
+        init_player_pos = false;
     }
 }

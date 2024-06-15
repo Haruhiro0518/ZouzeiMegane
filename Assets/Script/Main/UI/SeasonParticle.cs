@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayParticle : MonoBehaviour
+public class SeasonParticle : MonoBehaviour
 {
     [SerializeField] 
     ParticleSystem sakuraParticle, leafParticle, mapleParticle, snowParticle;

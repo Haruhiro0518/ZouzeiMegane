@@ -2,34 +2,38 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// Playerがブロック1つの高さ移動するごとに、ウェーブを生成するクラス
+
 public class WaveGenerate : MonoBehaviour
 {
-    // 自動生成したいオブジェクトの端から端までの座標の大きさ
+    // インデックスの高さ
     private const float BlockHeight = 1.1f;
     // プレイ画面中に存在する行の数
     private const int maxRawInScreen = 10;
-    // ちょうど画面の上からオブジェクト生成するためのオフセット
+    // PlayerからMainCamera上部までの高さ
     private const float offset = 7.55f;
 
     private GameObject Player;
     private Transform playerTransform;
-    public GameObject PlayerPrefab;
+    [SerializeField] private GameObject PlayerPrefab;
 
-    // ステージの配列. プレハブをいれておく 
+    // ウェーブの配列. プレハブをいれておく 
     public GameObject[] WavePrefabs;
-    // 初めのTipIndex
-    public int startTipIndex;
-    // 現在のTipIndex
-    int currentTipIndex;
-    // ステージ生成の先読み個数
-    private int preInstantiateNum = 2;
-    // 作ったステージの保持リスト
+
+    // 初めにウェーブを生成する位置のインデックス
+    private const int startTipIndex = 0;
+    // ウェーブ生成位置を指定するインデックス
+    private int currentTipIndex;
+    // 画面外であらかじめ生成しておくウェーブ数
+    private const int preInstantiateNum = 2;
+    // 作ったウェーブの保持リスト
     public List<GameObject> GeneratedWaveList = new List<GameObject>(13);
 
     // 行数を数えて、その値を参考に生成するオブジェクトを変える
     private int rawCount_full;
     private int rawCount_tax;
 
+    // WavePrefabs[]に格納されているプレハブに上から名前を付ける
     public enum kindsOfWaves {
         full,
         random,
@@ -52,8 +56,10 @@ public class WaveGenerate : MonoBehaviour
     void Start()
     {
         IsGameOver = false;
-        currentTipIndex = startTipIndex - 1;
-        UpdateStage(preInstantiateNum);
+        currentTipIndex = startTipIndex - 1; // TipIndex(0-1=-1)まで生成していたことにする
+        if(preInstantiateNum > currentTipIndex) {
+            UpdateWave(preInstantiateNum);
+        }
     }
 
     
@@ -61,33 +67,35 @@ public class WaveGenerate : MonoBehaviour
     {
         if(IsGameOver == true || IsGameClear == true) return;
 
-        // playerの位置から現在のステージチップインデックスを計算
-        int charaPositionIndex = (int)(playerTransform.position.y / BlockHeight);
+        // 現在のプレイヤー位置のインデックス.(player.posy=0だから初期値は0)
+        int playerPosIndex = (int)(playerTransform.position.y / BlockHeight);
         
-        // 次のステージチップに入ったらステージの更新処理を行う
-        if(charaPositionIndex + preInstantiateNum > currentTipIndex)
+        // 左辺は次のウェーブを生成するインデックス。右辺は現在最も新しいウェーブを生成したインデックス
+        if(playerPosIndex + preInstantiateNum > currentTipIndex)
         {
-            UpdateStage(charaPositionIndex + preInstantiateNum);
+            UpdateWave(playerPosIndex + preInstantiateNum);
         }
     }
 
 
-    // 指定のインデックスまでのステージを生成して、管理下に置く
-    void UpdateStage(int toTipIndex)
+    // 指定のインデックスまでのウェーブを生成して、管理下に置く
+    void UpdateWave(int toTipIndex)
     {
-        if(toTipIndex <= currentTipIndex) return;
+        if(currentTipIndex == toTipIndex) return;
+
+        // currentTipIndex（ウェーブ生成位置）を 前回のウェーブ更新のtoTipIndex から1つ上の位置とする
+        currentTipIndex++;
 
         // 指定のステージチップまで生成
-        for(int i = currentTipIndex + 1; i <= toTipIndex; i++) {
+        for(int i = currentTipIndex; i <= toTipIndex; i++) {
             // 行数をカウント
             rawCount_full++;
             rawCount_tax++;
-            // Debug.Log("full count:"+rawCount_full+"::: tax count:"+rawCount_tax);
 
             GameObject waveObject = GenerateWave(i);
             GeneratedWaveList.Add(waveObject);
         }
-        // 同時に存在することができるステージの個数を超えている場合, ステージ削除
+        // 同時に存在することができるウェーブ数を超えている場合, 古いウェーブから削除
         while(GeneratedWaveList.Count > preInstantiateNum + maxRawInScreen) {
             DestroyOldWave();
         }
@@ -95,7 +103,7 @@ public class WaveGenerate : MonoBehaviour
     }
 
 
-    // 指定のインデックス位置にstageオブジェクトを生成
+    // 指定のインデックス位置にウェーブを生成
     GameObject GenerateWave(int tipIndex)
     {
         // prefabsの中からどのプレハブを生成するかを選ぶ
@@ -111,10 +119,9 @@ public class WaveGenerate : MonoBehaviour
     }
 
 
-    // 生成するステージの選択
+    // 生成するウェーブの選択
     // waveが生成されるたびにrawCount_full / _tax変数がインクリメントされているため、
     // それぞれが数える行数に応じて、nextWavePrefabを決定する。
-    // kindsOfWavesはWavePrefabs[]に格納されているプレハブの順番に等しい。
     int nextWavePrefab;
     int random_sel;
     Stack<int> stack = new Stack<int>();
@@ -126,6 +133,7 @@ public class WaveGenerate : MonoBehaviour
             return nextWavePrefab = stack.Pop();
         }
         
+        // fullを生成するか判定
         if(rawCount_full < 10)
         {
             nextWavePrefab = Push_WaveRandom();
@@ -147,6 +155,7 @@ public class WaveGenerate : MonoBehaviour
             return nextWavePrefab;
         }
 
+        // taxを生成するか判定.
         // rawCount_tax 20~39 1%, 40~60 80%, 70 taxarea
         random_sel = Random.Range(0, 100);
         if(rawCount_tax >= 20 && rawCount_tax < 40) {

@@ -8,27 +8,26 @@ public class Block : MonoBehaviour
     private int _HP;
     private int originalHP;
     
-    private float nextDamageDelay = 0.08f;
-    private float DelayAfterDestroyed = 0.06f;
+    private float nextDamageDelay;  // 0.08f -> 0.07f -> 0.05f
+    private const float DelayAfterDestroyed = 0.06f;
+    private float scoreAccumulator = 0f;
 
     private bool haveGlasses;
 
-    private GameObject Player;
     private Player player;
 
-    private ManageHPUI manageHPUI;
+    [SerializeField] private ManageHPUI manageHPUI, manageSCOREUI;
 
     private RectTransform _uiParentObjectTransform;
     [SerializeField] private GameObject _GlassesPrefab;
     private GameObject GlassesPrefab;
     private FollowTransform GlassesScript;
     
-    private GameObject scoreGUI;
-    private Score scoreScript;
+    private Score Score;
     
     [SerializeField] private GameObject SEmoney;
-    // [SerializeField] private AudioSource BlockAudio;
     [SerializeField] private PlaySE playSE;
+    [SerializeField] private BlockScoreFX blockScoreFX;
     [SerializeField] private ValueData data;
     
 
@@ -39,11 +38,8 @@ public class Block : MonoBehaviour
     
     void Start()
     {
-        Player = GameObject.Find("Player");
-        player = Player.gameObject.GetComponent<Player>();
-        manageHPUI = gameObject.GetComponent<ManageHPUI>();
-        scoreGUI = GameObject.Find("ScoreGUI");
-        scoreScript = scoreGUI.GetComponent<Score>();
+        player = GameObject.Find("Player").GetComponent<Player>();
+        Score = GameObject.Find("Score").GetComponent<Score>();
 
         Set_HP_Glass();
         manageHPUI.ChangeText(_HP.ToString());
@@ -78,47 +74,58 @@ public class Block : MonoBehaviour
             // プレイヤーのHPが0以上かつ、衝突している間は
             // 両方のHPを減らす。nextDamageDelay秒ごとにHPが減る
             if((IsCol == true) && (_HP > 0)) {
-                int valueScored = DecreaseHPReturnValueScored();
-                scoreScript.AddScore(valueScored, player.taxRate);
+                int value = Decrease_HPReturnValueScored();
+                float valueScored = (float)(value * player.taxRate);
+                Score.AddScore(valueScored);
+                scoreAccumulator += valueScored;
+
                 player.DecreaseHP(); 
                 manageHPUI.ChangeText(_HP.ToString());
 
-
                 int diff = originalHP - _HP;
-                if(diff > 24) {
-                    nextDamageDelay = 0.05f;
-                } else if (diff > 12) {
+                if(diff <= 11) {
+                    nextDamageDelay = 0.08f;    
+                } else if (diff <= 23) {
                     nextDamageDelay = 0.07f;
+                } else {
+                    nextDamageDelay = 0.05f;
                 }
 
-                if(_HP==0) {
-                    yield return new WaitForSeconds(DelayAfterDestroyed);
-                }
-                else {
+
+                if(_HP > 0) {
                     playSE.Play();
+                    blockScoreFX.HitBlockScore(valueScored);
                     yield return new WaitForSeconds(nextDamageDelay);
                 }
-            }
-            else if(_HP <= 0) {
-                if(haveGlasses == true) {
-                    Destroy(GlassesPrefab);
-                    if(player.HP >= 0) {
-                        player.InvincibleMode();
+                else if(_HP == 0) {
+                    yield return new WaitForSeconds(DelayAfterDestroyed);
+
+                    if(player.IsInvincible == true) {
+                        blockScoreFX.InvincibleDestory(scoreAccumulator);
+                    } else {
+                        blockScoreFX.HitBlockScoreLong(valueScored);
+                        manageHPUI.DestroyText();
                     }
+
+                    if(haveGlasses == true) {
+                        Destroy(GlassesPrefab);
+                        if(player.HP >= 0) {
+                            player.InvincibleMode();
+                        }
+                    }
+        
+                    Instantiate(SEmoney);
+                    StartCoroutine(DelayedDestroy(blockScoreFX.AnimationLength));
+
+                    yield break;
                 }
-    
-                Instantiate(SEmoney);
-                manageHPUI.DestroyText();
-                Destroy(gameObject);
-                yield break;
-            } 
-            // IsColがfalseならbreak;
+            }
+            // IsColがfalse（衝突していない）ならbreak;
             else {
                 yield break;
             }
         }
     }
-
 
     private void Set_HP_Glass() 
     {
@@ -146,27 +153,40 @@ public class Block : MonoBehaviour
         }
     }
 
-    public int DecreaseHPReturnValueScored()
+    public int Decrease_HPReturnValueScored()
     {
         int previousHP = _HP;
 
         if(player.IsInvincible == true)
         {
             _HP = 0;
-            return previousHP;
+            return previousHP * Score.scorerate;
         } 
         else 
         {
             _HP = _HP - 1;
 
             int difference;
-            if(_HP==1) {    // 最後に壊すときだけスコアは5足す
+            if(_HP==0) {    // 最後に壊すときだけスコアは5足す
                 difference = 5;
             } else {
                 difference = 1;
             }
             
-            return difference;
+            return difference * Score.scorerate;
         }
+    }
+
+    public IEnumerator DelayedDestroy(float delaytime)
+    {
+        // 破壊されているように見せる
+        gameObject.GetComponent<SpriteRenderer>().enabled = false;
+        gameObject.GetComponent<BoxCollider2D>().enabled = false;
+
+        yield return new WaitForSeconds(delaytime);
+
+        manageHPUI.DestroyText();
+        manageSCOREUI.DestroyText();
+        Destroy(gameObject);
     }
 }

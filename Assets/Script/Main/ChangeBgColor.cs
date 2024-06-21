@@ -6,9 +6,9 @@ public class ChangeBgColor : MonoBehaviour
 {
     private Camera _camera;
 
-    Color SpringBgColor = new Color32(153, 196, 102, 0); // 若緑
+    Color SpringBgColor = new Color32(221, 131, 135, 0); // 桜色
     Color SummerBgColor = new Color32(0, 76, 113, 0);    // 藍色
-    Color FallBgColor = new Color32(211, 162, 67, 0);    // 黄朽葉
+    Color FallBgColor = new Color32(175, 92, 46, 0);    // 秋らしい色
     Color WinterBgColor = new Color32(161, 163, 166, 0); // 銀灰色
 
     void Start()

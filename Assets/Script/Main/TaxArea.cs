@@ -107,8 +107,7 @@ public class TaxArea : MonoBehaviour
     // 減税を検討する。検討すると、PlayerSpeedOffsetが増え、総理が加速する
     void IgnoreDecreaseTaxRate()
     {
-        
-        // TaxAreaAudio.Play();
+
         audioManager.Play_ignoreTaxArea();
         manageHPUI.ChangeText("<size=120>検討</size>");
 
@@ -123,13 +122,14 @@ public class TaxArea : MonoBehaviour
     }
 
 
-    private float whichside, offsetx, offsety, x,y = 0f;
+    private float whichside, move_x, move_y, x,y;
     // PlayerがTaxAreaを突き飛ばすアニメーション
     IEnumerator AnimateTaxArea()
     {
-        if(gameObject.transform.position.x == 1.4f) { // 1.4 : 右側にあるTaxAreaのx座標
+        x = y = 0;
+        if(gameObject.transform.position.x > 0f) { // 右側
             whichside = 1f;
-        } else {
+        } else {                                   // 左側
             whichside = -1f;
         }
 
@@ -137,17 +137,18 @@ public class TaxArea : MonoBehaviour
 
         while(true) 
         {
-            if(offsety < -3f) {
+            // -3まで下に落ちたら終了
+            if(move_y < -3f) {
                 break;
             }
             // それぞれの増加率は試して上手くいった数値
             x += 0.005f;
             y += 0.05f;
-            offsetx = (0.3f - (1f-Mathf.Pow(1f-x, 3f))) * whichside;    // 0.3 - (1-(1-x)^3)
-            offsety = 0.4f -(Mathf.Pow(y, 3f));     // 0.4 - (y*y*y)
-            gameObject.transform.position += new Vector3(offsetx, offsety, 0f);
+            move_x = (0.3f - (1f-Mathf.Pow(1f-x, 3f))) * whichside;    // 0.3 - (1-(1-x)^3)
+            move_y = 0.4f -(Mathf.Pow(y, 3f));     // 0.4 - (y*y*y)
+            gameObject.transform.position += new Vector3(move_x, move_y, 0f);
 
-            gameObject.transform.eulerAngles = new Vector3(0f, 0f, offsetx*200f);
+            gameObject.transform.eulerAngles = new Vector3(0f, 0f, move_x*200f);
 
             yield return new WaitForSeconds(0.02f);
         }

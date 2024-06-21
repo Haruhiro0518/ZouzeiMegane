@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
-// PlayerやBlock, ItemなどのUIを持つオブジェクトにアタッチするクラス
+// PlayerやBlock, ItemなどのHPUIを持つオブジェクトにアタッチするクラス
 
 public class ManageHPUI : MonoBehaviour
 {
@@ -34,7 +34,9 @@ public class ManageHPUI : MonoBehaviour
 
     public void DestroyText() 
     {
-        Destroy(uiObject);
+        if(uiObject != null) {
+            Destroy(uiObject);
+        }
     }
 
     public void ChangeWorldOffset(Vector3 v)

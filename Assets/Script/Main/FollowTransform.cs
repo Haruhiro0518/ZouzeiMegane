@@ -63,4 +63,11 @@ public class FollowTransform : MonoBehaviour
         _objectTrnasform_UI.localPosition = UILocalPos;
         
     }
+
+    public IEnumerator MoveUp(float length)
+    {
+        while(true) {
+            
+        }
+    }
 }

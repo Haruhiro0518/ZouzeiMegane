@@ -13,9 +13,11 @@ GameObject:
   - component: {fileID: 408205643734576213}
   - component: {fileID: 5494929687590729222}
   - component: {fileID: 1944444957757468773}
+  - component: {fileID: -7801011744039014511}
   - component: {fileID: 8003608640502458649}
-  - component: {fileID: -3725614682964666864}
+  - component: {fileID: -4367085923120912656}
   - component: {fileID: -4992287813729569883}
+  - component: {fileID: -3725614682964666864}
   m_Layer: 6
   m_Name: Block
   m_TagString: block
@@ -174,10 +176,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1374e8613df64e143abcdbe2d5c175d5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  manageHPUI: {fileID: 8003608640502458649}
+  manageSCOREUI: {fileID: -4367085923120912656}
   _GlassesPrefab: {fileID: 9083303580678011467, guid: 717f09ee32818e444b149f924e6a01c0, type: 3}
   SEmoney: {fileID: 3270029887293670416, guid: 73e63af5f8d7ad045985deaf35d407db, type: 3}
   playSE: {fileID: -4992287813729569883}
+  blockScoreFX: {fileID: -7801011744039014511}
   data: {fileID: 11400000, guid: 43cdf7a1cb2580243821ffe6f0584c9b, type: 2}
+--- !u!114 &-7801011744039014511
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1840622312598475922}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 15784c4e25d262f45b1e555fd930d239, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hpText: {fileID: 1965262406166048434, guid: 59f0af5e2915d574bb225c2565018bce, type: 3}
+  manageHPUI: {fileID: 8003608640502458649}
+  manageSCOREUI: {fileID: -4367085923120912656}
+  AnimationLength: 0.7
 --- !u!114 &8003608640502458649
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -191,6 +212,32 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _uiObjectPrefab: {fileID: 1965262406166048434, guid: 59f0af5e2915d574bb225c2565018bce, type: 3}
+--- !u!114 &-4367085923120912656
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1840622312598475922}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f74798ed82ed6a343aa58f6cf35f1409, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _uiObjectPrefab: {fileID: 4406036242708740234, guid: bf8d72585b76456438208c3cbca195d7, type: 3}
+--- !u!114 &-4992287813729569883
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1840622312598475922}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac49c945931c7cd43b6453b834b15845, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  source: {fileID: -3725614682964666864}
 --- !u!82 &-3725614682964666864
 AudioSource:
   m_ObjectHideFlags: 0
@@ -287,17 +334,3 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &-4992287813729569883
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1840622312598475922}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ac49c945931c7cd43b6453b834b15845, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  source: {fileID: -3725614682964666864}
-  volume_offset: 0

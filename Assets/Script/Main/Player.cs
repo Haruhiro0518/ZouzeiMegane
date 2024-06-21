@@ -94,6 +94,7 @@ public class Player : MonoBehaviour
         // 無敵中に他の無敵を取らなかった場合、無敵終了
         if(InvModeCallCount == 1) {
             OnInvincibleExit();
+            Debug.Log("exit");
         } 
         InvModeCallCount--;
     }

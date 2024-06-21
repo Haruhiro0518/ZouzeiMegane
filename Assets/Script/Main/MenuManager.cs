@@ -14,13 +14,14 @@ public class MenuManager : MonoBehaviour
     private GameObject PauseButton, MenuUI, ResultUI, WaveGenerator, 
                         ScoreGUI, TopUI, BottomUI;
     [SerializeField]
-    private TMPro.TMP_Text Tips, FinalState;
+    private TMPro.TMP_Text Tips;
 
     [SerializeField] ClearParticle clearParticle;
     [SerializeField] AudioManager audioManager;
+    [SerializeField] Result Result;
     
     private WaveGenerate waveGenerate;
-    private Score scoreScript;
+    private Score Score;
     private Player player;
     
 
@@ -29,7 +30,7 @@ public class MenuManager : MonoBehaviour
     void Start()
     {
         waveGenerate = WaveGenerator.GetComponent<WaveGenerate>();
-        scoreScript = ScoreGUI.GetComponent<Score>();
+        Score = ScoreGUI.GetComponent<Score>();
         player = GameObject.Find("Player").GetComponent<Player>();
 
         // event追加
@@ -102,20 +103,11 @@ public class MenuManager : MonoBehaviour
     {
         yield return new WaitForSeconds(3.0f);
 
-        float send_score;
+        int send_score;
         Time.timeScale = 0;
 
-        if(waveGenerate.IsGameOver == true) {
-            send_score = scoreScript.score;
-            SetFinalScore(scoreScript.score, 0f, scoreScript.score);
-            FinalState.SetText("<size=55>＜解散＞</size>");
-        } 
-        else {
-            // クリア時の最終スコアは   集めた税 + 支持者の数*5[億](寄付金)  とする
-            send_score = scoreScript.score + (player.HP * 5);
-            SetFinalScore(scoreScript.score, (player.HP * 5), send_score);
-            FinalState.SetText("<size=55>＜任期満了！＞</size>");
-        }
+        send_score = Score.SetFinalScore();
+        Result.SetFinalState();
         
         PauseButton.SetActive(false);
         TopUI.SetActive(false);
@@ -127,12 +119,5 @@ public class MenuManager : MonoBehaviour
         UnityroomApiClient.Instance.SendScore(1, send_score, ScoreboardWriteMode.HighScoreDesc);
         #endif
     }
-    
-    [SerializeField] TMPro.TMP_Text Tax_score, Donation_score, FinalScore;
-    void SetFinalScore(float tax, float donation, float final)
-    {
-        Tax_score.SetText("<size=36>"+ tax.ToString() +"億</size>");
-        Donation_score.SetText("<size=36>"+ donation.ToString() +"億</size>");
-        FinalScore.SetText("<size=90>"+ final.ToString() +"億</size>");
-    }
+
 }

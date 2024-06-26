@@ -10,22 +10,20 @@ public class Player : MonoBehaviour
     [System.NonSerialized] public int HP = 50;
     [System.NonSerialized] public float PlayerSpeed = OriginalPlayerSpeed;
     [System.NonSerialized] public float PlayerSpeedOffset = 0f; // 減税を検討すると増える(TaxArea.cs)
-    const float OriginalPlayerSpeed = 3.0f;
+    private const float OriginalPlayerSpeed = 3.0f;
     [System.NonSerialized] 
     public float taxRate = 1.0f;
     [System.NonSerialized] public float taxRateMax = 1.5f;
     [System.NonSerialized] public float taxRateMaxInv = 2.0f;
-    
-    // 無敵状態の制御に使う変数
-    // [System.NonSerialized] 
+     
     public bool IsInvincible = false;
     private float InvTime = 6.85f;
-    private int InvModeCallCount = 0;
-    [System.NonSerialized] public int TotalInvModeCallCount = 0;
+    
     // コンポーネント
-    private ManageHPUI manageHPUI;
     private WaveGenerate waveGenerate;
     private FollowPlayer followPlayer;
+    [SerializeField] private ManageHPUI manageHPUI, manageSpeedUPUI;
+    [System.NonSerialized] public Animator SpeedUpTextAnimator;
     [SerializeField] private GameObject SEbomb;
     [SerializeField] private GameObject FXsmoke;
     [SerializeField] Animator PlayerAnimator;
@@ -41,8 +39,7 @@ public class Player : MonoBehaviour
 
     void Start()
     {
-        manageHPUI = gameObject.GetComponent<ManageHPUI>();
-        
+        SpeedUpTextAnimator = manageSpeedUPUI.uiObject.GetComponent<Animator>();
         Move();
     }
 
@@ -53,9 +50,7 @@ public class Player : MonoBehaviour
         if(HP < 0) {
             OnGameOver();
         }
-        if(waveGenerate.IsGameClear == true) {
-            PlayerSpeed = 0f;
-        } 
+        
         dragPlayer.Drag();
     }
 
@@ -65,14 +60,17 @@ public class Player : MonoBehaviour
         GetComponent<Rigidbody2D>().velocity = transform.up * PlayerSpeed;
     }
 
-    // InvicibleMode()をコルーチンにすると, blockが削除されたときにWaitFoSecondsがなくなるため、
-    // 待つ処理はinv()で行う
+    // blockがInvincibleMode()を呼び出し、コルーチンInv()はplayer内で処理する.
+    // コルーチンが走っている個数をInvModeCallCountでカウントし、初めの1個目が無敵状態のスタート
+    private int InvModeCallCount = 0;
+    private int TotalInvModeCallCount = 0;
+    private const int maxInvCount = 13;
+    [System.NonSerialized] public bool exceedMaxInvCount = false;
     public void InvincibleMode()
     {
         IsInvincible = true;
         InvModeCallCount++;
-        TotalInvModeCallCount++;
-
+        
         if(InvModeCallCount == 1) {
             PlayerAnimator.SetBool("PowerUP", IsInvincible);
             invincibleBGM.Play();
@@ -81,6 +79,11 @@ public class Player : MonoBehaviour
             ChangeItemParameter(IsInvincible);
             PlayerSpeed = SelectPlayerSpeed();
             Move();
+        }
+
+        TotalInvModeCallCount++;
+        if(TotalInvModeCallCount > maxInvCount) {
+            exceedMaxInvCount = true;
         }
         
         StartCoroutine(inv());
@@ -94,7 +97,6 @@ public class Player : MonoBehaviour
         // 無敵中に他の無敵を取らなかった場合、無敵終了
         if(InvModeCallCount == 1) {
             OnInvincibleExit();
-            Debug.Log("exit");
         } 
         InvModeCallCount--;
     }
@@ -108,6 +110,7 @@ public class Player : MonoBehaviour
         taxRate -= 0.5f;
         taxRate = (taxRate < 0) ? 0 : taxRate;
         TotalInvModeCallCount = 0;
+        exceedMaxInvCount = false;
 
         data.ChangeBlockHPDistribution(taxRate);
         ChangeItemParameter(IsInvincible);
@@ -180,6 +183,11 @@ public class Player : MonoBehaviour
 
     public float SelectPlayerSpeed() 
     {
+        if(waveGenerate.IsGameClear == true) {
+            PlayerSpeed = 0f;
+            return 0f;
+        } 
+
         float selectedSpeed;
         if(taxRate == 0) {
             selectedSpeed = 2.7f;

@@ -29,18 +29,18 @@ public class TimerText : MonoBehaviour
     void Update()
     {
         if(waveGenerate.IsGameOver == true) {
-            timerText.SetText("<size=40>解散</size>");
+            timerText.SetText("<size=30>解散</size>");
             return;
         } if(timecount >= 120) {
             waveGenerate.IsGameClear = true;
-            timerText.SetText("<size=40>任期満了！</size>");
+            timerText.SetText("<size=30>任期満了！</size>");
             return;
         }
         
         timecount += Time.deltaTime;
         DecideYearandSeason();
 
-        timerText.SetText("<size=40>"+year.ToString()+"年目："+season+"</size>");
+        timerText.SetText("<size=30>"+year.ToString()+"年目："+season+"</size>");
     }
 
     int previous_y = 1, previous_s = 0, y, s;

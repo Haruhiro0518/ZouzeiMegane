@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 // TaxAreaオブジェクトにアタッチするクラス
 // Playerと衝突した場合、税率を税率変化率によって増減させる
@@ -15,6 +16,7 @@ public class TaxArea : MonoBehaviour
     private WaveGenerate waveGenerate;
     private TaxRateText taxRateText;
     private AudioManager audioManager;
+    
     
     // ScriptableObject
     [SerializeField] ValueData data;
@@ -71,17 +73,20 @@ public class TaxArea : MonoBehaviour
     void OnTriggerEnter2D(Collider2D c)
     {
         if(c.gameObject.tag == "Player") {
-            if(player.IsInvincible==true && changeTaxRate < 0) {
+            if(player.IsInvincible==true && changeTaxRate < 0) {    // 無敵かつ減税
                 IgnoreDecreaseTaxRate();
                 return;
-            } else {
+            } 
+            else if(player.IsInvincible==true && changeTaxRate >= 0) { // 無敵かつ増税
+                SpawnGlassesNextWave();
+            } 
+            else {    // 無敵じゃないとき
                 player.taxRate += changeTaxRate;
                 if(player.taxRate < 0f) {
                     player.taxRate = 0f;
                 }
+                OnTaxRateChanged(changeTaxRate);
             }
-            
-            OnTaxRateChanged(changeTaxRate);
         }
     }
 
@@ -104,21 +109,29 @@ public class TaxArea : MonoBehaviour
         }
 
     }
-    // 減税を検討する。検討すると、PlayerSpeedOffsetが増え、総理が加速する
+    // 減税を検討(ignore)する。検討すると、PlayerSpeedOffsetが増え、総理が加速する
     void IgnoreDecreaseTaxRate()
     {
 
         audioManager.Play_ignoreTaxArea();
         manageHPUI.ChangeText("<size=120>検討</size>");
 
-        player.PlayerSpeedOffset += 0.2f;
-        if(player.PlayerSpeedOffset > 1.0f) {
+        if(player.PlayerSpeedOffset < 1.0f) {
+            player.PlayerSpeedOffset += 0.2f;
+            SpeedBarUpdate();
+        } else {
             player.PlayerSpeedOffset = 1.0f;
         }
+
         player.PlayerSpeed = player.SelectPlayerSpeed();
         player.Move();
 
         StartCoroutine(AnimateTaxArea());
+    }
+
+    void SpawnGlassesNextWave()
+    {
+
     }
 
 
@@ -155,4 +168,12 @@ public class TaxArea : MonoBehaviour
         yield break;
     }
     
+    // スピードバー表示更新. speedUptextの表示
+    private SpeedBar speedBar;
+    void SpeedBarUpdate()
+    {
+        speedBar = GameObject.Find("SpeedBar").GetComponent<SpeedBar>();
+        speedBar.SetValue(player.PlayerSpeedOffset);
+        speedBar.SpeedUpTextFX();
+    }
 }

@@ -42,7 +42,7 @@ public class DragPlayer : MonoBehaviour
             // 移動距離の計算　Screen.widthで割って1に正規化. 定数をかけて,マウスの移動とplayerが一致
             float diffDistance = (currentPosX - previousPosX) / Screen.width * displayWidth*2;
 
-            /// 感度乗算 (1 + x)倍にする (ただし,0 <= x <= 1)
+            /// 感度乗算. (1 + x)倍にする (ただし,0 <= x <= 1)
             diffDistance *= (1 + sensitivity);
 
             UpdateXminXmax();
@@ -61,11 +61,12 @@ public class DragPlayer : MonoBehaviour
     private const float colYoffset = 0.8f * PlayerScale;
     private const float colXoffset = 0.1f * PlayerScale;
     private float displayWidth = 2.8f;
-    // 横から接触しないための隙間
-    private float space = 0.05f;
+    // レイキャスト位置のを少し下にずらす. これにより通り過ぎたブロックと下部が衝突しないようにし、
+    // 上部では正しい衝突時にレイキャストが誤作動しないようにする. 実験で決めた値
+    private float space = 0.0525f;
 
     // プレイヤーの球コライダーの上部と下部から、水平方向にレイキャストを伸ばす
-    // レイキャストがぶつかったブロックの端の座標をclampするx座標のxmin / xmaxとする
+    // レイキャストがぶつかったブロックの端の座標をclampするx座標のxmin or xmaxとする
     void UpdateXminXmax()
     {
 

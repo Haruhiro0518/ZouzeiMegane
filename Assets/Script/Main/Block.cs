@@ -15,16 +15,14 @@ public class Block : MonoBehaviour
     private bool haveGlasses;
 
     private Player player;
-
-    [SerializeField] private ManageHPUI manageHPUI, manageSCOREUI;
+    private Score Score;
 
     private RectTransform _uiParentObjectTransform;
     [SerializeField] private GameObject _GlassesPrefab;
     private GameObject GlassesPrefab;
     private FollowTransform GlassesScript;
     
-    private Score Score;
-    
+    [SerializeField] private ManageHPUI manageHPUI, manageSCOREUI;
     [SerializeField] private GameObject SEmoney;
     [SerializeField] private PlaySE playSE;
     [SerializeField] private BlockScoreFX blockScoreFX;
@@ -98,8 +96,7 @@ public class Block : MonoBehaviour
                     yield return new WaitForSeconds(nextDamageDelay);
                 }
                 else if(_HP == 0) {
-                    yield return new WaitForSeconds(DelayAfterDestroyed);
-
+                    Instantiate(SEmoney);
                     if(player.IsInvincible == true) {
                         blockScoreFX.InvincibleDestory(scoreAccumulator);
                     } else {
@@ -114,10 +111,13 @@ public class Block : MonoBehaviour
                         }
                     }
         
-                    Instantiate(SEmoney);
+                    // ヒットストップ
+                    yield return new WaitForSeconds(DelayAfterDestroyed);
+                    // 破壊(されているように見せる)
+                    gameObject.GetComponent<SpriteRenderer>().enabled = false;
+                    gameObject.GetComponent<BoxCollider2D>().enabled = false;
                     StartCoroutine(DelayedDestroy(blockScoreFX.AnimationLength));
-
-                    yield break;
+                    
                 }
             }
             // IsColがfalse（衝突していない）ならbreak;
@@ -138,7 +138,7 @@ public class Block : MonoBehaviour
 
         originalHP = _HP;
 
-        if(player.TotalInvModeCallCount > 13) {
+        if(player.exceedMaxInvCount == true) {
             haveGlasses = false;
             return;
         }
@@ -179,10 +179,7 @@ public class Block : MonoBehaviour
 
     public IEnumerator DelayedDestroy(float delaytime)
     {
-        // 破壊されているように見せる
-        gameObject.GetComponent<SpriteRenderer>().enabled = false;
-        gameObject.GetComponent<BoxCollider2D>().enabled = false;
-
+        
         yield return new WaitForSeconds(delaytime);
 
         manageHPUI.DestroyText();

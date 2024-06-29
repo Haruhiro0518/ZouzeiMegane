@@ -43530,6 +43530,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4336439062694548224, guid: 00ae2bf8c8a624ed38161cab9eeda7f7, type: 3}
+      propertyPath: HmacKey
+      value: rIxySmHeHIKv9i8JATt2mVHKptxR0Xo2kgMpPPOqHIQTsEKDZp06PSLWEPUF2JT/0I6Oo2ZPxmNCrl9P+XWxFA==
+      objectReference: {fileID: 0}
     - target: {fileID: 5323818951622561360, guid: 00ae2bf8c8a624ed38161cab9eeda7f7, type: 3}
       propertyPath: m_Name
       value: UnityroomApiClient

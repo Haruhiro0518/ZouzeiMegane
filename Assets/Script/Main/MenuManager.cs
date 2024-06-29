@@ -116,9 +116,9 @@ public class MenuManager : MonoBehaviour
         ResultUI.SetActive(true);
         
         // スコア送信
-        #if Unity_Room
+        //#if Unity_Room
         UnityroomApiClient.Instance.SendScore(1, send_score, ScoreboardWriteMode.HighScoreDesc);
-        #endif
+        //#endif
     }
 
 }

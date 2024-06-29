@@ -26,6 +26,7 @@ public class Block : MonoBehaviour
     [SerializeField] private GameObject SEmoney;
     [SerializeField] private PlaySE playSE;
     [SerializeField] private BlockScoreFX blockScoreFX;
+    [SerializeField] private GameObject SmokeFX;
     [SerializeField] private ValueData data;
     
 
@@ -44,12 +45,7 @@ public class Block : MonoBehaviour
 
         if(haveGlasses == true)
         {
-            GlassesPrefab = Instantiate(_GlassesPrefab, _uiParentObjectTransform);
-            GlassesScript = GlassesPrefab.GetComponent<FollowTransform>();
-            GlassesScript.Initialize(gameObject.transform);
-
-            GlassesScript._worldOffset = new Vector3(0f, -0.25f, 0f);
-            manageHPUI.ChangeWorldOffset(new Vector3(0f, 0.2f, 0f));
+            InstantiateGlasses();
         }
     }
 
@@ -185,5 +181,29 @@ public class Block : MonoBehaviour
         manageHPUI.DestroyText();
         manageSCOREUI.DestroyText();
         Destroy(gameObject);
+    }
+
+    private void InstantiateGlasses()
+    {
+        GlassesPrefab = Instantiate(_GlassesPrefab, _uiParentObjectTransform);
+        GlassesScript = GlassesPrefab.GetComponent<FollowTransform>();
+        GlassesScript.Initialize(gameObject.transform);
+
+        GlassesScript._worldOffset = new Vector3(0f, -0.25f, 0f);
+        manageHPUI.ChangeWorldOffset(new Vector3(0f, 0.2f, 0f));
+    }
+
+    public void SetGlassesUnconditionally()
+    {
+        if(haveGlasses == true) {
+            return;
+        } else {
+            haveGlasses = true;
+            InstantiateGlasses();
+        }
+    }
+    public void Smoke()
+    {
+        Instantiate(SmokeFX, gameObject.transform.position, Quaternion.identity);
     }
 }

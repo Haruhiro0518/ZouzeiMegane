@@ -12,7 +12,7 @@ public class Item : MonoBehaviour
     private Player player;
     [SerializeField] private Animator animator;
     [SerializeField] private GameObject SEitem;
-    [SerializeField] private GameObject FXsmoke;
+    [SerializeField] private GameObject SmokeFX;
     // ScriptableObject
     [SerializeField] private ValueData data;
 
@@ -22,7 +22,7 @@ public class Item : MonoBehaviour
         player = GameObject.Find("Player").gameObject.GetComponent<Player>();
         manageHPUI = gameObject.GetComponent<ManageHPUI>();
         
-        ItemDamageAnimOnOff();
+        SwitchItemDamageAnim();
         SetItemHP();
     }
 
@@ -54,10 +54,10 @@ public class Item : MonoBehaviour
 
     public void Smoke()
     {
-        Instantiate(FXsmoke, gameObject.transform.position, Quaternion.identity);
+        Instantiate(SmokeFX, gameObject.transform.position, Quaternion.identity);
     }
     
-    public void ItemDamageAnimOnOff()
+    public void SwitchItemDamageAnim()
     {
         if(player.IsInvincible == true)
         {

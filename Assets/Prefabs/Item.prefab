@@ -166,7 +166,7 @@ MonoBehaviour:
   HP: 0
   animator: {fileID: -1710185516270247928}
   SEitem: {fileID: 6024472838349944954, guid: 34fdb1825f69a0e4fb8963be8a6598b1, type: 3}
-  FXsmoke: {fileID: 4847675478516424211, guid: d047dba1a364ae341a57d126c54f95e3, type: 3}
+  SmokeFX: {fileID: 4847675478516424211, guid: d047dba1a364ae341a57d126c54f95e3, type: 3}
   data: {fileID: 11400000, guid: 43cdf7a1cb2580243821ffe6f0584c9b, type: 2}
 --- !u!95 &-1710185516270247928
 Animator:

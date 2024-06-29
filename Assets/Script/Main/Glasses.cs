@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-// GlassesはmanageHPUIのDestroyTextメソッドでDestoryできないため、
-// GalssesのBlockへの参照がnullになったら自動的にDestoryする
+// BlockはmanageHPUIを使わずにGlassesを保持するため、BlockのGlasses用のクラス
 public class Glasses : MonoBehaviour
 {
     

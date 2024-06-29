@@ -2,33 +2,36 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// Wave-Taxにアタッチするコンポーネント.
+// Wave-TaxはWaveGenerate.GeneratedWaveListに1つしか存在しない
 public class GenerateTaxArea : MonoBehaviour
 {
-    [SerializeField] private GameObject _taxArea;
-    private GameObject _leftTaxArea;
-    private GameObject _rightTaxArea;
-    [System.NonSerialized] public string left, right;
+    [SerializeField] private GameObject taxArea_increase, taxArea_decrease;
+    private GameObject ta_increase, ta_decrease;
 
     void Start()
     {
         // TaxAreaを右と左に配置する。どちらが増税か減税かはランダムで決定。
         if(Random.Range(0,2) == 0) {
-            _leftTaxArea = InstantiateTaxArea(-1f, "increase");
-            _rightTaxArea = InstantiateTaxArea(1f, "decrease");
+            ta_increase = InstantiateTaxArea(-1f, taxArea_increase);
+            ta_decrease = InstantiateTaxArea(1f, taxArea_decrease);
         } else {
-            _leftTaxArea = InstantiateTaxArea(-1f, "decrease");
-            _rightTaxArea = InstantiateTaxArea(1f, "increase");
+            ta_decrease = InstantiateTaxArea(-1f, taxArea_decrease);
+            ta_increase = InstantiateTaxArea(1f, taxArea_increase);
         }
+        gameObject.name = "Wave-Tax";
     }
 
-    GameObject InstantiateTaxArea(float sign, string str)
+    GameObject InstantiateTaxArea(float sign, GameObject prefab)
     {
-        GameObject area = Instantiate(_taxArea, gameObject.transform);
+        GameObject area = Instantiate(prefab, gameObject.transform);
         area.transform.localPosition = new Vector3(1.4f*sign, 0f, 0f);
-        area.GetComponent<TaxArea>().de_or_increase = str;
-
         return area;
     }
 
-    
+    public void ChangeTaxAreaText()
+    {
+        ta_increase.GetComponent<TaxArea_increase>().ChangeTaxAreaText();
+        ta_decrease.GetComponent<TaxArea_decrease>().ChangeTaxAreaText();
+    }
 }

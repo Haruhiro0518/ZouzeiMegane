@@ -1,17 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Search;
 using UnityEngine;
 using UnityEngine.UI;
 
 // TaxAreaオブジェクトにアタッチするクラス
 // Playerと衝突した場合、税率を税率変化率によって増減させる
-public class TaxArea : MonoBehaviour
-{
-    [System.NonSerialized] public string de_or_increase;
+public class TaxArea_decrease : MonoBehaviour
+{   
+
     private float changeTaxRate;
     // コンポーネント
     private ManageHPUI manageHPUI;
-    private SpriteRenderer sprite;
     private Player player;
     private WaveGenerate waveGenerate;
     private TaxRateText taxRateText;
@@ -28,47 +28,24 @@ public class TaxArea : MonoBehaviour
         taxRateText = GameObject.Find("TaxRateText").GetComponent<TaxRateText>();
         audioManager = GameObject.Find("MainManager").GetComponent<AudioManager>();
         manageHPUI = gameObject.GetComponent<ManageHPUI>();
-        sprite = gameObject.GetComponent<SpriteRenderer>();
-
-        if(de_or_increase == "increase") {
-            sprite.color = new Color32(225, 70, 0, 140);
-            changeTaxRate = SelectChangeRate(player.taxRate);
-            manageHPUI.ChangeText("増税\n<size=100>"+(changeTaxRate*100f).ToString()+"</size>%");
-        } else if(de_or_increase == "decrease") {
-            sprite.color = new Color32(0, 202, 255, 140);
-            changeTaxRate = SelectChangeRate(player.taxRate);
-            manageHPUI.ChangeText("減税\n<size=100>"+(changeTaxRate*100f).ToString()+"</size>%");
-        }
+    
+        changeTaxRate = SelectChangeRate(player.taxRate);
+        ChangeTaxAreaText();
     }
 
-    bool cantIncrease, cantDecrease = false;
+    bool cantDecrease = false;
     float SelectChangeRate(float p_rate)
     {
-        if(de_or_increase == "increase") {
-            if(p_rate == 0) {
-                return 1.5f;
-            } else if(p_rate == 0.5) {
-                return 1.0f;
-            } else if(p_rate == 1.0) {
-                return 0.5f;
-            } else {
-                cantIncrease = true;
-                return 0f;
-            }
-        } 
-        else {
-            if(p_rate == 0) {
-                cantDecrease = true;
-                return 0f;
-            } else if(p_rate == 0.5) {
-                return -0.5f;
-            } else if(p_rate == 1.0) {
-                return -0.5f; 
-            } else {
-                return -1.0f;
-            }
+        if(p_rate == 0) {
+            cantDecrease = true;
+            return 0f;
+        } else if(p_rate == 0.5) {
+            return -0.5f;
+        } else if(p_rate == 1.0) {
+            return -0.5f; 
+        } else {
+            return -1.0f;
         }
-        
     }
     void OnTriggerEnter2D(Collider2D c)
     {
@@ -77,17 +54,10 @@ public class TaxArea : MonoBehaviour
             if(player.IsInvincible == false) {
                 ChangeTaxRate();
             } 
-            else if(de_or_increase == "decrease") {    // 無敵かつ減税
+            else {                          // 無敵かつ減税
                 IgnoreDecreaseTaxRate();
             } 
-            else if(de_or_increase == "increase") { // 無敵かつ増税
-                if(player.taxRate >= 1.5f) {
-                    waveGenerate.NextBlockWaveSetGlasses();
-                }
-                else {
-                    ChangeTaxRate();
-                }
-            } 
+            
         }
     }
 
@@ -104,16 +74,13 @@ public class TaxArea : MonoBehaviour
         player.PlayerSpeed = player.SelectPlayerSpeed();
         player.Move();
 
-        if(cantIncrease == true) {
-            taxRateText.VibrateScaleUp();
-        } else if(cantDecrease == true) {
+        if(cantDecrease == true) {
             taxRateText.VibrateScaleDown();
         }
 
-        if(de_or_increase=="decrease") {
-            waveGenerate.AccelerateNextTaxArea(15);
-            player.HP += 25;
-        }
+        waveGenerate.AccelerateNextTaxArea(15);
+        player.HP += 25;
+        
     }
     // 減税を検討(ignore)する。検討すると、PlayerSpeedOffsetが増え、総理が加速する
     void IgnoreDecreaseTaxRate()
@@ -178,4 +145,15 @@ public class TaxArea : MonoBehaviour
         speedBar.SpeedUpTextFX();
     }
 
+    [SerializeField] ManageImgUI manageImgUI;
+    public void ChangeTaxAreaText()
+    {
+        if(player.IsInvincible == false) {
+            manageHPUI.ChangeText("減税\n<size=100>"+(changeTaxRate*100f).ToString()+"</size>%");
+            manageImgUI.image.enabled = false;
+        } else {
+            manageHPUI.ChangeText("減税\n\n\n");
+            manageImgUI.image.enabled = true;
+        }
+    }
 }

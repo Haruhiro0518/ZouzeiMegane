@@ -1,17 +1,18 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using TMPro;
+using UnityEngine.UI;
+using Microsoft.Unity.VisualStudio.Editor;
 
-// PlayerやBlock, ItemなどのHPUIを持つオブジェクトにアタッチするクラス
-
-public class ManageHPUI : MonoBehaviour
+// TaxAreaのようにImageコンポーネントを持つオブジェクトにアタッチするクラス
+// ManageHPUIとほぼ同じ
+public class ManageImgUI : MonoBehaviour
 {
     
     private RectTransform _uiParentObjectTransform;
     [SerializeField] private GameObject _uiObjectPrefab;
     [System.NonSerialized] public GameObject uiObject;
-    private TMPro.TMP_Text TextHP;
+    [System.NonSerialized] public UnityEngine.UI.Image image;
     private FollowTransform followTransform;
     
     // UIをもつオブジェクトがStartメソッドでthis.ChangeTextメソッドを呼ぶ時、
@@ -21,18 +22,13 @@ public class ManageHPUI : MonoBehaviour
     {
         _uiParentObjectTransform = GameObject.Find("Canvas").GetComponent<RectTransform>();
         uiObject = Instantiate(_uiObjectPrefab, _uiParentObjectTransform);
-        TextHP = uiObject.GetComponent<TMPro.TMP_Text>();
+        image = uiObject.GetComponent<UnityEngine.UI.Image>();
         followTransform = uiObject.GetComponent<FollowTransform>();
         followTransform.Initialize(gameObject.transform);
 
     }
 
-    public void ChangeText(string text)
-    {   
-        TextHP.SetText(text);
-    }
-
-    public void DestroyText() 
+    public void DestroyImage() 
     {
         if(uiObject != null) {
             Destroy(uiObject);
@@ -44,8 +40,4 @@ public class ManageHPUI : MonoBehaviour
         followTransform._worldOffset = v;
     }
 
-    public void DisableTextComponent()
-    {
-        TextHP.enabled = false;
-    }
 }

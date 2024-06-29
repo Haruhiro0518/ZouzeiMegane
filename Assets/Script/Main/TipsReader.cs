@@ -2,13 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
+using System.Linq;
 
 // MenueMangerにアタッチ
 
-public class CSVreader : MonoBehaviour
+public class TipsReader : MonoBehaviour
 {
     [SerializeField] private TextAsset csvFile; 
     private List<string[]> csvData = new List<string[]>(); 
+    [SerializeField] GameObject[] TipsImage;
 
     public void ReadCSV()
     {
@@ -23,11 +25,20 @@ public class CSVreader : MonoBehaviour
         }
     }
 
-    public void SetupText(TMPro.TMP_Text tmpro)
+    [SerializeField] Transform TipsParent;
+    public void SetTips(TMPro.TMP_Text tips_text)
     {
-        string text;
-        text = csvData[Random.Range(1,csvData.Count)][0];
-        tmpro.SetText(text);
+        // csvファイルの0行目はヒントではないから、1 ~ 行数+画像個数 としている
+        int r = Random.Range(1,csvData.Count + TipsImage.Length);
         
+        if(r < csvData.Count) {
+            string text;
+            text = csvData[r][0];
+            tips_text.SetText(text);
+        } else {
+            tips_text.SetText("");
+            Instantiate (TipsImage[Random.Range(0, TipsImage.Length)], TipsParent);
+        }
+    
     }
 }

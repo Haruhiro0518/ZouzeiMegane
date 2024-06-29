@@ -65,7 +65,7 @@ public class WaveGenerate : MonoBehaviour
     
     void Update()
     {
-        if(IsGameOver == true || IsGameClear == true) return;
+        if(IsGameOver == true || IsGameClear == true || Player == null) return;
 
         // 現在のプレイヤー位置のインデックス.(player.posy=0だから初期値は0)
         int playerPosIndex = (int)(playerTransform.position.y / BlockHeight);
@@ -162,7 +162,6 @@ public class WaveGenerate : MonoBehaviour
         
             if(random_sel < 1) {
                 nextWavePrefab = Push_WaveTax();
-                rawCount_tax = 0;
             } else {
                 return nextWavePrefab;
             }
@@ -170,13 +169,11 @@ public class WaveGenerate : MonoBehaviour
 
             if(random_sel < 70) {
                 nextWavePrefab = Push_WaveTax();
-                rawCount_tax = 0;
             } else {
                 return nextWavePrefab;
             }
         } else if(rawCount_tax >= 70) {
             nextWavePrefab = Push_WaveTax();
-            rawCount_tax = 0;
         }
 
         return nextWavePrefab;
@@ -192,6 +189,7 @@ public class WaveGenerate : MonoBehaviour
         stack.Push((int)kindsOfWaves.empty);
         stack.Push((int)kindsOfWaves.empty);
 
+        rawCount_tax = 0;
         return stack.Pop();
     }
 
@@ -220,7 +218,8 @@ public class WaveGenerate : MonoBehaviour
         
         wave.destroyObject();
     }
-
+    
+    // playerが無敵に入るとき・出るときに呼ばれる
     public void AllItemSmokeAndChangeParam()
     {
         for(int i = 0; i < GeneratedWaveList.Count; i++)
@@ -228,10 +227,32 @@ public class WaveGenerate : MonoBehaviour
             GeneratedWaveList[i].GetComponent<ManageWave>().ItemSmokeAndChangeParam();
         }
     }
+    // playerが無敵状態かつ150%以上で、増税するときに呼ばれる.
+    [SerializeField] AudioManager audioManager;
+    public void NextBlockWaveSetGlasses()
+    {
+        int WaveTaxIndex = 6;  // playerがTaxAreaと衝突する際の、Wave-Taxの一番上のインデックス
+
+        for(int i = WaveTaxIndex + 1; i < GeneratedWaveList.Count; i++) 
+        {
+            int blockcount =  GeneratedWaveList[i].GetComponent<ManageWave>().BlockSmokeAndSetGlasses();
+            if(blockcount > 0) {    // ウェーブにblockが含まれていたら終了
+                audioManager.Play_Smoke();
+                break;
+            }
+        }
+    }
 
     public void AccelerateNextTaxArea(int incrementValue)
     {
-        rawCount_tax += incrementValue;
+        // TaxAreaが生成され、Playerと衝突するときのrawCount_tax = 11.
+        // TaxAreaが同時に2つ生成される可能性があるのは、rawCount_taxが0~11の間に
+        // incrementValueが足されて20以上になったときである。よってその場合はrawCount_tax<20に調整する
+        if(rawCount_tax < 12) { // Wave-Taxが生成されて間もない場合
+            rawCount_tax = 19;
+        } else {
+            rawCount_tax += incrementValue;
+        }
     }
 
 }

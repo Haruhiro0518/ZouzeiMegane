@@ -77,6 +77,7 @@ public class Player : MonoBehaviour
             taxRate += 0.5f;
             data.ChangeBlockHPDistribution(taxRate);
             ChangeItemParameter(IsInvincible);
+            ChangeTaxAreaText();
             PlayerSpeed = SelectPlayerSpeed();
             Move();
         }
@@ -114,6 +115,7 @@ public class Player : MonoBehaviour
 
         data.ChangeBlockHPDistribution(taxRate);
         ChangeItemParameter(IsInvincible);
+        ChangeTaxAreaText();
         PlayerSpeed = SelectPlayerSpeed();
         waveGenerate.AccelerateNextTaxArea(40);
         Move();
@@ -169,6 +171,15 @@ public class Player : MonoBehaviour
         }
 
         waveGenerate.AllItemSmokeAndChangeParam();
+    }
+
+    private void ChangeTaxAreaText()
+    {
+        GameObject wavetax = GameObject.Find("Wave-Tax");
+        if(wavetax != null) {
+            wavetax.GetComponent<GenerateTaxArea>().ChangeTaxAreaText();
+        }
+        
     }
 
     private void OnGameOver()

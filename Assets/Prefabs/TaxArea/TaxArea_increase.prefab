@@ -12,10 +12,11 @@ GameObject:
   - component: {fileID: 6933690509712739195}
   - component: {fileID: 8072546866045278446}
   - component: {fileID: 8432806038889555993}
-  - component: {fileID: 9181517607382387979}
+  - component: {fileID: -6589606881289733812}
   - component: {fileID: 8110523962664023994}
+  - component: {fileID: 6663588056684434354}
   m_Layer: 10
-  m_Name: TaxArea
+  m_Name: TaxArea_increase
   m_TagString: taxArea
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -78,7 +79,7 @@ SpriteRenderer:
   m_SortingLayer: 1
   m_SortingOrder: 0
   m_Sprite: {fileID: -5177388603050735206, guid: 8884154dfe85442a3a3578be807dbcdf, type: 3}
-  m_Color: {r: 1, g: 0.098551825, b: 0, a: 0.3529412}
+  m_Color: {r: 1, g: 0.27450982, b: 0, a: 0.54901963}
   m_FlipX: 0
   m_FlipY: 1
   m_DrawMode: 2
@@ -160,7 +161,7 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 0.79385686}
   m_EdgeRadius: 0
---- !u!114 &9181517607382387979
+--- !u!114 &-6589606881289733812
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -169,10 +170,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 3285573992686749049}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2b495dafe87dc0b4c9b2ec8a0ae229f3, type: 3}
+  m_Script: {fileID: 11500000, guid: c1ee65f87d5f22443b06cef3d3116861, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   data: {fileID: 11400000, guid: 43cdf7a1cb2580243821ffe6f0584c9b, type: 2}
+  manageImgUI: {fileID: 6663588056684434354}
 --- !u!114 &8110523962664023994
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -186,3 +188,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _uiObjectPrefab: {fileID: 1198705861362002440, guid: b173840f4d5ad1c4a94e4c7dc54ee3be, type: 3}
+--- !u!114 &6663588056684434354
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3285573992686749049}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 80db5034e3db6714bb9aa11f4a5b6c8c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _uiObjectPrefab: {fileID: 9083303580678011467, guid: 854c3b4b27ba0604cbb904c43e6f2199, type: 3}

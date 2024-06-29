@@ -28,7 +28,7 @@ public class FollowPlayer : MonoBehaviour
     // Updateでプレイヤーの位置を計算した後にLateUpdateでカメラを追従させる
     void LateUpdate()
     {
-        if(waveGenerate.IsGameOver==true || waveGenerate.IsGameClear==true) {
+        if(waveGenerate.IsGameOver==true || waveGenerate.IsGameClear==true || Player==null) {
             return;
         }
 

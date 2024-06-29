@@ -11,7 +11,7 @@ public class AudioManager : MonoBehaviour
     [SerializeField]
     AudioSource TaxArea;
     [SerializeField]
-    AudioClip TaxRateUp, TaxRateDown, ignoreTaxArea, Popper;
+    AudioClip TaxRateUp, TaxRateDown, ignoreTaxArea, Cracker, Smoke;
 
     void Start()
     {
@@ -59,9 +59,14 @@ public class AudioManager : MonoBehaviour
         PlaySE(TaxArea, TaxRateDown);
     }
 
-    public void Play_Popper()
+    public void Play_Cracker()
     {
         // TaxArea関係の音源と同時に鳴らさないため、同じAudioSourceを使用
-        PlaySE(TaxArea, Popper);
+        PlaySE(TaxArea, Cracker);
+    }
+
+    public void Play_Smoke()
+    {
+        PlaySE(TaxArea, Smoke);
     }
 }

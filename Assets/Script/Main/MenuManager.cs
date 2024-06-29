@@ -13,8 +13,6 @@ public class MenuManager : MonoBehaviour
     [SerializeField]
     private GameObject PauseButton, MenuUI, ResultUI, WaveGenerator, 
                         ScoreGUI, TopUI, BottomUI;
-    [SerializeField]
-    private TMPro.TMP_Text Tips;
 
     [SerializeField] ClearParticle clearParticle;
     [SerializeField] AudioManager audioManager;
@@ -57,12 +55,12 @@ public class MenuManager : MonoBehaviour
 
     public void SelectRetry()
     {
-        Time.timeScale = 1;
+        Time.timeScale = 1;   
         waveGenerate.IsGameOver = false;
         waveGenerate.IsGameClear = false;
         // Mainシーンを読み込む前にmainSourceリストをClearする必要がある. 読み込むたびにAddするため
         SettingManager.instance.mainSource.Clear(); 
-        SceneManager.LoadScene("Main");
+        SceneManager.LoadScene("Main");          
     }
 
     public void SelectRetire()
@@ -83,16 +81,19 @@ public class MenuManager : MonoBehaviour
     // GameOver時にCSVを読み込み、Tipsオブジェクトのテキストを変更する
     // このメソッドをUpdate()内で一度だけ呼び出すために、GameOverEventにこれを登録しておき
     // 最後にGameOverEventから削除する
+    [SerializeField]
+    private TMPro.TMP_Text Tips;
+
     void OnGameOver()
     {
-        CSVreader csvreader = gameObject.GetComponent<CSVreader>();
-        csvreader.ReadCSV();
-        csvreader.SetupText(Tips);
+        TipsReader tipsReader = gameObject.GetComponent<TipsReader>();
+        tipsReader.ReadCSV();
+        tipsReader.SetTips(Tips);
         
         GameOverEvent.RemoveListener(OnGameOver);
 
         if(waveGenerate.IsGameClear == true) {
-            audioManager.Play_Popper();
+            audioManager.Play_Cracker();
             clearParticle.Play();
         }
         StartCoroutine(WaitForResult());

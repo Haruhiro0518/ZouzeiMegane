@@ -7,6 +7,7 @@ using UnityEngine.SceneManagement;
 public class TitleManager : MonoBehaviour
 {
     private AudioSource titleBGM;
+    [SerializeField] private ValueData valueData;
 
     private void Start()
     {
@@ -19,7 +20,7 @@ public class TitleManager : MonoBehaviour
 
     private void Update()
     {
-        if(titleBGM.time > 45.7f)
+        if (titleBGM.time > 45.7f)
         {
             titleBGM.Stop();
             titleBGM.time = 0.5f;
@@ -27,10 +28,20 @@ public class TitleManager : MonoBehaviour
         }
     }
 
-    public void SelectStart()
+    public void SelectStart(ValueData.GameMode gameMode)
     {
+        valueData.currentGameMode = gameMode;
         SettingManager.instance.SelectClose();
         SceneManager.LoadScene("Intro");
+    }
+    public void OnNormalStartButtonClick()
+    {
+        SelectStart(ValueData.GameMode.Normal);
+    }
+
+    public void OnEndlessStartButtonClick()
+    {
+        SelectStart(ValueData.GameMode.Endless);
     }
 
 }

@@ -12,9 +12,9 @@ GameObject:
   - component: {fileID: 6933690509712739195}
   - component: {fileID: 8072546866045278446}
   - component: {fileID: 8432806038889555993}
-  - component: {fileID: -6589606881289733812}
   - component: {fileID: 8110523962664023994}
   - component: {fileID: 6663588056684434354}
+  - component: {fileID: -979445368855947907}
   m_Layer: 10
   m_Name: TaxArea_increase
   m_TagString: taxArea
@@ -161,20 +161,6 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 0.79385686}
   m_EdgeRadius: 0
---- !u!114 &-6589606881289733812
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3285573992686749049}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c1ee65f87d5f22443b06cef3d3116861, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  data: {fileID: 11400000, guid: 43cdf7a1cb2580243821ffe6f0584c9b, type: 2}
-  manageImgUI: {fileID: 6663588056684434354}
 --- !u!114 &8110523962664023994
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -201,3 +187,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _uiObjectPrefab: {fileID: 9083303580678011467, guid: 854c3b4b27ba0604cbb904c43e6f2199, type: 3}
+--- !u!114 &-979445368855947907
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3285573992686749049}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b495dafe87dc0b4c9b2ec8a0ae229f3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  type: 0
+  hpBonusOnDecrease: 25
+  speedOffsetOnIgnore: 0.2
+  data: {fileID: 11400000, guid: 43cdf7a1cb2580243821ffe6f0584c9b, type: 2}

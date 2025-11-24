@@ -31,7 +31,7 @@ public class GenerateTaxArea : MonoBehaviour
 
     public void ChangeTaxAreaText()
     {
-        ta_increase.GetComponent<TaxArea_increase>().ChangeTaxAreaText();
-        ta_decrease.GetComponent<TaxArea_decrease>().ChangeTaxAreaText();
+        ta_increase.GetComponent<TaxArea>().ChangeTaxAreaText();
+        ta_decrease.GetComponent<TaxArea>().ChangeTaxAreaText();
     }
 }

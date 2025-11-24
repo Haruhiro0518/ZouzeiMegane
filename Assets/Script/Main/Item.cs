@@ -19,7 +19,7 @@ public class Item : MonoBehaviour
     
     void Start()
     {
-        player = GameObject.Find("Player").gameObject.GetComponent<Player>();
+        player = GameManager.Instance.Player;
         manageHPUI = gameObject.GetComponent<ManageHPUI>();
         
         SwitchItemDamageAnim();

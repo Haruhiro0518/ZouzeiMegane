@@ -12,8 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b1b91871dd69d74ea651eedc562aa2a, type: 3}
   m_Name: value Data
   m_EditorClassIdentifier: 
-  maxItemHP: 10
-  minItemHP: 5
+  maxItemHP: 2
+  minItemHP: 1
+  ItemHPCoefficient: 1
   percentBlockAndItem: 45
   percentBlock: 60
   percentBar: 20
+  GlassesPercent: 20
+  hpRange1to4: 0
+  hpRange5to9: 0
+  hpRange10to19: 5
+  hpRange20to29: 40
+  currentGameMode: 1

@@ -13,9 +13,9 @@ public class WaveGenerate : MonoBehaviour
     // PlayerからMainCamera上部までの高さ
     private const float offset = 7.55f;
 
-    private GameObject Player;
+    [SerializeField] private GameObject Player;
     private Transform playerTransform;
-    [SerializeField] private GameObject PlayerPrefab;
+    // [SerializeField] private GameObject PlayerPrefab;
 
     // ウェーブの配列. プレハブをいれておく 
     public GameObject[] WavePrefabs;
@@ -45,10 +45,11 @@ public class WaveGenerate : MonoBehaviour
     public bool IsGameOver = false;
     public bool IsGameClear = false;
     
+    
     void Awake()
     {
-        Player = Instantiate(PlayerPrefab, new Vector3(0, 0, 0), Quaternion.identity);
-        Player.name = ("Player");
+        // Player = Instantiate(PlayerPrefab, new Vector3(0, 0, 0), Quaternion.identity);
+        // Player.name = ("Player");
         playerTransform = Player.GetComponent<Transform>();
     }
 
@@ -101,7 +102,6 @@ public class WaveGenerate : MonoBehaviour
         }
         currentTipIndex = toTipIndex;
     }
-
 
     // 指定のインデックス位置にウェーブを生成
     GameObject GenerateWave(int tipIndex)

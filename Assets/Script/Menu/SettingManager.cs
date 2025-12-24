@@ -33,8 +33,6 @@ public class SettingManager : MonoBehaviour
 
     public void SelectClose()
     {
-        // gameObject.SetActive(false);
-        gameObject.GetComponent<Image>().enabled = false;
         slider_bgm.SetActive(false);
         slider_se.SetActive(false);
         slider_sens.SetActive(false);
@@ -44,7 +42,6 @@ public class SettingManager : MonoBehaviour
 
     public void SelectOpen()
     {
-        gameObject.GetComponent<Image>().enabled = true;
         slider_bgm.SetActive(true);
         slider_se.SetActive(true);
         slider_sens.SetActive(true);

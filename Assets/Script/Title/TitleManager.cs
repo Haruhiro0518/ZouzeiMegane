@@ -32,14 +32,15 @@ public class TitleManager : MonoBehaviour
     {
         valueData.currentGameMode = gameMode;
         SettingManager.instance.SelectClose();
-        SceneManager.LoadScene("Intro");
+        SceneManager.LoadScene("Main");
     }
-    public void OnNormalStartButtonClick()
+
+    public void SelectNormal()
     {
         SelectStart(ValueData.GameMode.Normal);
     }
 
-    public void OnEndlessStartButtonClick()
+    public void SelectEndless()
     {
         SelectStart(ValueData.GameMode.Endless);
     }

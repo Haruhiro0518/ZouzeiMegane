@@ -26,7 +26,7 @@ public class Score : MonoBehaviour
 
     public void ChangeText(int score)
     {
-        string scoreText = score.ToString()+"<size=50>億</size>";
+        string scoreText = score.ToString()+"<size=35>億</size>";
         TextScore.SetText(scoreText);
     }
     
@@ -47,8 +47,8 @@ public class Score : MonoBehaviour
 
         
         
-        Tax_score.SetText("<size=36>"+ score.ToString() +"億</size>");
-        Donation_score.SetText("<size=36>"+ donation.ToString() +"億</size>");
+        Tax_score.SetText("<size=35>"+ score.ToString() +"億</size>");
+        Donation_score.SetText("<size=35>"+ donation.ToString() +"億</size>");
         FinalScore.SetText("<size=90>"+ send_score.ToString() +"億</size>");
 
         return send_score;

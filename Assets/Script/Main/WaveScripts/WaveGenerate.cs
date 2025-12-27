@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 
 // Playerがブロック1つの高さ移動するごとに、ウェーブを生成するクラス
-
 public class WaveGenerate : MonoBehaviour
 {
     // インデックスの高さ
@@ -113,7 +112,8 @@ public class WaveGenerate : MonoBehaviour
         GameObject waveObject = (GameObject)Instantiate(
             WavePrefabs[nextWaveTip],
             new Vector3(0, tipIndex * BlockHeight + offset, 0),     // y軸方向に無限に生成. 
-            Quaternion.identity) as GameObject;
+            Quaternion.identity,
+			this.transform) as GameObject;
 
         return waveObject;
     }

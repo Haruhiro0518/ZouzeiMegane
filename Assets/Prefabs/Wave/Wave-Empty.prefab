@@ -44,3 +44,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e725630eddba91f4098555d416e03200, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  data: {fileID: 11400000, guid: 43cdf7a1cb2580243821ffe6f0584c9b, type: 2}
+  objRef: {fileID: 11400000, guid: 24829819392f44a0da0066ab9728097b, type: 2}
+  IsWaveFull: 0
+  IsWaveRandom: 0
+  IsWaveEmpty: 1
+  IsNoBlock: 0

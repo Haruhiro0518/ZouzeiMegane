@@ -6,6 +6,6 @@ public class WaveNoBlockRandom : MonoBehaviour
 {
     void Awake()
     {
-        gameObject.GetComponent<WaveRandom>().IsNoBlock = true;
+        // gameObject.GetComponent<WaveRandom>().IsNoBlock = true;
     }
 }

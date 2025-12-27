@@ -46,6 +46,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e725630eddba91f4098555d416e03200, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  data: {fileID: 0}
+  objRef: {fileID: 0}
+  IsWaveFull: 0
+  IsWaveRandom: 0
+  IsWaveEmpty: 0
+  IsWaveTax: 1
+  IsNoBlock: 0
 --- !u!114 &9127818643004090242
 MonoBehaviour:
   m_ObjectHideFlags: 0

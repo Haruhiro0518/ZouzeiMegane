@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-// 全てのWaveプレハブにアタッチするクラス
+
 [System.Serializable]
 public struct WaveTypeSettings {
     public bool isFull;
@@ -10,20 +10,14 @@ public struct WaveTypeSettings {
     public bool isEmpty;
     public bool isTax;
 }
+// 全てのWaveプレハブにアタッチするクラス
 public class ManageWave : MonoBehaviour
 {
-	enum objects {
-		Block,
-		Item,
-		empty
-	}
 	// ScriptableObject
     [SerializeField] private ValueData data;
 	[SerializeField] private ObjectReference objRef;
 	private GameObject Block, Bar, Item;
 	[SerializeField] private bool IsWaveFull, IsWaveRandom, IsWaveEmpty, IsWaveTax;
-	// [SerializeField] private bool IsWaveRandom = false;
-	// [SerializeField] private bool IsWaveEmpty = false;
 	[SerializeField] private bool IsNoBlock = false;
 	
 	const float NumOfGrids = 5;
@@ -163,7 +157,6 @@ public class ManageWave : MonoBehaviour
         }
         Vector3 blockpos = ComputeBlockPos(i);
         Instantiate(Block, blockpos, Quaternion.identity, gameObject.transform);
-		Debug.Log("ins bl"+i);
         return;
     }
 

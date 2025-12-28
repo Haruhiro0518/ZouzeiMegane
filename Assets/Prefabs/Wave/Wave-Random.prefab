@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 936918137719154005}
   - component: {fileID: 8470806704210473504}
-  - component: {fileID: 4372879419101063204}
   m_Layer: 0
   m_Name: Wave-Random
   m_TagString: Untagged
@@ -45,19 +44,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e725630eddba91f4098555d416e03200, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &4372879419101063204
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1287289355992458573}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9398f227a2b81304c8208f364c9b9181, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Block: {fileID: 1840622312598475922, guid: 17156685336c3e347a3d9d76b2c9da9e, type: 3}
-  Bar: {fileID: 3422815973754892162, guid: b571750a6f40a6349b6ce0f27ed4fc7e, type: 3}
-  Item: {fileID: 3657147855224962322, guid: c939549a59e36194ea9f6e44480dfa75, type: 3}
   data: {fileID: 11400000, guid: 43cdf7a1cb2580243821ffe6f0584c9b, type: 2}
+  objRef: {fileID: 11400000, guid: 24829819392f44a0da0066ab9728097b, type: 2}
+  IsWaveFull: 0
+  IsWaveRandom: 1
+  IsWaveEmpty: 0
+  IsWaveTax: 0
+  IsNoBlock: 0

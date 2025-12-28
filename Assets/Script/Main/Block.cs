@@ -93,6 +93,7 @@ public class Block : MonoBehaviour
                 }
                 else if(_HP == 0) {
                     Instantiate(SEmoney);
+
                     if(player.IsInvincible == true) {
                         blockScoreFX.InvincibleDestory(scoreAccumulator);
                     } else {
@@ -106,6 +107,10 @@ public class Block : MonoBehaviour
                             player.InvincibleMode();
                         }
                     }
+					// オブジェクトの削除
+					foreach (Transform child in transform) {
+						Destroy(child.gameObject); 
+					}
         
                     // ヒットストップ
                     yield return new WaitForSeconds(DelayAfterDestroyed);

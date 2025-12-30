@@ -216,17 +216,18 @@ public class WaveGenerate : MonoBehaviour
         GeneratedWaveList.RemoveAt(0);
         ManageWave wave = oldWave.GetComponent<ManageWave>();
         
-        wave.destroyObject();
+        wave.DestroyObject();
     }
     
     // playerが無敵に入るとき・出るときに呼ばれる
-    public void AllItemSmokeAndChangeParam()
+    public void RefreshAllItems()
     {
         for(int i = 0; i < GeneratedWaveList.Count; i++)
         {
-            GeneratedWaveList[i].GetComponent<ManageWave>().ItemSmokeAndChangeParam();
+            GeneratedWaveList[i].GetComponent<ManageWave>().RefreshAllItems();
         }
     }
+	
     // playerが無敵状態かつ150%以上で、増税するときに呼ばれる.
     [SerializeField] AudioManager audioManager;
     public void NextBlockWaveSetGlasses()

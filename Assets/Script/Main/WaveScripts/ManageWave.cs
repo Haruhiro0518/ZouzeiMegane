@@ -55,10 +55,9 @@ public class ManageWave : MonoBehaviour
 			}
 		}
     }
-
     
     // 子オブジェクトのテキスト削除関数を呼んでからWaveを消す
-    public void destroyObject()
+    public void DestroyObject()
     {
     
         foreach ( Transform child in this.transform )
@@ -80,20 +79,21 @@ public class ManageWave : MonoBehaviour
         Destroy(gameObject);
     }
 
-    // smokeエフェクトと同時にItemのHP, Animation変更
-    public void ItemSmokeAndChangeParam()
-    {
-        foreach(Transform child in this.transform)
+	public void RefreshAllItems()
+	{
+		foreach(Transform child in this.transform)
         {
-            if(child.tag == "item")
+            if(child.CompareTag("item"))
             {
-                Item item = child.GetComponent<Item>();
-                item.Smoke();
-                item.SetItemHP();
-                item.SwitchItemDamageAnim();
+                var dynamicitem = child.GetComponent<DynamicHPModifier>();
+				if(dynamicitem != null)
+				{
+					dynamicitem.Refresh();
+				}
+                
             }
         }
-    }
+	}
 
     // smokeエフェクトと同時に増税メガネを付与. blockの個数を返す
     public int BlockSmokeAndSetGlasses()

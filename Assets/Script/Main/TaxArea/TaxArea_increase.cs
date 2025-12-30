@@ -62,8 +62,9 @@ public class TaxArea_increase : MonoBehaviour
         player.taxRate += changeTaxRate;
         
         // 変化後税率に関してパラメータ変更
-        data.ChangeItemHPminmax(player.taxRate);
-        data.ChangeBlockHPDistribution(player.taxRate);
+        // data.ChangeItemHPminmax(player.taxRate);
+        // data.ChangeBlockHPDistribution(player.taxRate);
+		data.UpdateParamsByTaxRate(player.taxRate, player.IsInvincible);
         player.PlayerSpeed = player.SelectPlayerSpeed();
         player.Move();
 

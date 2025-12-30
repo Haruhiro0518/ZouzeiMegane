@@ -72,8 +72,7 @@ public class Block : MonoBehaviour
                 float valueScored = (float)(value * player.taxRate);
                 Score.AddScore(valueScored);
                 scoreAccumulator += valueScored;
-
-                player.DecreaseHP(); 
+				if(!player.IsInvincible) player.AddHP(-1);
                 manageHPUI.ChangeText(_HP.ToString());
 
                 int diff = originalHP - _HP;

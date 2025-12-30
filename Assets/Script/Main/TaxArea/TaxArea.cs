@@ -97,8 +97,9 @@ public class TaxArea : MonoBehaviour
         player.taxRate += changeTaxRate;
         if (player.taxRate < 0f) player.taxRate = 0f;
 
-        data.ChangeItemHPminmax(player.taxRate);
-        data.ChangeBlockHPDistribution(player.taxRate);
+        // data.ChangeItemHPminmax(player.taxRate);
+        // data.ChangeBlockHPDistribution(player.taxRate);
+		data.UpdateParamsByTaxRate(player.taxRate, player.IsInvincible);
         player.PlayerSpeed = player.SelectPlayerSpeed();
         player.Move();
 
@@ -112,12 +113,12 @@ public class TaxArea : MonoBehaviour
         // タイプ別の追加処理
         if (type == TaxChangeType.Increase && data.currentGameMode == ValueData.GameMode.Endless)
         {
-            player.HP /= 2; // 無敵モードなら増税でHPを半分にする
+            player.HalveHP(); // 無敵モードなら増税でHPを半分にする
         }
         else if (type == TaxChangeType.Decrease)
         {
             waveGenerate.AccelerateNextTaxArea(15);
-            player.HP += hpBonusOnDecrease;
+            player.AddHP(hpBonusOnDecrease);
         }
     }
 

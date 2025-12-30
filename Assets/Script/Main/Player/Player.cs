@@ -7,7 +7,8 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     // playerのパラメータ
-    [System.NonSerialized] public int HP = 50;
+	private int _hp = 50;
+    public int HP => _hp;
     [System.NonSerialized] public float PlayerSpeed = OriginalPlayerSpeed;
     [System.NonSerialized] public float PlayerSpeedOffset = 0f; // 減税を検討すると増える(TaxArea.cs)
     private const float OriginalPlayerSpeed = 3.0f;
@@ -16,7 +17,8 @@ public class Player : MonoBehaviour
     [System.NonSerialized] public float taxRateMax = 1.5f;
     [System.NonSerialized] public float taxRateMaxInv = 2.0f;
      
-    public bool IsInvincible = false;
+	private bool _isInvincible = false;
+    public bool IsInvincible => _isInvincible;
     private float InvTime = 6.85f;
     
     // コンポーネント
@@ -68,15 +70,15 @@ public class Player : MonoBehaviour
     [System.NonSerialized] public bool exceedMaxInvCount = false;
     public void InvincibleMode()
     {
-        IsInvincible = true;
+        _isInvincible = true;
         InvModeCallCount++;
         
         if(InvModeCallCount == 1) {
             PlayerAnimator.SetBool("PowerUP", IsInvincible);
             invincibleBGM.Play();
             taxRate += 0.5f;
-            data.ChangeBlockHPDistribution(taxRate);
-            ChangeItemParameter(IsInvincible);
+			data.UpdateParamsByTaxRate(taxRate, _isInvincible);
+			waveGenerate.RefreshAllItems();
             ChangeTaxAreaText();
             PlayerSpeed = SelectPlayerSpeed();
             Move();
@@ -105,7 +107,7 @@ public class Player : MonoBehaviour
     void OnInvincibleExit()
     {
         // 元に戻す
-        IsInvincible = false;
+        _isInvincible = false;
         PlayerAnimator.SetBool("PowerUP", IsInvincible);
         invincibleBGM.Stop();
         taxRate -= 0.5f;
@@ -113,8 +115,13 @@ public class Player : MonoBehaviour
         TotalInvModeCallCount = 0;
         exceedMaxInvCount = false;
 
-        data.ChangeBlockHPDistribution(taxRate);
-        ChangeItemParameter(IsInvincible);
+        // data.ChangeBlockHPDistribution(taxRate);
+        // ChangeItemParameter(IsInvincible);
+		// data.ItemHPCoefficient = 1;
+		// data.ChangeItemHPminmax(taxRate);
+		data.UpdateParamsByTaxRate(taxRate, _isInvincible);
+		// waveGenerate.AllItemSmokeAndChangeParam();
+		waveGenerate.RefreshAllItems();
         ChangeTaxAreaText();
         PlayerSpeed = SelectPlayerSpeed();
         waveGenerate.AccelerateNextTaxArea(40);
@@ -157,21 +164,20 @@ public class Player : MonoBehaviour
     }
 
     
-    private void ChangeItemParameter(bool IsInv)
-    {
-        if(IsInv == true)
-        {
-            data.ItemHPCoefficient = -1;
-            data.ChangeItemHPminmax(taxRate);
-        } 
-        else 
-        {
-            data.ItemHPCoefficient = 1;
-            data.ChangeItemHPminmax(taxRate);
-        }
-
-        waveGenerate.AllItemSmokeAndChangeParam();
-    }
+    // private void ChangeItemParameter(bool IsInv)
+    // {
+    //     if(IsInv == true)
+    //     {
+    //         data.ItemHPCoefficient = -1;
+    //         data.ChangeItemHPminmax(taxRate);
+    //     } 
+    //     else 
+    //     {
+    //         data.ItemHPCoefficient = 1;
+    //         data.ChangeItemHPminmax(taxRate);
+    //     }
+        
+    // }
 
     private void ChangeTaxAreaText()
     {
@@ -214,10 +220,14 @@ public class Player : MonoBehaviour
         return (selectedSpeed + PlayerSpeedOffset);
     }
 
-    public void DecreaseHP()
-    {
-        if(IsInvincible == true) return;
-        HP -= 1;
-    }
+	public void AddHP(int amount)
+	{
+		_hp += amount;
+	}
 
+	public void HalveHP()
+	{
+		int halfDamage = Mathf.CeilToInt(HP / 2f); // 小数点切り上げ
+		AddHP(-halfDamage);
+	}
 }

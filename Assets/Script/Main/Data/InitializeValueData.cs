@@ -4,7 +4,6 @@ using UnityEngine;
 
 // ScriptableObjectインスタンスであるvalueDataの値を、ゲーム開始時に初期化する
 // このスクリプトはWaveGeneratorオブジェクトにアタッチする
-
 public class InitializeValueData : MonoBehaviour
 {
     [SerializeField] ValueData data;
@@ -12,9 +11,10 @@ public class InitializeValueData : MonoBehaviour
 
     void Awake()
     {
-        data.ItemHPCoefficient = 1;
-        data.ChangeItemHPminmax(OriginalTaxRate);
-        data.ChangeBlockHPDistribution(OriginalTaxRate);
+		data.UpdateParamsByTaxRate(OriginalTaxRate, false);
+        // data.ItemHPCoefficient = 1;
+        // data.ChangeItemHPminmax(OriginalTaxRate);
+        // data.ChangeBlockHPDistribution(OriginalTaxRate);
     }
 
 }

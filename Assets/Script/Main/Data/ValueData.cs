@@ -2,69 +2,51 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-// Assets->Create->ScriptableObj->Create ValueData でインスタンス化して使用する
+// TODO: アイテムとブロックの設定、ゲームモードの値を別のSOに分ける.
+//		特に、アイテムは型を一つ用意しておき、そこからアイテムごとにアセットを作り分けるべき
 
+// Assets->Create->ScriptableObj->Create ValueData でインスタンス化して使用する
 [CreateAssetMenu(menuName = "ScriptableObj/Create ValueData")]
 public class ValueData : ScriptableObject
 {
     // Itemに関するパラメータ処理
     public int maxItemHP;
     public int minItemHP;
-    public int ItemHPCoefficient;
+	/// <summary>
+	/// 税率とプレイヤーが無敵かどうかで、パラメータ変更
+	/// アイテムのHP上限下限、ブロックのHP確率分布が対象
+	/// </summary>
+	/// <param name="rate"></param>
+	/// <param name="isInv"></param>
+	public void UpdateParamsByTaxRate(float rate, bool isInv)
+	{
+		ChangeItemHPminmax(rate, isInv);
+		ChangeBlockHPDistribution(rate);
+	}
 
-    public void ChangeItemHPminmax(float rate)
-    {
-        if (rate == 0)
-        {
-            if (ItemHPCoefficient == 1)
-            {
-                SetItemHPminmax(8, 12);
-            }
-            else
-            {
-                SetItemHPminmax(-2, -1);
-            }
-        }
-        else if (rate == 0.5)
-        {
-            if (ItemHPCoefficient == 1)
-            {
-                SetItemHPminmax(6, 10);
-            }
-            else
-            {
-                SetItemHPminmax(-3, -2);
-            }
-        }
-        else if (rate == 1.5)
-        {
-            if (ItemHPCoefficient == 1)
-            {
-                SetItemHPminmax(1, 2);
-            }
-            else
-            {
-                SetItemHPminmax(-12, -8);
-            }
-        }
-        else
-        {
-            if (ItemHPCoefficient == 1)
-            {
-                SetItemHPminmax(4, 7);
-            }
-            else
-            {
-                SetItemHPminmax(-4, -3);
-            }
-        }
-    }
+	public void ChangeItemHPminmax(float rate, bool isInv)
+	{
+		// タプル (rate, isinv) を使ってパターンマッチング。switch式
+		(int min, int max) = (rate, isInv) switch
+		{
+			// 通常. 150% より大きくなることがない
+			(0f, false)   => (8, 12),
+			(0.5f, false)  => (6, 10),
+			(1.0f, false) => (4, 7),
+			(1.5f, false)  => (1, 2),
 
-    private void SetItemHPminmax(int min, int max)
-    {
-        minItemHP = min;
+			// 無敵. 200% が上限で、マイナスになる
+			(0f, true)  => (-2, -1),
+			(0.5f, true) => (-3, -2),
+			(1.0f, true) => (-4, -3),
+			(1.5f, true) => (-7, -8),
+			(2.0f, true) => (-12, -9),
+			_             => isInv ? (0, 0) : (0, 0) // default(未定義)
+		};
+
+		minItemHP = min;
         maxItemHP = max;
-    }
+	}
 
     // WaveRandomがwaveを生成するとき、それぞれのオブジェクトを生成する確率
     public float percentBlockAndItem = 45;
@@ -85,25 +67,25 @@ public class ValueData : ScriptableObject
         if (rate == 0)
         {
             // 1-4:80% | 5-9:20% | 10-19:0% | 20-29:0% | 30-51:0%
-            SetHPRange(80, 100, 0, 0);
+            SetBlockHPRate(80, 100, 0, 0);
         }
         else if (rate == 0.5)
         {
             // 1-4:60% | 5-9:35% | 10-19:5% | 20-29:0% | 30-51:0%
-            SetHPRange(60, 95, 100, 0);
+            SetBlockHPRate(60, 95, 100, 0);
         }
         else if (rate == 1.0)
         {
             // 1-4:20% | 5-9:30% | 10-19:30% | 20-29:15% | 30-51:5%
-            SetHPRange(20, 50, 80, 95);
+            SetBlockHPRate(20, 50, 80, 95);
         }
         else
         {
             // 1-4:0% | 5-9:0% | 10-19:5% | 20-29:35% | 30-51:65%
-            SetHPRange(0, 0, 5, 40);
+            SetBlockHPRate(0, 0, 5, 40);
         }
     }
-    private void SetHPRange(int r1to4, int r5to9, int r10to19, int r20ro29)
+    private void SetBlockHPRate(int r1to4, int r5to9, int r10to19, int r20ro29)
     {
         hpRange1to4 = r1to4;
         hpRange5to9 = r5to9;

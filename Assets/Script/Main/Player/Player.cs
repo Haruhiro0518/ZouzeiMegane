@@ -78,8 +78,8 @@ public class Player : MonoBehaviour
             invincibleBGM.Play();
             taxRate += 0.5f;
 			data.UpdateParamsByTaxRate(taxRate, _isInvincible);
-			waveGenerate.RefreshAllItems();
-            ChangeTaxAreaText();
+			waveGenerate.RefreshAllWaves();
+            // ChangeTaxAreaText();
             PlayerSpeed = SelectPlayerSpeed();
             Move();
         }
@@ -121,8 +121,8 @@ public class Player : MonoBehaviour
 		// data.ChangeItemHPminmax(taxRate);
 		data.UpdateParamsByTaxRate(taxRate, _isInvincible);
 		// waveGenerate.AllItemSmokeAndChangeParam();
-		waveGenerate.RefreshAllItems();
-        ChangeTaxAreaText();
+		waveGenerate.RefreshAllWaves();
+        // ChangeTaxAreaText();
         PlayerSpeed = SelectPlayerSpeed();
         waveGenerate.AccelerateNextTaxArea(40);
         Move();
@@ -161,31 +161,6 @@ public class Player : MonoBehaviour
             IsCollisionStay = false;
             StartCoroutine(followPlayer.CameraMoveupOrDown());
         }
-    }
-
-    
-    // private void ChangeItemParameter(bool IsInv)
-    // {
-    //     if(IsInv == true)
-    //     {
-    //         data.ItemHPCoefficient = -1;
-    //         data.ChangeItemHPminmax(taxRate);
-    //     } 
-    //     else 
-    //     {
-    //         data.ItemHPCoefficient = 1;
-    //         data.ChangeItemHPminmax(taxRate);
-    //     }
-        
-    // }
-
-    private void ChangeTaxAreaText()
-    {
-        GameObject wavetax = GameObject.Find("Wave-Tax");
-        if(wavetax != null) {
-            wavetax.GetComponent<GenerateTaxArea>().ChangeTaxAreaText();
-        }
-        
     }
 
     private void OnGameOver()

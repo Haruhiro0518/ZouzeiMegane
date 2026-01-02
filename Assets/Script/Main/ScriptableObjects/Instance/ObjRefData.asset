@@ -14,4 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   block: {fileID: 6560611246428997981, guid: 99ff993eaf8584698b5b7c45b7e3670f, type: 3}
   bar: {fileID: 3422815973754892162, guid: b571750a6f40a6349b6ce0f27ed4fc7e, type: 3}
-  item: {fileID: 3657147855224962322, guid: c939549a59e36194ea9f6e44480dfa75, type: 3}
+  taxArea_increase: {fileID: 3285573992686749049, guid: ad7cc9bef1ef4a54f8763d09a6589b0e, type: 3}
+  taxArea_decrease: {fileID: 3285573992686749049, guid: ecb95d7e8926a4d40bd624e060cb5db6, type: 3}

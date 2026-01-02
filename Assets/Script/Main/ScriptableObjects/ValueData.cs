@@ -2,14 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-// TODO: アイテムとブロックの設定、ゲームモードの値を別のSOに分ける.
-//		特に、アイテムは型を一つ用意しておき、そこからアイテムごとにアセットを作り分けるべき
-
 // Assets->Create->ScriptableObj->Create ValueData でインスタンス化して使用する
 [CreateAssetMenu(menuName = "ScriptableObj/Create ValueData")]
 public class ValueData : ScriptableObject
 {
-    // Itemに関するパラメータ処理
+	[SerializeField] private float _ishibaSpawnChance;
+	public float IshibaSpawnChance => _ishibaSpawnChance;
+    // peopleItemに関するパラメータ処理
     public int maxItemHP;
     public int minItemHP;
 	/// <summary>

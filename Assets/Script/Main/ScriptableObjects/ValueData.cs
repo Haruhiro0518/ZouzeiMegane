@@ -2,9 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-// TODO: アイテムとブロックの設定、ゲームモードの値を別のSOに分ける.
-//		特に、アイテムは型を一つ用意しておき、そこからアイテムごとにアセットを作り分けるべき
-
 // Assets->Create->ScriptableObj->Create ValueData でインスタンス化して使用する
 [CreateAssetMenu(menuName = "ScriptableObj/Create ValueData")]
 public class ValueData : ScriptableObject

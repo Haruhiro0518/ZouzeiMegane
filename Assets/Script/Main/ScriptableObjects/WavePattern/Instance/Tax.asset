@@ -9,8 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f8dd8a10ec51c41efa5c9e12de9bc921, type: 3}
-  m_Name: ObjRefData
+  m_Script: {fileID: 11500000, guid: 96a852a54b6e84a398774ed10bbfa17a, type: 3}
+  m_Name: Tax
   m_EditorClassIdentifier: 
-  block: {fileID: 6560611246428997981, guid: 99ff993eaf8584698b5b7c45b7e3670f, type: 3}
-  bar: {fileID: 3422815973754892162, guid: b571750a6f40a6349b6ce0f27ed4fc7e, type: 3}
+  type: 4

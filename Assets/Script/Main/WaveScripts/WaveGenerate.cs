@@ -25,11 +25,7 @@ public class WaveGenerate : MonoBehaviour
 
     [SerializeField] private GameObject Player;
     private Transform playerTransform;
-    // [SerializeField] private GameObject PlayerPrefab;
 
-    // ウェーブの配列. プレハブをいれておく 
-    // public GameObject[] WavePrefabs;
-	// ↑WavePrefabsではなく、空のwavePrefabを一つにして、それにWavePatternを渡す
 	[SerializeField] private GameObject wavePrefab;
 	[SerializeField] private List<WavePattern> wavePatterns;
 	private Dictionary<WaveType, WavePattern> patternDict = new ();
@@ -121,11 +117,8 @@ public class WaveGenerate : MonoBehaviour
             Quaternion.identity,
 			this.transform);
 
-	// TODO : SelectWaveじゃなくて、SelectWavePatternにする必要がある。
-        WavePattern wavePattern = SelectWave();
+        WavePattern wavePattern = SelectWavePattern();
 
-		// WavePatternで初期化
-	// 上で決めたWavePatternで空のWaveをセットアップする
 		var mn = waveObject.GetComponent<ManageWave>();
 		if(mn != null)
 		{
@@ -142,8 +135,7 @@ public class WaveGenerate : MonoBehaviour
     int random_sel;
     Stack<WavePattern> stack = new();
 
-    // int SelectWave()
-	WavePattern SelectWave()
+	WavePattern SelectWavePattern()
     {
         // stackの中身がある場合はstackを優先する
         if(stack.Count != 0) {
@@ -237,11 +229,11 @@ public class WaveGenerate : MonoBehaviour
     }
     
     // playerが無敵に入るとき・出るときに呼ばれる
-    public void RefreshAllItems()
+    public void RefreshAllWaves()
     {
         for(int i = 0; i < GeneratedWaveList.Count; i++)
         {
-            GeneratedWaveList[i].GetComponent<ManageWave>().RefreshAllItems();
+            GeneratedWaveList[i].GetComponent<ManageWave>().RefreshAllChildren();
         }
     }
 	

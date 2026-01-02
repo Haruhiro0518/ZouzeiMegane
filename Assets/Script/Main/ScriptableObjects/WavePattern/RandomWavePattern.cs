@@ -9,6 +9,6 @@ public class RandomWavePattern : WavePattern
 	public override void Generate(Transform parent, ManageWave mw)
 	{
 		mw.GenerateBlockOrItem(needBlock, needItem);
-		mw.GenerateBar();
+		mw.GenerateBarRandom();
 	}   
 }

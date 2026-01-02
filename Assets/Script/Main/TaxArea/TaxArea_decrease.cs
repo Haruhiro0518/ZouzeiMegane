@@ -92,7 +92,7 @@ public class TaxArea_decrease : MonoBehaviour
         }
 
         waveGenerate.AccelerateNextTaxArea(15);
-        player.AddHP(25);//  += 25;
+        // player.AddHP(25); 
 
     }
     // 減税を検討(ignore)する。検討すると、PlayerSpeedOffsetが増え、総理が加速する

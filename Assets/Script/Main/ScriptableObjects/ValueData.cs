@@ -9,7 +9,9 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "ScriptableObj/Create ValueData")]
 public class ValueData : ScriptableObject
 {
-    // Itemに関するパラメータ処理
+	[SerializeField] private float _ishibaSpawnChance;
+	public float IshibaSpawnChance => _ishibaSpawnChance;
+    // peopleItemに関するパラメータ処理
     public int maxItemHP;
     public int minItemHP;
 	/// <summary>

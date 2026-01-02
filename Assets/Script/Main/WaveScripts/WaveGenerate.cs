@@ -1,6 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Data.Common;
+using System.Runtime.CompilerServices;
 using UnityEngine;
+
+public enum WaveType {
+	empty,
+	random,
+	random_noblock,
+	full,
+	tax,
+}
+
 
 // Playerがブロック1つの高さ移動するごとに、ウェーブを生成するクラス
 public class WaveGenerate : MonoBehaviour
@@ -17,7 +28,11 @@ public class WaveGenerate : MonoBehaviour
     // [SerializeField] private GameObject PlayerPrefab;
 
     // ウェーブの配列. プレハブをいれておく 
-    public GameObject[] WavePrefabs;
+    // public GameObject[] WavePrefabs;
+	// ↑WavePrefabsではなく、空のwavePrefabを一つにして、それにWavePatternを渡す
+	[SerializeField] private GameObject wavePrefab;
+	[SerializeField] private List<WavePattern> wavePatterns;
+	private Dictionary<WaveType, WavePattern> patternDict = new ();
 
     // 初めにウェーブを生成する位置のインデックス
     private const int startTipIndex = 0;
@@ -31,28 +46,22 @@ public class WaveGenerate : MonoBehaviour
     // 行数を数えて、その値を参考に生成するオブジェクトを変える
     private int rawCount_full;
     private int rawCount_tax;
-
-    // WavePrefabs[]に格納されているプレハブに上から名前を付ける
-    public enum kindsOfWaves {
-        full,
-        random,
-        empty,
-        tax,
-        random_noblock
-    }
-
     public bool IsGameOver = false;
     public bool IsGameClear = false;
     
-    
     void Awake()
     {
-        // Player = Instantiate(PlayerPrefab, new Vector3(0, 0, 0), Quaternion.identity);
-        // Player.name = ("Player");
         playerTransform = Player.GetComponent<Transform>();
+		// リストを辞書に変換して、Enum (WaveType) で引けるようにする
+		foreach(var p in wavePatterns)
+		{
+			if (!patternDict.ContainsKey(p.type))
+			{
+				patternDict.Add(p.type, p);
+			}
+		}
     }
 
-    
     void Start()
     {
         IsGameOver = false;
@@ -62,7 +71,6 @@ public class WaveGenerate : MonoBehaviour
         }
     }
 
-    
     void Update()
     {
         if(IsGameOver == true || IsGameClear == true || Player == null) return;
@@ -105,54 +113,63 @@ public class WaveGenerate : MonoBehaviour
     // 指定のインデックス位置にウェーブを生成
     GameObject GenerateWave(int tipIndex)
     {
-        // prefabsの中からどのプレハブを生成するかを選ぶ
-        int nextWaveTip = SelectWave();
-    
-        // nextWaveTip番目のオブジェクトを生成
-        GameObject waveObject = (GameObject)Instantiate(
-            WavePrefabs[nextWaveTip],
+		// まずは空の wave を作成
+		var waveObject = Instantiate(
+            // WavePrefabs[waveTypeID],
+			wavePrefab,
             new Vector3(0, tipIndex * BlockHeight + offset, 0),     // y軸方向に無限に生成. 
             Quaternion.identity,
-			this.transform) as GameObject;
+			this.transform);
+
+	// TODO : SelectWaveじゃなくて、SelectWavePatternにする必要がある。
+        WavePattern wavePattern = SelectWave();
+
+		// WavePatternで初期化
+	// 上で決めたWavePatternで空のWaveをセットアップする
+		var mn = waveObject.GetComponent<ManageWave>();
+		if(mn != null)
+		{
+			mn.Setup(wavePattern);
+		}
 
         return waveObject;
     }
 
-
     // 生成するウェーブの選択
     // waveが生成されるたびにrawCount_full / _tax変数がインクリメントされているため、
     // それぞれが数える行数に応じて、nextWavePrefabを決定する。
-    int nextWavePrefab;
+    WavePattern nextWavePattern;
     int random_sel;
-    Stack<int> stack = new Stack<int>();
+    Stack<WavePattern> stack = new();
 
-    int SelectWave()
+    // int SelectWave()
+	WavePattern SelectWave()
     {
         // stackの中身がある場合はstackを優先する
         if(stack.Count != 0) {
-            return nextWavePrefab = stack.Pop();
+            return nextWavePattern = stack.Pop();
         }
         
         // fullを生成するか判定
         if(rawCount_full < 10)
         {
-            nextWavePrefab = Push_WaveRandom();
+            nextWavePattern = Push_WaveRandom();
         }
         else if(rawCount_full >= 10 && rawCount_full <= 15)
         {
             random_sel = Random.Range(0,2);
             if(random_sel == 0){
-                nextWavePrefab = Push_WaveRandom();
+                nextWavePattern = Push_WaveRandom();
             } 
             else if(random_sel == 1) {
-                nextWavePrefab = Push_WaveFull();   
+                nextWavePattern = Push_WaveFull();   
                 rawCount_full = 0;
             }
         }
         else {  // rawCount_full > 15
-            nextWavePrefab = Push_WaveFull();   
+            nextWavePattern = Push_WaveFull();   
             rawCount_full = 0;
-            return nextWavePrefab;
+            return nextWavePattern;
         }
 
         // taxを生成するか判定.
@@ -161,50 +178,50 @@ public class WaveGenerate : MonoBehaviour
         if(rawCount_tax >= 20 && rawCount_tax < 40) {
         
             if(random_sel < 1) {
-                nextWavePrefab = Push_WaveTax();
+                nextWavePattern = Push_WaveTax();
             } else {
-                return nextWavePrefab;
+                return nextWavePattern;
             }
         } else if(rawCount_tax >= 40 && rawCount_tax < 60) {
 
             if(random_sel < 70) {
-                nextWavePrefab = Push_WaveTax();
+                nextWavePattern = Push_WaveTax();
             } else {
-                return nextWavePrefab;
+                return nextWavePattern;
             }
         } else if(rawCount_tax >= 70) {
-            nextWavePrefab = Push_WaveTax();
+            nextWavePattern = Push_WaveTax();
         }
 
-        return nextWavePrefab;
+        return nextWavePattern;
     }
 
 
     // それぞれのwaveは複数のwaveを組み合わせるため、Stackを使用する
-    int Push_WaveTax()
+    WavePattern Push_WaveTax()
     {
-        stack.Push((int)kindsOfWaves.empty);
-        stack.Push((int)kindsOfWaves.empty);
-        stack.Push((int)kindsOfWaves.tax);
-        stack.Push((int)kindsOfWaves.empty);
-        stack.Push((int)kindsOfWaves.empty);
+        stack.Push(patternDict[WaveType.empty]);
+        stack.Push(patternDict[WaveType.empty]);
+        stack.Push(patternDict[WaveType.tax]);
+        stack.Push(patternDict[WaveType.empty]);
+        stack.Push(patternDict[WaveType.empty]);
 
         rawCount_tax = 0;
         return stack.Pop();
     }
 
-    int Push_WaveRandom()
+    WavePattern Push_WaveRandom()
     {
-        stack.Push((int)kindsOfWaves.random_noblock);
-        stack.Push((int)kindsOfWaves.random);
+        stack.Push(patternDict[WaveType.random_noblock]);
+        stack.Push(patternDict[WaveType.random]);
 
         return stack.Pop();
     }
 
-    int Push_WaveFull()
+    WavePattern Push_WaveFull()
     {
-        stack.Push((int)kindsOfWaves.random_noblock);
-        stack.Push((int)kindsOfWaves.full);
+        stack.Push(patternDict[WaveType.random_noblock]);
+        stack.Push(patternDict[WaveType.full]);
 
         return stack.Pop();
     }

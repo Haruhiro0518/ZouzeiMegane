@@ -12,7 +12,7 @@ public class BaseItem: MonoBehaviour
 {
 	public UnityEvent onHitEvent;	// UI消去などの演出用
 	[SerializeField] private GameObject SEitem;
-	[SerializeField] private bool destroyOnHit = true;
+	// [SerializeField] private bool destroyOnHit = true;
 
 	// アイテムの振る舞いリスト. Item の種類が増えたら増やす
     public enum PlayerAction { None, HalveHP, StartObstacleUI}	// , FullHeal}

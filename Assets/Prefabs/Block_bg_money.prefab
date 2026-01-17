@@ -12,11 +12,11 @@ GameObject:
   - component: {fileID: 5369341427400232204}
   - component: {fileID: 1821476588474160480}
   - component: {fileID: 3006467458395808943}
-  - component: {fileID: 6226587608416718216}
   - component: {fileID: 4840955322256884385}
   - component: {fileID: 621059744562398554}
   - component: {fileID: 2724659151407078557}
   - component: {fileID: 1068438019930463010}
+  - component: {fileID: -2177209933107814240}
   - component: {fileID: 4077771922357764686}
   m_Layer: 6
   m_Name: Block_bg_money
@@ -165,26 +165,6 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
---- !u!114 &6226587608416718216
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2569124802267884813}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1374e8613df64e143abcdbe2d5c175d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _GlassesPrefab: {fileID: 9083303580678011467, guid: 717f09ee32818e444b149f924e6a01c0, type: 3}
-  manageHPUI: {fileID: 621059744562398554}
-  manageSCOREUI: {fileID: 2724659151407078557}
-  SEmoney: {fileID: 3270029887293670416, guid: 73e63af5f8d7ad045985deaf35d407db, type: 3}
-  playSE: {fileID: 1068438019930463010}
-  blockScoreFX: {fileID: 4840955322256884385}
-  SmokeFX: {fileID: 4847675478516424211, guid: 0be11bc91c2f9f743b1543c1c8ef87c0, type: 3}
-  data: {fileID: 11400000, guid: 43cdf7a1cb2580243821ffe6f0584c9b, type: 2}
 --- !u!114 &4840955322256884385
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -240,6 +220,26 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   source: {fileID: 4077771922357764686}
+--- !u!114 &-2177209933107814240
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2569124802267884813}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1374e8613df64e143abcdbe2d5c175d5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _GlassesPrefab: {fileID: 9083303580678011467, guid: 717f09ee32818e444b149f924e6a01c0, type: 3}
+  manageHPUI: {fileID: 621059744562398554}
+  manageSCOREUI: {fileID: 2724659151407078557}
+  SEmoney: {fileID: 3270029887293670416, guid: 73e63af5f8d7ad045985deaf35d407db, type: 3}
+  playSE: {fileID: 1068438019930463010}
+  blockScoreFX: {fileID: 4840955322256884385}
+  SmokeFX: {fileID: 4847675478516424211, guid: 0be11bc91c2f9f743b1543c1c8ef87c0, type: 3}
+  data: {fileID: 11400000, guid: 43cdf7a1cb2580243821ffe6f0584c9b, type: 2}
 --- !u!82 &4077771922357764686
 AudioSource:
   m_ObjectHideFlags: 0

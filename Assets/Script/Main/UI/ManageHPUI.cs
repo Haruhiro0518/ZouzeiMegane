@@ -11,7 +11,7 @@ public class ManageHPUI : MonoBehaviour
     private RectTransform _uiParentObjectTransform;
     [SerializeField] private GameObject _uiObjectPrefab;
     [System.NonSerialized] public GameObject uiObject;
-    private TMPro.TMP_Text TextHP;
+    private TMP_Text TextHP;
     private FollowTransform followTransform;
     
     // UIをもつオブジェクトがStartメソッドでthis.ChangeTextメソッドを呼ぶ時、
@@ -21,7 +21,7 @@ public class ManageHPUI : MonoBehaviour
     {
         _uiParentObjectTransform = GameObject.Find("Canvas").GetComponent<RectTransform>();
         uiObject = Instantiate(_uiObjectPrefab, _uiParentObjectTransform);
-        TextHP = uiObject.GetComponent<TMPro.TMP_Text>();
+        TextHP = uiObject.GetComponent<TMP_Text>();
         followTransform = uiObject.GetComponent<FollowTransform>();
         followTransform.Initialize(gameObject.transform);
 

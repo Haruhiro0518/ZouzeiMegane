@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 
 public class Block : MonoBehaviour
@@ -12,7 +13,7 @@ public class Block : MonoBehaviour
     private const float DelayAfterDestroyed = 0.06f;
     private float scoreAccumulator = 0f;
 
-    private bool haveGlasses;
+    [SerializeField] private bool haveGlasses;
 
     private Player player;
     private Score Score;
@@ -46,6 +47,9 @@ public class Block : MonoBehaviour
         if(haveGlasses == true)
         {
             InstantiateGlasses();
+			// メガネがある時は、小要素のMoneyを非表示
+			// 0番目（一番上）の子オブジェクトを非アクティブにする
+			transform.GetChild(0).gameObject.GetComponent<SpriteRenderer>().enabled = false;
         }
     }
 
